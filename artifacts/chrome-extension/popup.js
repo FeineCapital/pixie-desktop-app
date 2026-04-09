@@ -15,7 +15,7 @@ function setActive(active) {
     captureBtn.classList.add('scanning');
     btnText.textContent = 'Cancel Capture';
     btnIcon.innerHTML = `
-      <path d="M2 8h12M8 2v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
     `;
     statusDot.classList.add('active');
     statusText.classList.add('active');

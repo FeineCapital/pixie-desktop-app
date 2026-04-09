@@ -35,23 +35,29 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         const bitmap = await createImageBitmap(blob);
 
         const dpr = devicePixelRatio || 1;
-        const sx = Math.round(rect.x * dpr);
-        const sy = Math.round(rect.y * dpr);
-        const sw = Math.round(rect.width * dpr);
+        let sx = Math.round(rect.x * dpr);
+        let sy = Math.round(rect.y * dpr);
+        const sw = Math.round(rect.width  * dpr);
         const sh = Math.round(rect.height * dpr);
 
-        // Clamp to bitmap bounds
-        const clampedSW = Math.min(sw, bitmap.width  - sx);
-        const clampedSH = Math.min(sh, bitmap.height - sy);
+        // Clamp source origin to bitmap bounds (handles partially off-screen elements)
+        const clampedSX = Math.max(0, Math.min(sx, bitmap.width));
+        const clampedSY = Math.max(0, Math.min(sy, bitmap.height));
+        const offsetX   = clampedSX - sx;  // positive when left edge was off-screen
+        const offsetY   = clampedSY - sy;
+
+        const clampedSW = Math.min(sw - offsetX, bitmap.width  - clampedSX);
+        const clampedSH = Math.min(sh - offsetY, bitmap.height - clampedSY);
 
         if (clampedSW <= 0 || clampedSH <= 0) {
           chrome.tabs.sendMessage(tabId, { type: 'CAPTURE_ERROR', error: 'Element out of view' });
           return;
         }
 
-        const canvas = new OffscreenCanvas(clampedSW, clampedSH);
+        // Canvas is the full element size; crop starts at offset if element was partially off-screen
+        const canvas = new OffscreenCanvas(sw, sh);
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(bitmap, sx, sy, clampedSW, clampedSH, 0, 0, clampedSW, clampedSH);
+        ctx.drawImage(bitmap, clampedSX, clampedSY, clampedSW, clampedSH, offsetX, offsetY, clampedSW, clampedSH);
 
         const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
         const pngUrl  = URL.createObjectURL(pngBlob);

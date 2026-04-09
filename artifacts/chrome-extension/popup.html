@@ -209,18 +209,18 @@
     }
 
     .capture-btn.scanning {
-      background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #9f67ff 100%);
-      box-shadow: 0 0 20px rgba(124,58,237,0.35), 0 2px 8px rgba(0,0,0,0.4);
+      background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 50%, #f87171 100%);
+      box-shadow: 0 0 20px rgba(220,38,38,0.35), 0 2px 8px rgba(0,0,0,0.4);
       animation: scanningBtn 2s ease-in-out infinite;
     }
 
     .capture-btn.scanning:hover {
-      box-shadow: 0 0 32px rgba(124,58,237,0.5), 0 4px 16px rgba(0,0,0,0.4);
+      box-shadow: 0 0 32px rgba(220,38,38,0.55), 0 4px 16px rgba(0,0,0,0.4);
     }
 
     @keyframes scanningBtn {
-      0%, 100% { box-shadow: 0 0 20px rgba(124,58,237,0.35), 0 2px 8px rgba(0,0,0,0.4); }
-      50%       { box-shadow: 0 0 32px rgba(124,58,237,0.55), 0 2px 8px rgba(0,0,0,0.4); }
+      0%, 100% { box-shadow: 0 0 20px rgba(220,38,38,0.35), 0 2px 8px rgba(0,0,0,0.4); }
+      50%       { box-shadow: 0 0 34px rgba(220,38,38,0.6),  0 2px 8px rgba(0,0,0,0.4); }
     }
 
     .btn-inner {
@@ -238,12 +238,7 @@
     }
 
     .capture-btn.scanning .btn-icon {
-      animation: spinIcon 2.5s linear infinite;
-    }
-
-    @keyframes spinIcon {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+      transform: none;
     }
 
     .hint {
