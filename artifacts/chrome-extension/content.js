@@ -16,9 +16,9 @@
         position: fixed;
         pointer-events: none;
         z-index: 2147483646;
-        border: 1.5px solid rgba(255, 255, 255, 0.55);
+        border: 1.5px solid #00e676;
         border-radius: 8px;
-        box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
         transition: left 0.07s ease, top 0.07s ease, width 0.07s ease, height 0.07s ease, opacity 0.12s ease;
         opacity: 0;
       }
