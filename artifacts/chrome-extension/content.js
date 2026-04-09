@@ -2,162 +2,125 @@
   if (window.__elementCaptureActive !== undefined) return;
   window.__elementCaptureActive = false;
 
-  let hoveredEl  = null;
-  let overlay    = null;
-  let tooltip    = null;
+  let hoveredEl = null;
+  let tooltip   = null;
 
-  /* ─── Inject minimal styles once ─── */
+  /* ─── Inject styles once ─── */
   function injectStyles() {
     if (document.getElementById('__ec_styles')) return;
     const s = document.createElement('style');
     s.id = '__ec_styles';
     s.textContent = `
-      #__ec-overlay {
-        position: fixed;
-        pointer-events: none;
-        z-index: 2147483646;
-        border: 1.5px solid #00e676;
-        border-radius: 8px;
-        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
-        transition: left 0.07s ease, top 0.07s ease, width 0.07s ease, height 0.07s ease, opacity 0.12s ease;
-        opacity: 0;
+      .__ec-hl {
+        outline: 1.5px solid #00e676 !important;
+        outline-offset: 2px !important;
+        cursor: crosshair !important;
       }
-      #__ec-overlay.visible {
-        opacity: 1;
-      }
-      #__ec-tooltip {
-        position: fixed;
-        z-index: 2147483647;
-        pointer-events: none;
-        background: rgba(0, 0, 0, 0.72);
-        border-radius: 5px;
-        padding: 4px 9px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-        font-size: 11.5px;
-        font-weight: 400;
-        color: #ffffff;
-        letter-spacing: 0.01em;
-        white-space: nowrap;
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-        transition: opacity 0.1s ease;
+      #__ec-tip {
+        position: fixed !important;
+        z-index: 2147483647 !important;
+        pointer-events: none !important;
+        background: rgba(0,0,0,0.7) !important;
+        color: #fff !important;
+        font: 400 11.5px/-apple-system, BlinkMacSystemFont, sans-serif !important;
+        padding: 4px 9px !important;
+        border-radius: 5px !important;
+        white-space: nowrap !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        line-height: 1.4 !important;
+        letter-spacing: 0 !important;
+        text-transform: none !important;
+        box-shadow: none !important;
       }
       #__ec-toast {
-        position: fixed;
-        z-index: 2147483647;
-        pointer-events: none;
-        bottom: 20px;
-        right: 20px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-        font-size: 12px;
-        font-weight: 500;
-        padding: 9px 14px;
-        border-radius: 8px;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        transition: opacity 0.25s ease, transform 0.25s ease;
+        position: fixed !important;
+        z-index: 2147483647 !important;
+        pointer-events: none !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        font: 500 12px/-apple-system, BlinkMacSystemFont, sans-serif !important;
+        padding: 9px 14px !important;
+        border-radius: 8px !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        transition: opacity 0.25s ease, transform 0.25s ease !important;
       }
     `;
     document.documentElement.appendChild(s);
   }
 
-  /* ─── Create overlay div ─── */
-  function createOverlay() {
-    if (document.getElementById('__ec-overlay')) {
-      overlay = document.getElementById('__ec-overlay');
-      return;
-    }
-    overlay = document.createElement('div');
-    overlay.id = '__ec-overlay';
-    document.documentElement.appendChild(overlay);
-  }
-
-  /* ─── Create tooltip ─── */
+  /* ─── Tooltip ─── */
   function createTooltip() {
-    if (document.getElementById('__ec-tooltip')) {
-      tooltip = document.getElementById('__ec-tooltip');
+    if (document.getElementById('__ec-tip')) {
+      tooltip = document.getElementById('__ec-tip');
       return;
     }
     tooltip = document.createElement('div');
-    tooltip.id = '__ec-tooltip';
+    tooltip.id = '__ec-tip';
     tooltip.textContent = 'Click to capture';
+    tooltip.style.cssText = 'font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:11.5px;';
     document.documentElement.appendChild(tooltip);
   }
 
-  /* ─── Find the best "section" target by walking up to the nearest multi-child container ─── */
+  function moveTooltip(e) {
+    if (!tooltip) return;
+    const x = e.clientX + 12;
+    const y = e.clientY - 30;
+    tooltip.style.left = Math.min(x, window.innerWidth  - 140) + 'px';
+    tooltip.style.top  = Math.max(y, 4) + 'px';
+  }
+
+  /* ─── Smart parent: walk up to nearest multi-child container ─── */
   function findBestTarget(startEl) {
-    if (!startEl || startEl === document.body || startEl === document.documentElement) return startEl;
-    if (startEl.id && startEl.id.startsWith('__ec-')) return null;
+    if (!startEl || startEl === document.body || startEl === document.documentElement) return null;
+    if (startEl.id && startEl.id.startsWith('__ec')) return null;
 
+    // Step 1: escape inline elements
     let el = startEl;
-
-    // Step 1: walk up from inline elements to nearest block
     while (el && el !== document.body) {
-      const cs = window.getComputedStyle(el);
-      const d  = cs.display;
-      if (d === 'block' || d === 'flex' || d === 'grid' || d === 'inline-block' || d === 'inline-flex' || d === 'table-cell' || d === 'list-item') break;
+      const d = window.getComputedStyle(el).display;
+      if (d === 'block' || d === 'flex' || d === 'grid' ||
+          d === 'inline-block' || d === 'inline-flex' ||
+          d === 'table-cell' || d === 'list-item') break;
       el = el.parentElement;
     }
     if (!el || el === document.body) return startEl;
 
-    // Step 2: walk upward until we find a container with 2+ visible children
-    // Return the element just BELOW that container (i.e. the "card/item")
+    // Step 2: walk up to find multi-child container; return the child just below it
     let current   = el;
     let candidate = el;
-    const MAX = 8;
-    let i = 0;
-
-    while (current && current !== document.body && i < MAX) {
-      const visChildren = Array.from(current.children).filter(c => {
+    for (let i = 0; i < 8 && current && current !== document.body; i++) {
+      const kids = Array.from(current.children).filter(c => {
         const cs = window.getComputedStyle(c);
-        return cs.display !== 'none' && cs.visibility !== 'hidden' && cs.opacity !== '0';
+        return cs.display !== 'none' && cs.visibility !== 'hidden';
       });
-
-      if (visChildren.length >= 2) {
-        // `candidate` is the item inside this multi-child container
-        return candidate;
-      }
-
+      if (kids.length >= 2) return candidate;
       candidate = current;
       current   = current.parentElement;
-      i++;
     }
-
     return candidate;
   }
 
-  /* ─── Position overlay over element ─── */
-  function positionOverlay(el) {
-    if (!overlay || !el) return;
-    const rect = el.getBoundingClientRect();
-    overlay.style.left   = rect.left   + 'px';
-    overlay.style.top    = rect.top    + 'px';
-    overlay.style.width  = rect.width  + 'px';
-    overlay.style.height = rect.height + 'px';
-    overlay.classList.add('visible');
+  /* ─── Highlight ─── */
+  function highlight(el) {
+    if (el === hoveredEl) return;
+    unhighlight();
+    if (!el || el.id && el.id.startsWith('__ec')) return;
+    hoveredEl = el;
+    el.classList.add('__ec-hl');
   }
 
-  /* ─── Move tooltip to top-right of cursor ─── */
-  const TW = 120, TH = 24;
-  function moveTooltip(e) {
-    if (!tooltip) return;
-    let x = e.clientX + 12;
-    let y = e.clientY - TH - 10;
-    if (x + TW > window.innerWidth)  x = e.clientX - TW - 8;
-    if (y < 4)                        y = e.clientY + 18;
-    tooltip.style.left = x + 'px';
-    tooltip.style.top  = y + 'px';
+  function unhighlight() {
+    if (hoveredEl) { hoveredEl.classList.remove('__ec-hl'); hoveredEl = null; }
   }
 
-  /* ─── Event handlers ─── */
+  /* ─── Events ─── */
   function onMouseMove(e) {
     moveTooltip(e);
     const raw = document.elementFromPoint(e.clientX, e.clientY);
-    if (!raw || raw.id === '__ec-overlay' || raw.id === '__ec-tooltip') return;
-    const target = findBestTarget(raw);
-    if (!target || target === hoveredEl) return;
-    hoveredEl = target;
-    positionOverlay(hoveredEl);
+    if (!raw || raw.id === '__ec-tip') return;
+    highlight(findBestTarget(raw));
   }
 
   function onClick(e) {
@@ -165,17 +128,17 @@
     e.preventDefault();
     e.stopPropagation();
 
-    const rect = hoveredEl.getBoundingClientRect();
-    const dpr  = window.devicePixelRatio || 1;
+    const el   = hoveredEl;
+    const rect = el.getBoundingClientRect();
 
-    // Hide overlay before screenshot so it doesn't appear in capture
-    if (overlay) overlay.classList.remove('visible');
+    // Remove highlight before screenshot
+    el.classList.remove('__ec-hl');
 
     setTimeout(() => {
       chrome.runtime.sendMessage({
         type: 'CAPTURE_ELEMENT',
         rect: { x: rect.left, y: rect.top, width: rect.width, height: rect.height },
-        devicePixelRatio: dpr
+        devicePixelRatio: window.devicePixelRatio || 1
       });
     }, 60);
   }
@@ -189,7 +152,6 @@
     if (window.__elementCaptureActive) return;
     window.__elementCaptureActive = true;
     injectStyles();
-    createOverlay();
     createTooltip();
     document.addEventListener('mousemove', onMouseMove, true);
     document.addEventListener('click',     onClick,     true);
@@ -200,26 +162,22 @@
   function deactivate() {
     if (!window.__elementCaptureActive) return;
     window.__elementCaptureActive = false;
-    hoveredEl = null;
-
+    unhighlight();
     document.removeEventListener('mousemove', onMouseMove, true);
     document.removeEventListener('click',     onClick,     true);
     document.removeEventListener('keydown',   onKeyDown,   true);
-
-    if (overlay)  { overlay.classList.remove('visible'); }
-    if (tooltip)  { tooltip.style.opacity = '0'; setTimeout(() => { tooltip && tooltip.remove(); tooltip = null; }, 150); }
-
+    if (tooltip) { tooltip.remove(); tooltip = null; }
     chrome.runtime.sendMessage({ type: 'TAB_DEACTIVATED' });
   }
 
-  /* ─── Message handler ─── */
-  function handleMessage(msg, _sender, sendResponse) {
+  /* ─── Messages ─── */
+  chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg.type === 'ACTIVATE')   { activate();   sendResponse({ ok: true }); }
     if (msg.type === 'DEACTIVATE') { deactivate(); sendResponse({ ok: true }); }
 
     if (msg.type === 'DO_CLIPBOARD') {
-      // Restore overlay
-      if (overlay && hoveredEl) positionOverlay(hoveredEl);
+      // Re-add highlight after screenshot
+      if (hoveredEl) hoveredEl.classList.add('__ec-hl');
 
       const byteStr = atob(msg.base64);
       const arr = new Uint8Array(byteStr.length);
@@ -227,33 +185,31 @@
       const blob = new Blob([arr], { type: 'image/png' });
 
       navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-        .then(() => showToast('Copied to clipboard!'))
-        .catch(err => showToast('Clipboard failed: ' + err.message, true));
+        .then(() => toast('Copied to clipboard ✓'))
+        .catch(err => toast('Clipboard failed: ' + err.message, true));
     }
 
     if (msg.type === 'CAPTURE_ERROR') {
-      if (overlay && hoveredEl) positionOverlay(hoveredEl);
-      showToast('Capture failed: ' + msg.error, true);
+      if (hoveredEl) hoveredEl.classList.add('__ec-hl');
+      toast('Capture failed: ' + msg.error, true);
     }
 
     return true;
-  }
+  });
 
-  chrome.runtime.onMessage.addListener(handleMessage);
-
-  /* ─── On-page toast ─── */
-  function showToast(msg, isError = false) {
+  /* ─── Toast ─── */
+  function toast(msg, isError = false) {
     const old = document.getElementById('__ec-toast');
     if (old) old.remove();
     const t = document.createElement('div');
     t.id = '__ec-toast';
-    Object.assign(t.style, {
-      background: isError ? 'rgba(30,4,4,0.9)' : 'rgba(4,18,10,0.9)',
-      border: `1px solid ${isError ? 'rgba(220,38,38,0.5)' : 'rgba(0,200,100,0.4)'}`,
-      color: isError ? '#f87171' : '#4ade80',
-      opacity: '0',
-      transform: 'translateY(8px)',
-    });
+    t.style.cssText = `
+      background:${isError ? 'rgba(40,4,4,0.92)' : 'rgba(4,24,12,0.92)'};
+      border:1px solid ${isError ? 'rgba(220,38,38,0.5)' : 'rgba(0,200,100,0.4)'};
+      color:${isError ? '#f87171' : '#4ade80'};
+      opacity:0;transform:translateY(8px);
+      font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    `;
     t.textContent = msg;
     document.documentElement.appendChild(t);
     requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; });
