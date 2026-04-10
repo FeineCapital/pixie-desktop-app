@@ -1,0 +1,32 @@
+{
+  "name": "pixie",
+  "productName": "Pixie",
+  "version": "1.0.0",
+  "description": "Screenshot and annotation tool for macOS",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --mac --dir",
+    "dist": "electron-builder --mac"
+  },
+  "build": {
+    "appId": "app.pixie.capture",
+    "productName": "Pixie",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": ["dmg", "zip"],
+      "darkModeSupport": true
+    },
+    "dmg": {
+      "title": "Pixie",
+      "contents": [
+        { "x": 130, "y": 220 },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  }
+}
