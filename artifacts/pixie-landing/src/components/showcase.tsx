@@ -62,8 +62,8 @@ function FakeWebsite({ step }: { step: number }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "16px" }}>
           <div style={{ borderRadius: "12px", overflow: "hidden", border: "1px solid #f0f0f0" }}>
-            <div style={{ height: "110px", background: "linear-gradient(135deg, #fef3c7, #fde68a)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#b45309" strokeWidth="1.5"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+            <div style={{ height: "110px", position: "relative", overflow: "hidden" }}>
+              <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80" alt="Wireless Headphones" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               <div style={{ position: "absolute", top: "8px", right: "8px", background: "#ef4444", borderRadius: "6px", padding: "2px 8px" }}>
                 <span style={{ fontFamily: "Arial, sans-serif", fontSize: "9px", fontWeight: 700, color: "#fff" }}>SALE</span>
               </div>
@@ -90,16 +90,16 @@ function FakeWebsite({ step }: { step: number }) {
             }}
             animate={{
               boxShadow: isCaptured
-                ? "0 0 0 3px rgba(99,102,241,0.8), 0 0 24px rgba(99,102,241,0.3)"
+                ? "0 0 0 3px rgba(52,211,153,0.9), 0 0 24px rgba(52,211,153,0.3)"
                 : isHovered
-                ? "0 0 0 3px rgba(99,102,241,0.6), 0 0 20px rgba(99,102,241,0.2)"
+                ? "0 0 0 3px rgba(52,211,153,0.7), 0 0 20px rgba(52,211,153,0.2)"
                 : "0 0 0 1px #f0f0f0",
             }}
             transition={{ duration: 0.3 }}
           >
-            <div style={{ height: "110px", background: "linear-gradient(135deg, #dbeafe, #93c5fd)", position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-              <div style={{ position: "absolute", top: "8px", left: "8px", background: "#2563eb", borderRadius: "6px", padding: "2px 8px" }}>
+            <div style={{ height: "110px", position: "relative", overflow: "hidden" }}>
+              <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80" alt="Smart Watch Pro" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <div style={{ position: "absolute", top: "8px", left: "8px", background: "#111", borderRadius: "6px", padding: "2px 8px" }}>
                 <span style={{ fontFamily: "Arial, sans-serif", fontSize: "9px", fontWeight: 700, color: "#fff" }}>NEW</span>
               </div>
             </div>
@@ -114,8 +114,8 @@ function FakeWebsite({ step }: { step: number }) {
           </motion.div>
 
           <div style={{ borderRadius: "12px", overflow: "hidden", border: "1px solid #f0f0f0" }}>
-            <div style={{ height: "110px", background: "linear-gradient(135deg, #d1fae5, #6ee7b7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12l2 2 4-4"/></svg>
+            <div style={{ height: "110px", position: "relative", overflow: "hidden" }}>
+              <img src="https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=300&q=80" alt="Fitness Tracker" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <div style={{ padding: "12px" }}>
               <div style={{ fontFamily: "Arial, sans-serif", fontSize: "13px", fontWeight: 600, color: "#111", marginBottom: "4px" }}>Fitness Tracker</div>
@@ -128,8 +128,8 @@ function FakeWebsite({ step }: { step: number }) {
           </div>
 
           <div style={{ borderRadius: "12px", overflow: "hidden", border: "1px solid #f0f0f0" }}>
-            <div style={{ height: "110px", background: "linear-gradient(135deg, #fce7f3, #f9a8d4)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#db2777" strokeWidth="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <div style={{ height: "110px", position: "relative", overflow: "hidden" }}>
+              <img src="https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=300&q=80" alt="Aromatherapy Kit" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <div style={{ padding: "12px" }}>
               <div style={{ fontFamily: "Arial, sans-serif", fontSize: "13px", fontWeight: 600, color: "#111", marginBottom: "4px" }}>Aromatherapy Kit</div>
@@ -257,7 +257,7 @@ function CaptureDemo() {
               <motion.div
                 key={`ripple-${step}`}
                 className="absolute z-30 pointer-events-none rounded-full"
-                style={{ left: "calc(38% - 12px)", top: "calc(50% - 12px)", width: 24, height: 24, border: "2px solid rgba(99,102,241,0.7)" }}
+                style={{ left: "calc(38% - 12px)", top: "calc(50% - 12px)", width: 24, height: 24, border: "2px solid rgba(52,211,153,0.8)" }}
                 initial={{ scale: 0.5, opacity: 1 }}
                 animate={{ scale: 3, opacity: 0 }}
                 exit={{ opacity: 0 }}
@@ -283,12 +283,6 @@ function CaptureDemo() {
             </div>
             <div className="p-1.5 rounded-md" style={{ color: "rgba(255,255,255,0.5)" }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/></svg>
-            </div>
-            <div className="w-px h-4" style={{ background: "rgba(255,255,255,0.09)" }} />
-            <div className="flex gap-1.5">
-              {["#ef4444","#facc15","#60a5fa","#ffffff"].map(c => (
-                <div key={c} className="w-3 h-3 rounded-full" style={{ background: c, border: c === "#ffffff" ? "1px solid rgba(255,255,255,0.3)" : "none" }} />
-              ))}
             </div>
             <div className="w-px h-4" style={{ background: "rgba(255,255,255,0.09)" }} />
             <motion.span
