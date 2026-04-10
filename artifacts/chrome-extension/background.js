@@ -1,6 +1,6 @@
 // Global capture state — persists across tab switches
 let globallyActive = false;
-const injectedTabs = new Set(); // tabs that have content script running
+const injectedTabs = new Set();
 
 /* ─── Helpers ─── */
 function canInjectTab(url) {
@@ -34,12 +34,12 @@ async function deactivateAllTabs() {
   const tabs = await chrome.tabs.query({});
   for (const tab of tabs) {
     if (!tab.id) continue;
-    try { chrome.tabs.sendMessage(tab.id, { type: 'DEACTIVATE' }).catch(() => {}); } catch (e) {}
+    chrome.tabs.sendMessage(tab.id, { type: 'DEACTIVATE' }).catch(() => {});
   }
   injectedTabs.clear();
 }
 
-/* ─── When a tab finishes loading while globally active, inject into it ─── */
+/* ─── Tab lifecycle ─── */
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
   if (info.status === 'loading') injectedTabs.delete(tabId);
   if (info.status === 'complete' && globallyActive && tab.url) {
@@ -47,50 +47,59 @@ chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
   }
 });
 
-/* ─── When user switches to a tab while globally active, make sure it's live ─── */
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   if (!globallyActive) return;
-  if (injectedTabs.has(tabId)) return; // already running
+  if (injectedTabs.has(tabId)) {
+    // Re-ping in case bfcache restored the tab without re-injecting
+    chrome.tabs.sendMessage(tabId, { type: 'ACTIVATE' }).catch(async () => {
+      const tab = await chrome.tabs.get(tabId).catch(() => null);
+      if (tab && tab.url) await injectAndActivate(tabId, tab.url);
+    });
+    return;
+  }
   const tab = await chrome.tabs.get(tabId).catch(() => null);
   if (tab && tab.url) await injectAndActivate(tabId, tab.url);
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => injectedTabs.delete(tabId));
 
+/* ─── Safe sendResponse wrapper (channel may already be closed) ─── */
+function safeSend(sendResponse, data) {
+  try { sendResponse(data); } catch (_) {}
+}
+
 /* ─── Message handler ─── */
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+
   if (msg.type === 'GET_STATE') {
-    sendResponse({ active: globallyActive });
-    return true;
+    safeSend(sendResponse, { active: globallyActive });
+    return false; // sync — no need to keep channel open
   }
 
   if (msg.type === 'ACTIVATE_GLOBAL') {
-    activateAllTabs().then(() => sendResponse({ ok: true }));
-    return true;
+    activateAllTabs().then(() => safeSend(sendResponse, { ok: true })).catch(() => {});
+    return true; // async response
   }
 
   if (msg.type === 'DEACTIVATE_GLOBAL') {
-    deactivateAllTabs().then(() => sendResponse({ ok: true }));
-    return true;
+    deactivateAllTabs().then(() => safeSend(sendResponse, { ok: true })).catch(() => {});
+    return true; // async response
   }
 
-  // Content script telling us it's alive
   if (msg.type === 'TAB_ACTIVATED') {
     if (sender.tab) injectedTabs.add(sender.tab.id);
-    sendResponse({ ok: true });
-    return true;
+    safeSend(sendResponse, { ok: true });
+    return false; // sync
   }
 
   if (msg.type === 'TAB_DEACTIVATED') {
-    // Individual tab deactivated (e.g. Escape) — but global mode stays on unless user turns off
-    sendResponse({ ok: true });
-    return true;
+    safeSend(sendResponse, { ok: true });
+    return false; // sync
   }
 
-  // Content script requests a full-tab screenshot; we push SCREENSHOT_RESULT back
-  // (avoids "message channel closed" error from async sendResponse)
+  // Screenshot: push result back via sendMessage (avoids async sendResponse issues)
   if (msg.type === 'TAKE_SCREENSHOT') {
-    const tabId    = sender.tab ? sender.tab.id     : null;
+    const tabId    = sender.tab ? sender.tab.id      : null;
     const windowId = sender.tab ? sender.tab.windowId : undefined;
     if (!tabId) return false;
     (async () => {
@@ -104,12 +113,16 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         const CHUNK = 8192;
         for (let i = 0; i < bytes.length; i += CHUNK)
           binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
-        chrome.tabs.sendMessage(tabId, { type: 'SCREENSHOT_RESULT', base64: btoa(binary) });
+        chrome.tabs.sendMessage(tabId, {
+          type: 'SCREENSHOT_RESULT', base64: btoa(binary)
+        }).catch(() => {});
       } catch (err) {
-        chrome.tabs.sendMessage(tabId, { type: 'SCREENSHOT_RESULT', error: err.message });
+        chrome.tabs.sendMessage(tabId, {
+          type: 'SCREENSHOT_RESULT', error: err.message
+        }).catch(() => {});
       }
     })();
-    return false; // no sendResponse needed
+    return false; // fire-and-forget push-back pattern
   }
 
   if (msg.type === 'CAPTURE_ELEMENT') {
@@ -138,7 +151,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         const clampedSH = Math.min(sh - offsetY, bitmap.height - clampedSY);
 
         if (clampedSW <= 0 || clampedSH <= 0) {
-          chrome.tabs.sendMessage(tabId, { type: 'CAPTURE_ERROR', error: 'Element out of viewport' });
+          chrome.tabs.sendMessage(tabId, {
+            type: 'CAPTURE_ERROR', error: 'Element out of viewport'
+          }).catch(() => {});
           return;
         }
 
@@ -147,22 +162,23 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         ctx.drawImage(bitmap, clampedSX, clampedSY, clampedSW, clampedSH, offsetX, offsetY, clampedSW, clampedSH);
 
         const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
-        const arrayBuffer = await pngBlob.arrayBuffer();
-        const bytes = new Uint8Array(arrayBuffer);
+        const ab = await pngBlob.arrayBuffer();
+        const bytes = new Uint8Array(ab);
         let binary = '';
         const CHUNK = 8192;
         for (let i = 0; i < bytes.length; i += CHUNK)
           binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
-        const base64 = btoa(binary);
 
-        chrome.tabs.sendMessage(tabId, { type: 'DO_CLIPBOARD', base64 });
+        chrome.tabs.sendMessage(tabId, {
+          type: 'DO_CLIPBOARD', base64: btoa(binary)
+        }).catch(() => {});
       } catch (err) {
-        chrome.tabs.sendMessage(tabId, { type: 'CAPTURE_ERROR', error: err.message });
+        chrome.tabs.sendMessage(tabId, {
+          type: 'CAPTURE_ERROR', error: err.message
+        }).catch(() => {});
       }
     })();
-
-    sendResponse({ ok: true });
-    return true;
+    return false; // fire-and-forget
   }
 });
 
@@ -174,6 +190,7 @@ chrome.commands.onCommand.addListener(async (command) => {
   } else {
     await activateAllTabs();
   }
-  // Notify any open popups
-  chrome.runtime.sendMessage({ type: globallyActive ? 'MODE_ACTIVATED' : 'MODE_DEACTIVATED' }).catch(() => {});
+  chrome.runtime.sendMessage({
+    type: globallyActive ? 'MODE_ACTIVATED' : 'MODE_DEACTIVATED'
+  }).catch(() => {});
 });
