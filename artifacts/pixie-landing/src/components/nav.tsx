@@ -14,18 +14,18 @@ export function Nav() {
       <nav
         className="glass-nav border border-border/50 flex items-center justify-between gap-4 md:gap-10"
         style={{
-          maxWidth: "560px",
+          maxWidth: "680px",
           width: "100%",
           borderRadius: "9999px",
-          padding: "6px 6px 6px 18px",
+          padding: "8px 8px 8px 24px",
           boxShadow: "0 4px 24px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
         }}
       >
         <Link
           href="/"
-          className="font-display font-bold tracking-tight text-foreground flex items-center gap-2 shrink-0 text-[15px]"
+          className="font-display font-bold tracking-tight text-foreground flex items-center gap-2 shrink-0 text-base md:text-lg"
         >
-          <div className="w-3 h-3 rounded-full bg-foreground" />
+          <div className="w-3.5 h-3.5 rounded-full bg-foreground" />
           Pixie
         </Link>
 
