@@ -6,10 +6,7 @@ function BrowserChrome({ url, children }: { url: string; children: React.ReactNo
   return (
     <div style={{
       width: "100%",
-      borderRadius: "14px",
-      overflow: "hidden",
       background: "#1a1a1a",
-      border: "1px solid rgba(255,255,255,0.06)",
       position: "relative",
     }}>
       <div style={{
@@ -592,7 +589,7 @@ export function Showcase() {
         </p>
       </motion.div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "48px", maxWidth: "680px", width: "100%" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "32px", maxWidth: "680px", width: "100%" }}>
         {modes.map((mode, i) => (
           <motion.div
             key={mode.title}
@@ -600,10 +597,18 @@ export function Showcase() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: i * 0.08 }}
-            style={{ display: "flex", flexDirection: "column", gap: "14px" }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              borderRadius: "20px",
+              border: "1px solid rgba(0,0,0,0.08)",
+              overflow: "hidden",
+              boxShadow: "0 2px 24px rgba(0,0,0,0.06)",
+              background: "#fff",
+            }}
           >
             <BrowserChrome url={mode.url}>{mode.demo}</BrowserChrome>
-            <div style={{ padding: "0 4px" }}>
+            <div style={{ padding: "18px 22px 22px", borderTop: "1px solid rgba(0,0,0,0.06)" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
                 <h3 style={{ fontFamily: "Arial, sans-serif", fontSize: "18px", fontWeight: 700, color: "#171717", margin: 0 }}>
                   {mode.title}
