@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Element Capture",
+  "name": "Pixie",
   "version": "1.1.0",
   "description": "Hover over any element and capture it to your clipboard as PNG.",
   "permissions": [
@@ -26,7 +26,7 @@
   },
   "commands": {
     "activate-capture": {
-      "description": "Toggle element capture mode",
+      "description": "Toggle Pixie",
       "suggested_key": {
         "default": "Ctrl+Shift+E",
         "mac": "Command+Shift+E"
