@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import pixieLogo from "@assets/image_1775816868243.png";
 
 export function Nav() {
   return (
@@ -25,6 +26,7 @@ export function Nav() {
             textDecoration: "none",
           }}
         >
+          <img src={pixieLogo} alt="Pixie" style={{ width: "24px", height: "24px", borderRadius: "5px" }} />
           Pixie
         </Link>
 
