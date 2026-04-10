@@ -290,7 +290,7 @@ function NewsArticle() {
         <div style={{ fontSize: "8px", color: "#697386", marginBottom: "10px" }}>By James Whitfield  ·  April 10, 2025  ·  6 min read</div>
 
         {/* City photo */}
-        <div ref={imgRef} style={{ width: "100%", height: "130px", borderRadius: "6px", overflow: "hidden", marginBottom: "10px" }}>
+        <div ref={imgRef} style={{ width: "62%", height: "175px", borderRadius: "6px", overflow: "hidden", marginBottom: "10px" }}>
           <img src={cityPhoto} alt="Chongqing city skyline at night" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         </div>
 
