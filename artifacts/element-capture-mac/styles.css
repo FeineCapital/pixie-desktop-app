@@ -1,0 +1,159 @@
+/* Element Capture — overlay UI styles */
+
+/* ── Selection box ── */
+#ec-sel {
+  position: fixed;
+  border: 1.5px solid rgba(255,255,255,0.6);
+  border-radius: 10px;
+  pointer-events: none;
+  display: none;
+  z-index: 10;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
+}
+
+/* ── Resize handles ── */
+.ec-hnd {
+  position: fixed;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid rgba(0,0,0,0.25);
+  z-index: 20;
+  display: none;
+  cursor: pointer;
+}
+
+/* ── Toolbar ── */
+#ec-tb {
+  position: fixed;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(18,18,22,0.82);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.55);
+  z-index: 30;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+}
+
+/* separator */
+#ec-tb .sep {
+  width: 1px; height: 22px;
+  background: rgba(255,255,255,0.1);
+  flex-shrink: 0;
+}
+
+/* tool buttons (pencil, eraser) */
+#ec-tb button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  color: rgba(255,255,255,0.55);
+  font-size: 15px;
+  width: 30px; height: 30px;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+#ec-tb button:hover { background: rgba(255,255,255,0.08); color: #fff; }
+#ec-tb button.active {
+  background: rgba(0,230,118,0.15);
+  border-color: rgba(0,230,118,0.45);
+  color: #00e676;
+}
+
+/* color swatch */
+.ec-col {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.12s;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.ec-col:hover { transform: scale(1.2); }
+.ec-col.active { outline-color: rgba(255,255,255,0.6); }
+
+/* action buttons */
+#ec-tb .ec-cap {
+  background: linear-gradient(135deg, #00e676, #00b341);
+  color: #000;
+  font-size: 11px; font-weight: 700;
+  padding: 5px 13px;
+  border-radius: 8px;
+  border: none;
+  letter-spacing: 0.02em;
+  width: auto;
+  box-shadow: 0 0 12px rgba(0,230,118,0.3);
+}
+#ec-tb .ec-cap:hover { box-shadow: 0 0 20px rgba(0,230,118,0.55); color: #000; }
+#ec-tb .ec-sav {
+  background: rgba(99,102,241,0.18);
+  color: #a5b4fc;
+  font-size: 11px; font-weight: 600;
+  padding: 5px 13px;
+  border-radius: 8px;
+  border: 1px solid rgba(99,102,241,0.3);
+  letter-spacing: 0.01em;
+  width: auto;
+}
+#ec-tb .ec-sav:hover { background: rgba(99,102,241,0.28); color: #c7d2fe; }
+#ec-tb .ec-x {
+  color: rgba(255,255,255,0.22);
+  font-size: 16px;
+  width: 26px; height: 26px;
+}
+#ec-tb .ec-x:hover { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.06); }
+
+/* ── Toast ── */
+#ec-toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  z-index: 999;
+  pointer-events: none;
+  padding: 10px 16px;
+  background: rgba(18,18,22,0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  color: #fff;
+  font: 500 13px -apple-system, BlinkMacSystemFont, sans-serif;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+#ec-toast.show {
+  opacity: 1; transform: translateY(0);
+}
+#ec-toast.err { border-color: rgba(239,68,68,0.4); color: #fca5a5; }
+
+/* ── "Ready" hint ── */
+#ec-hint {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 12px 24px;
+  background: rgba(18,18,22,0.76);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0,230,118,0.25);
+  border-radius: 14px;
+  color: rgba(255,255,255,0.7);
+  font: 500 13px -apple-system, BlinkMacSystemFont, sans-serif;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,230,118,0.1);
+  display: none;
+  pointer-events: none;
+  z-index: 50;
+  letter-spacing: 0.01em;
+}
+#ec-hint span { color: #00e676; }

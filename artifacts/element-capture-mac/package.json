@@ -1,0 +1,29 @@
+{
+  "name": "element-capture",
+  "productName": "Element Capture",
+  "version": "1.0.0",
+  "description": "System-wide screenshot and annotation tool for macOS",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --mac --dir",
+    "dist": "electron-builder --mac"
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.elementcapture.app",
+    "productName": "Element Capture",
+    "files": ["main.js", "preload.js", "index.html", "renderer.js", "styles.css"],
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": [{ "target": "dmg", "arch": ["arm64", "x64"] }],
+      "extendInfo": {
+        "NSScreenCaptureUsageDescription": "Element Capture needs screen recording access to capture your screen.",
+        "LSUIElement": true
+      }
+    }
+  }
+}
