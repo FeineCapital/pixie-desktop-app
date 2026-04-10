@@ -25,16 +25,15 @@ export function Nav() {
             textDecoration: "none",
           }}
         >
-          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#34D399" }} />
           Pixie
         </Link>
 
         <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "28px" }}>
-            {["How it works", "Features", "Pricing"].map((label, i) => (
+            {["Features", "Pricing"].map((label, i) => (
               <a
                 key={label}
-                href={["#showcase", "#features", "#pricing"][i]}
+                href={["#features", "#pricing"][i]}
                 style={{
                   fontFamily: "Arial, sans-serif",
                   fontSize: "14px",
@@ -52,8 +51,8 @@ export function Nav() {
             ))}
           </div>
 
-          <a
-            href="https://github.com/FeineCapital/pixie-desktop-app/releases/latest/download/Pixie.dmg"
+          <Link
+            href="/download"
             style={{
               fontFamily: "Arial, sans-serif",
               fontWeight: 700,
@@ -67,7 +66,7 @@ export function Nav() {
             }}
           >
             Download
-          </a>
+          </Link>
         </div>
       </div>
     </div>

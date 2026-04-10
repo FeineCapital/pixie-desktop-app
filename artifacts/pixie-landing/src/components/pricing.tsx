@@ -29,48 +29,19 @@ const proPlan = [
 function Check() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-      <path d="M3 8l3.5 3.5L13 4.5" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 8l3.5 3.5L13 4.5" stroke="rgba(255,255,255,0.6)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
 export function Pricing() {
   return (
-    <section id="pricing" className="w-full max-w-7xl mx-auto px-6 md:px-8 py-24 md:py-36">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          background: "rgba(255,255,255,0.06)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: "100px",
-          padding: "6px 14px 6px 10px",
-          marginBottom: "20px",
-        }}
-      >
-        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34D399" }} />
-        <span style={{
-          fontFamily: "Arial, sans-serif",
-          fontSize: "12px",
-          fontWeight: 400,
-          color: "rgba(255,255,255,0.5)",
-          textTransform: "uppercase",
-          letterSpacing: "0.06em",
-        }}>
-          Pricing
-        </span>
-      </motion.div>
-
+    <section id="pricing" className="w-full max-w-7xl mx-auto px-6 md:px-8 py-24 md:py-36 flex flex-col items-center">
       <motion.h2
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.05 }}
+        transition={{ duration: 0.6 }}
         style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "52px",
@@ -79,6 +50,7 @@ export function Pricing() {
           lineHeight: 1.1,
           letterSpacing: "-0.02em",
           marginBottom: "56px",
+          textAlign: "center",
         }}
       >
         Simple pricing.
@@ -86,7 +58,7 @@ export function Pricing() {
         Start for free.
       </motion.h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl w-full">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -101,26 +73,15 @@ export function Pricing() {
             flexDirection: "column",
           }}
         >
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            borderRadius: "100px",
-            padding: "6px 14px 6px 10px",
+          <p style={{
+            fontFamily: "Arial, sans-serif",
+            fontSize: "12px",
+            fontWeight: 700,
+            color: "rgba(255,255,255,0.5)",
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
             marginBottom: "24px",
-            alignSelf: "flex-start",
-          }}>
-            <span style={{
-              fontFamily: "Arial, sans-serif",
-              fontSize: "12px",
-              fontWeight: 400,
-              color: "rgba(255,255,255,0.5)",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-            }}>Free</span>
-          </div>
+          }}>Free</p>
           <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", marginBottom: "32px" }}>
             <span style={{ fontFamily: "Arial, sans-serif", fontSize: "48px", fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>$0</span>
             <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", marginBottom: "6px" }}>/ forever</span>
@@ -164,8 +125,8 @@ export function Pricing() {
           transition={{ duration: 0.6, delay: 0.1 }}
           style={{
             borderRadius: "16px",
-            border: "1px solid rgba(52,211,153,0.25)",
-            background: "rgba(52,211,153,0.04)",
+            border: "1px solid rgba(255,255,255,0.15)",
+            background: "rgba(255,255,255,0.04)",
             padding: "32px",
             display: "flex",
             flexDirection: "column",
@@ -180,34 +141,23 @@ export function Pricing() {
             fontFamily: "Arial, sans-serif",
             fontSize: "12px",
             fontWeight: 600,
-            color: "#34D399",
-            background: "rgba(52,211,153,0.12)",
-            border: "1px solid rgba(52,211,153,0.25)",
+            color: "rgba(255,255,255,0.6)",
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.12)",
             borderRadius: "100px",
             padding: "4px 12px",
           }}>
             Coming soon
           </div>
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "rgba(52,211,153,0.1)",
-            border: "1px solid rgba(52,211,153,0.2)",
-            borderRadius: "100px",
-            padding: "6px 14px 6px 10px",
+          <p style={{
+            fontFamily: "Arial, sans-serif",
+            fontSize: "12px",
+            fontWeight: 700,
+            color: "rgba(255,255,255,0.6)",
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
             marginBottom: "24px",
-            alignSelf: "flex-start",
-          }}>
-            <span style={{
-              fontFamily: "Arial, sans-serif",
-              fontSize: "12px",
-              fontWeight: 400,
-              color: "#34D399",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-            }}>Pro</span>
-          </div>
+          }}>Pro</p>
           <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", marginBottom: "32px" }}>
             <span style={{ fontFamily: "Arial, sans-serif", fontSize: "48px", fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>$9</span>
             <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", marginBottom: "6px" }}>/ month</span>

@@ -58,11 +58,11 @@ function IconFeather({ className }: { className?: string }) {
 
 const features = [
   { icon: IconBolt, title: "Instant Capture", description: "Hover over any element and click to capture. No drag, no crop, no setup.", color: "text-amber-400", bg: "bg-amber-400/10" },
-  { icon: IconPen, title: "Annotation Tools", description: "Draw, highlight, and mark up captures with a built-in pencil and eraser.", color: "text-emerald-400", bg: "bg-emerald-400/10" },
-  { icon: IconClipboard, title: "Clipboard Ready", description: "Every capture is copied automatically. Paste into Figma, Slack, or anywhere.", color: "text-blue-400", bg: "bg-blue-400/10" },
-  { icon: IconMonitor, title: "Retina Quality", description: "Crisp, high-resolution output. Built for displays that demand pixel perfection.", color: "text-violet-400", bg: "bg-violet-400/10" },
-  { icon: IconShield, title: "Fully Private", description: "Nothing leaves your Mac. No cloud, no account, no tracking whatsoever.", color: "text-rose-400", bg: "bg-rose-400/10" },
-  { icon: IconFeather, title: "Lightweight", description: "Lives in your menu bar. Uses minimal memory and never slows your machine down.", color: "text-cyan-400", bg: "bg-cyan-400/10" },
+  { icon: IconPen, title: "Annotation Tools", description: "Draw, highlight, and mark up captures with a built-in pencil and eraser.", color: "text-blue-400", bg: "bg-blue-400/10" },
+  { icon: IconClipboard, title: "Clipboard Ready", description: "Every capture is copied automatically. Paste into Figma, Slack, or anywhere.", color: "text-violet-400", bg: "bg-violet-400/10" },
+  { icon: IconMonitor, title: "Retina Quality", description: "Crisp, high-resolution output. Built for displays that demand pixel perfection.", color: "text-rose-400", bg: "bg-rose-400/10" },
+  { icon: IconShield, title: "Fully Private", description: "Nothing leaves your Mac. No cloud, no account, no tracking whatsoever.", color: "text-cyan-400", bg: "bg-cyan-400/10" },
+  { icon: IconFeather, title: "Lightweight", description: "Lives in your menu bar. Uses minimal memory and never slows your machine down.", color: "text-orange-400", bg: "bg-orange-400/10" },
 ];
 
 const shortcuts = [
@@ -76,41 +76,12 @@ const shortcuts = [
 
 export function Features() {
   return (
-    <section id="features" className="w-full max-w-7xl mx-auto px-6 md:px-8 py-24 md:py-36">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          background: "rgba(255,255,255,0.06)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: "100px",
-          padding: "6px 14px 6px 10px",
-          marginBottom: "20px",
-        }}
-      >
-        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34D399" }} />
-        <span style={{
-          fontFamily: "Arial, sans-serif",
-          fontSize: "12px",
-          fontWeight: 400,
-          color: "rgba(255,255,255,0.5)",
-          textTransform: "uppercase",
-          letterSpacing: "0.06em",
-        }}>
-          Features
-        </span>
-      </motion.div>
-
+    <section id="features" className="w-full max-w-7xl mx-auto px-6 md:px-8 py-24 md:py-36 flex flex-col items-center">
       <motion.h2
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.05 }}
+        transition={{ duration: 0.6 }}
         style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "52px",
@@ -119,6 +90,7 @@ export function Features() {
           lineHeight: 1.1,
           letterSpacing: "-0.02em",
           marginBottom: "56px",
+          textAlign: "center",
         }}
       >
         Everything you need.
@@ -126,7 +98,7 @@ export function Features() {
         Nothing you don't.
       </motion.h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-20 w-full">
         {features.map((f, i) => {
           const Icon = f.icon;
           return (
@@ -169,30 +141,20 @@ export function Features() {
           border: "1px solid rgba(255,255,255,0.1)",
           background: "rgba(255,255,255,0.03)",
           padding: "32px 40px",
+          width: "100%",
         }}
       >
-        <div style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          background: "rgba(255,255,255,0.06)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: "100px",
-          padding: "6px 14px 6px 10px",
+        <p style={{
+          fontFamily: "Arial, sans-serif",
+          fontSize: "14px",
+          fontWeight: 700,
+          color: "rgba(255,255,255,0.5)",
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
           marginBottom: "24px",
         }}>
-          <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34D399" }} />
-          <span style={{
-            fontFamily: "Arial, sans-serif",
-            fontSize: "12px",
-            fontWeight: 400,
-            color: "rgba(255,255,255,0.5)",
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-          }}>
-            Keyboard Shortcuts
-          </span>
-        </div>
+          Keyboard Shortcuts
+        </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {shortcuts.map((s) => (
             <div key={s.label} className="flex items-center justify-between gap-4">

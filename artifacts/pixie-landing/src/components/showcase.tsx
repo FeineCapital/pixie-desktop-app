@@ -50,9 +50,9 @@ function FakeWebsite({ step }: { step: number }) {
             }}
             animate={{
               boxShadow: isCaptured
-                ? "0 0 0 2.5px #34D399, 0 0 20px rgba(52,211,153,0.3)"
+                ? "0 0 0 2.5px #ffffff, 0 0 20px rgba(255,255,255,0.3)"
                 : isHovered
-                ? "0 0 0 2.5px #34D399, 0 0 16px rgba(52,211,153,0.2)"
+                ? "0 0 0 2.5px #ffffff, 0 0 16px rgba(255,255,255,0.2)"
                 : "0 0 0 1px #eee",
             }}
             transition={{ duration: 0.3 }}
@@ -195,7 +195,7 @@ function CaptureDemo() {
               <motion.div
                 key={`ripple-${step}`}
                 className="absolute z-30 pointer-events-none rounded-full"
-                style={{ left: "calc(52% - 12px)", top: "calc(52% - 12px)", width: 24, height: 24, border: "2px solid rgba(52,211,153,0.7)" }}
+                style={{ left: "calc(52% - 12px)", top: "calc(52% - 12px)", width: 24, height: 24, border: "2px solid rgba(255,255,255,0.7)" }}
                 initial={{ scale: 0.5, opacity: 1 }}
                 animate={{ scale: 3, opacity: 0 }}
                 exit={{ opacity: 0 }}
@@ -224,8 +224,8 @@ function CaptureDemo() {
             </div>
             <div className="w-px h-4" style={{ background: "rgba(255,255,255,0.09)" }} />
             <div className="flex gap-1.5">
-              {["#ef4444","#facc15","#60a5fa","#34D399"].map(c => (
-                <div key={c} className="w-3 h-3 rounded-full" style={{ background: c }} />
+              {["#ef4444","#facc15","#60a5fa","#ffffff"].map(c => (
+                <div key={c} className="w-3 h-3 rounded-full" style={{ background: c, border: c === "#ffffff" ? "1px solid rgba(255,255,255,0.3)" : "none" }} />
               ))}
             </div>
             <div className="w-px h-4" style={{ background: "rgba(255,255,255,0.09)" }} />
@@ -234,14 +234,13 @@ function CaptureDemo() {
                 fontFamily: "Arial, sans-serif",
                 fontSize: "12px",
                 fontWeight: 700,
-                color: isCopied ? "#fff" : "#000",
-                background: isCopied ? "#34D399" : "#ffffff",
+                color: isCopied ? "#000" : "#000",
+                background: "#ffffff",
                 borderRadius: "8px",
                 padding: "4px 12px",
                 display: "flex",
                 alignItems: "center",
                 gap: "4px",
-                transition: "background 0.2s, color 0.2s",
               }}
               animate={{ scale: isCopied ? [1, 1.1, 1] : 1 }}
               transition={{ duration: 0.3 }}
@@ -286,7 +285,7 @@ function CaptureDemo() {
                   padding: "10px 16px",
                   borderRadius: "10px",
                   background: "rgba(10,10,10,0.95)",
-                  border: "1px solid rgba(52,211,153,0.3)",
+                  border: "1px solid rgba(255,255,255,0.15)",
                   boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
                   backdropFilter: "blur(12px)",
                 }}
@@ -295,12 +294,12 @@ function CaptureDemo() {
                   width: "28px",
                   height: "28px",
                   borderRadius: "6px",
-                  background: "rgba(52,211,153,0.15)",
+                  background: "rgba(255,255,255,0.1)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2.5" strokeLinecap="round">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round">
                     <path d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
@@ -357,7 +356,7 @@ function CaptureDemo() {
                 animate={{
                   width: step === i + 1 ? 18 : 6,
                   height: 6,
-                  backgroundColor: step >= i + 1 ? "#34D399" : "rgba(255,255,255,0.15)",
+                  backgroundColor: step >= i + 1 ? "#ffffff" : "rgba(255,255,255,0.15)",
                 }}
                 transition={{ duration: 0.3 }}
               />
@@ -381,40 +380,11 @@ function CaptureDemo() {
 export function Showcase() {
   return (
     <section id="showcase" className="w-full px-6 md:px-8 py-24 md:py-36 flex flex-col items-center">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          background: "rgba(255,255,255,0.06)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          borderRadius: "100px",
-          padding: "6px 14px 6px 10px",
-          marginBottom: "20px",
-        }}
-      >
-        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34D399" }} />
-        <span style={{
-          fontFamily: "Arial, sans-serif",
-          fontSize: "12px",
-          fontWeight: 400,
-          color: "rgba(255,255,255,0.5)",
-          textTransform: "uppercase",
-          letterSpacing: "0.06em",
-        }}>
-          How it works
-        </span>
-      </motion.div>
-
       <motion.h2
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.05 }}
+        transition={{ duration: 0.6 }}
         style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "52px",
@@ -433,7 +403,7 @@ export function Showcase() {
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.1 }}
+        transition={{ duration: 0.6, delay: 0.05 }}
         style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "17px",
@@ -452,7 +422,7 @@ export function Showcase() {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
         className="w-full"
       >
         <CaptureDemo />

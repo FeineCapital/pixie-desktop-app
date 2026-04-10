@@ -10,6 +10,7 @@ import { Features } from "@/components/features";
 import { Pricing } from "@/components/pricing";
 import { CtaFooter } from "@/components/cta-footer";
 import { MobileGate } from "@/components/mobile-gate";
+import DownloadPage from "@/pages/download";
 
 const queryClient = new QueryClient();
 
@@ -31,10 +32,26 @@ function Home() {
   );
 }
 
+function Download() {
+  return (
+    <div className="flex flex-col min-h-screen w-full relative">
+      <MobileGate />
+      <div className="hidden md:flex flex-col min-h-screen w-full">
+        <Nav />
+        <main className="flex-1 flex flex-col items-center w-full">
+          <DownloadPage />
+        </main>
+        <CtaFooter />
+      </div>
+    </div>
+  );
+}
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/download" component={Download} />
       <Route component={NotFound} />
     </Switch>
   );
