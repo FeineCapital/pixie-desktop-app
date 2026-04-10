@@ -43,7 +43,7 @@ function CursorWithLabel({ x, y, label, showLabel }: { x: string; y: string; lab
     <motion.div
       style={{ position: "absolute", zIndex: 40, pointerEvents: "none" }}
       animate={{ left: x, top: y }}
-      transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
     >
       <svg width="18" height="18" viewBox="0 0 22 22" fill="none" style={{ display: "block" }}>
         <path d="M4 2L4 17L7.5 13.5L10 19L12 18L9.5 12.5L14 12.5L4 2Z" fill="white" stroke="#555" strokeWidth="0.8" strokeLinejoin="round"/>
@@ -198,7 +198,7 @@ function StripeDashboard() {
       </div>
       <motion.div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.28)", zIndex: 3, pointerEvents: "none" }} animate={{ opacity: captured ? 1 : 0 }} transition={{ duration: 0.2 }} />
       <CopiedNotif show={showNotif} />
-      <CursorWithLabel x={pos.x} y={pos.y} label="Click to capture" showLabel={showLabel} />
+      <CursorWithLabel x={pos.x} y={pos.y} />
     </div>
   );
 }
@@ -383,7 +383,7 @@ function NewsArticle() {
       <motion.div
         style={{ position: "absolute", zIndex: 40, pointerEvents: "none" }}
         animate={{ left: pos.x, top: pos.y }}
-        transition={{ duration: step === 2 ? 2.2 : 1.0, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: step === 2 ? 2.8 : 1.8, ease: [0.22, 1, 0.36, 1] }}
       >
         <svg width="18" height="18" viewBox="0 0 22 22" fill="none" style={{ display: "block" }}>
           <path d="M4 2L4 17L7.5 13.5L10 19L12 18L9.5 12.5L14 12.5L4 2Z" fill="white" stroke="#555" strokeWidth="0.8" strokeLinejoin="round"/>
