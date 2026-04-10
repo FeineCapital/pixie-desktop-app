@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import html2canvas from "html2canvas";
 
 const SEMANTIC = new Set(['a', 'button', 'input', 'textarea', 'select', 'img', 'video', 'canvas', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'kbd', 'label']);
 const SKIP = new Set(['html', 'body', 'path', 'circle', 'rect', 'g', 'polygon', 'line', 'polyline', 'defs', 'use', 'stop', 'clippath', 'lineargradient', 'radialgradient', 'ellipse']);
@@ -41,7 +42,6 @@ function findTarget(x: number, y: number): Element | null {
 
   const foundTag = found.tagName.toLowerCase();
 
-  // Small icon (img/svg) inside a link or button → promote to the parent link/button
   if (['img', 'svg'].includes(foundTag)) {
     const rect = found.getBoundingClientRect();
     if (rect.width < 40 && rect.height < 40) {
@@ -50,13 +50,11 @@ function findTarget(x: number, y: number): Element | null {
     }
   }
 
-  // span inside a link or button → promote to the link/button
   if (foundTag === 'span') {
     const parentLink = found.closest('a, button');
     if (parentLink) found = parentLink;
   }
 
-  // Element inside a pixie card and NOT inside a demo → promote to the card
   if (!isInDemoArea(found)) {
     const card = found.closest('[data-pixie-card]');
     if (card) return card;
@@ -82,6 +80,10 @@ export function PixieGlobalOverlay() {
   const [box, setBox] = useState<{ x: number; y: number; w: number; h: number; radius: string } | null>(null);
   const [mouse, setMouse] = useState<{ x: number; y: number } | null>(null);
   const [inDemo, setInDemo] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [capturing, setCapturing] = useState(false);
+  const targetRef = useRef<Element | null>(null);
+  const copiedTimer = useRef<ReturnType<typeof setTimeout>>();
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
@@ -90,6 +92,7 @@ export function PixieGlobalOverlay() {
       rafRef.current = requestAnimationFrame(() => {
         setMouse({ x: e.clientX, y: e.clientY });
         const target = findTarget(e.clientX, e.clientY);
+        targetRef.current = target;
         const demo = target ? isInDemoArea(target) : false;
         setInDemo(demo);
         if (target) {
@@ -102,13 +105,55 @@ export function PixieGlobalOverlay() {
       });
     }
 
+    async function onClick(e: MouseEvent) {
+      const target = targetRef.current;
+      if (!target || isInDemoArea(target)) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      setCapturing(true);
+      try {
+        const canvas = await html2canvas(target as HTMLElement, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: null,
+        });
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+          try {
+            await navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': blob }),
+            ]);
+            setCopied(true);
+            clearTimeout(copiedTimer.current);
+            copiedTimer.current = setTimeout(() => setCopied(false), 2000);
+          } catch {
+            // Clipboard write not permitted in this context
+          }
+        }, 'image/png');
+      } catch {
+        // Capture failed silently
+      } finally {
+        setCapturing(false);
+      }
+    }
+
     document.addEventListener('mousemove', onMove, { passive: true });
     document.addEventListener('mouseleave', () => { setBox(null); setMouse(null); });
+    document.addEventListener('click', onClick, { capture: true });
     return () => {
       document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('click', onClick, { capture: true });
       cancelAnimationFrame(rafRef.current);
+      clearTimeout(copiedTimer.current);
     };
   }, []);
+
+  const labelText = copied ? 'Copied!' : capturing ? 'Capturing…' : 'Click to capture';
+  const labelColor = copied ? '#34D399' : '#fff';
 
   return (
     <>
@@ -120,9 +165,9 @@ export function PixieGlobalOverlay() {
             top: box.y,
             width: box.w,
             height: box.h,
-            border: '2px solid #34D399',
+            border: `2px solid ${copied ? '#34D399' : '#34D399'}`,
             borderRadius: box.radius,
-            background: 'rgba(52,211,153,0.04)',
+            background: copied ? 'rgba(52,211,153,0.08)' : 'rgba(52,211,153,0.04)',
             pointerEvents: 'none',
             zIndex: 99999,
           }}
@@ -144,13 +189,21 @@ export function PixieGlobalOverlay() {
             zIndex: 100000,
             whiteSpace: 'nowrap',
             boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+            transition: 'opacity 0.15s',
           }}
         >
-          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2.5" strokeLinecap="round">
-            <path d="M5 13l4 4L19 7" />
-          </svg>
-          <span style={{ fontSize: '10px', fontWeight: 600, color: '#fff', fontFamily: 'Arial, sans-serif' }}>
-            Click to capture and copy to clipboard
+          {copied ? (
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+          )}
+          <span style={{ fontSize: '10px', fontWeight: 600, color: labelColor, fontFamily: 'Arial, sans-serif' }}>
+            {labelText}
           </span>
         </div>
       )}
