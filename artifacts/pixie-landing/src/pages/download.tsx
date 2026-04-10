@@ -12,7 +12,7 @@ function AppleIcon({ size = 18 }: { size?: number }) {
 function Check() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-      <path d="M3 8l3.5 3.5L13 4.5" stroke="rgba(255,255,255,0.6)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 8l3.5 3.5L13 4.5" stroke="rgba(0,0,0,0.4)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -37,7 +37,7 @@ function DownloadHero() {
           fontFamily: "Arial, sans-serif",
           fontSize: "72px",
           fontWeight: 700,
-          color: "#ffffff",
+          color: "#171717",
           lineHeight: 1,
           letterSpacing: "-0.03em",
           marginBottom: "24px",
@@ -52,7 +52,7 @@ function DownloadHero() {
         style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "17px",
-          color: "rgba(255,255,255,0.45)",
+          color: "rgba(0,0,0,0.45)",
           lineHeight: 1.65,
           marginBottom: "48px",
           maxWidth: "480px",
@@ -75,8 +75,8 @@ function DownloadHero() {
             fontFamily: "Arial, sans-serif",
             fontWeight: 700,
             fontSize: "15px",
-            color: "#000000",
-            background: "#ffffff",
+            color: "#ffffff",
+            background: "#171717",
             borderRadius: "12px",
             padding: "16px 32px",
             textDecoration: "none",
@@ -96,9 +96,9 @@ function DownloadHero() {
             fontFamily: "Arial, sans-serif",
             fontWeight: 700,
             fontSize: "15px",
-            color: "#ffffff",
+            color: "#171717",
             background: "transparent",
-            border: "1px solid rgba(255,255,255,0.15)",
+            border: "1px solid rgba(0,0,0,0.12)",
             borderRadius: "12px",
             padding: "16px 32px",
             textDecoration: "none",
@@ -139,8 +139,8 @@ function ChromeExtensionSection() {
         style={{
           width: "100%",
           borderRadius: "16px",
-          border: "1px solid rgba(255,255,255,0.1)",
-          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(0,0,0,0.08)",
+          background: "rgba(0,0,0,0.02)",
           padding: "48px",
           display: "flex",
           flexDirection: "column",
@@ -151,14 +151,14 @@ function ChromeExtensionSection() {
           fontFamily: "Arial, sans-serif",
           fontSize: "36px",
           fontWeight: 700,
-          color: "#ffffff",
+          color: "#171717",
           marginBottom: "12px",
           letterSpacing: "-0.02em",
         }}>Chrome Extension</h2>
         <p style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "17px",
-          color: "rgba(255,255,255,0.45)",
+          color: "rgba(0,0,0,0.45)",
           marginBottom: "36px",
           maxWidth: "420px",
           lineHeight: 1.6,
@@ -169,7 +169,7 @@ function ChromeExtensionSection() {
           {features.map(f => (
             <div key={f} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <Check />
-              <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>{f}</span>
+              <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(0,0,0,0.5)" }}>{f}</span>
             </div>
           ))}
         </div>
@@ -184,8 +184,8 @@ function ChromeExtensionSection() {
             fontFamily: "Arial, sans-serif",
             fontWeight: 700,
             fontSize: "15px",
-            color: "#ffffff",
-            border: "1px solid rgba(255,255,255,0.15)",
+            color: "#171717",
+            border: "1px solid rgba(0,0,0,0.12)",
             borderRadius: "12px",
             padding: "14px 28px",
             textDecoration: "none",
@@ -228,8 +228,8 @@ function DesktopAppSection() {
         style={{
           width: "100%",
           borderRadius: "16px",
-          border: "1px solid rgba(255,255,255,0.1)",
-          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(0,0,0,0.08)",
+          background: "rgba(0,0,0,0.02)",
           padding: "48px",
           display: "flex",
           flexDirection: "column",
@@ -240,14 +240,14 @@ function DesktopAppSection() {
           fontFamily: "Arial, sans-serif",
           fontSize: "36px",
           fontWeight: 700,
-          color: "#ffffff",
+          color: "#171717",
           marginBottom: "12px",
           letterSpacing: "-0.02em",
         }}>Desktop App for Mac</h2>
         <p style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "17px",
-          color: "rgba(255,255,255,0.45)",
+          color: "rgba(0,0,0,0.45)",
           marginBottom: "36px",
           maxWidth: "420px",
           lineHeight: 1.6,
@@ -258,7 +258,7 @@ function DesktopAppSection() {
           {features.map(f => (
             <div key={f} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <Check />
-              <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>{f}</span>
+              <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(0,0,0,0.5)" }}>{f}</span>
             </div>
           ))}
         </div>
@@ -271,8 +271,8 @@ function DesktopAppSection() {
             fontFamily: "Arial, sans-serif",
             fontWeight: 700,
             fontSize: "15px",
-            color: "#000",
-            background: "#ffffff",
+            color: "#fff",
+            background: "#171717",
             borderRadius: "12px",
             padding: "14px 28px",
             textDecoration: "none",
@@ -307,7 +307,7 @@ function BetterTogetherSection() {
           fontFamily: "Arial, sans-serif",
           fontSize: "42px",
           fontWeight: 700,
-          color: "#ffffff",
+          color: "#171717",
           marginBottom: "16px",
           letterSpacing: "-0.02em",
           lineHeight: 1.1,
@@ -323,7 +323,7 @@ function BetterTogetherSection() {
         style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "17px",
-          color: "rgba(255,255,255,0.45)",
+          color: "rgba(0,0,0,0.45)",
           marginBottom: "48px",
           maxWidth: "500px",
           lineHeight: 1.6,
@@ -340,7 +340,7 @@ function BetterTogetherSection() {
             cta: "Download for Mac",
             href: "https://github.com/FeineCapital/pixie-desktop-app/releases/latest/download/Pixie.dmg",
             icon: <AppleIcon size={15} />,
-            dark: true,
+            primary: true,
           },
           {
             label: "Chrome Extension",
@@ -348,7 +348,7 @@ function BetterTogetherSection() {
             cta: "Get the Extension",
             href: "https://github.com/FeineCapital/pixie-chrome-extension",
             icon: <img src={chromeLogo} alt="Chrome" style={{ width: "15px", height: "15px" }} />,
-            dark: false,
+            primary: false,
           },
         ].map((item, i) => (
           <motion.div
@@ -359,8 +359,8 @@ function BetterTogetherSection() {
             transition={{ duration: 0.5, delay: i * 0.08 }}
             style={{
               borderRadius: "16px",
-              border: "1px solid rgba(255,255,255,0.1)",
-              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(0,0,0,0.08)",
+              background: "rgba(0,0,0,0.02)",
               padding: "32px",
               textAlign: "left",
               display: "flex",
@@ -368,12 +368,12 @@ function BetterTogetherSection() {
               gap: "12px",
             }}
           >
-            <h3 style={{ fontFamily: "Arial, sans-serif", fontSize: "18px", fontWeight: 700, color: "#ffffff", margin: 0 }}>{item.label}</h3>
-            <p style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", lineHeight: 1.65, margin: 0, flexGrow: 1 }}>{item.desc}</p>
+            <h3 style={{ fontFamily: "Arial, sans-serif", fontSize: "18px", fontWeight: 700, color: "#171717", margin: 0 }}>{item.label}</h3>
+            <p style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(0,0,0,0.45)", lineHeight: 1.65, margin: 0, flexGrow: 1 }}>{item.desc}</p>
             <a
               href={item.href}
-              target={item.dark ? undefined : "_blank"}
-              rel={item.dark ? undefined : "noopener noreferrer"}
+              target={item.primary ? undefined : "_blank"}
+              rel={item.primary ? undefined : "noopener noreferrer"}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -381,9 +381,9 @@ function BetterTogetherSection() {
                 fontFamily: "Arial, sans-serif",
                 fontWeight: 700,
                 fontSize: "14px",
-                color: item.dark ? "#000" : "#fff",
-                background: item.dark ? "#ffffff" : "transparent",
-                border: item.dark ? "none" : "1px solid rgba(255,255,255,0.15)",
+                color: item.primary ? "#fff" : "#171717",
+                background: item.primary ? "#171717" : "transparent",
+                border: item.primary ? "none" : "1px solid rgba(0,0,0,0.12)",
                 borderRadius: "10px",
                 padding: "12px 20px",
                 textDecoration: "none",

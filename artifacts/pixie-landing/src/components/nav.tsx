@@ -19,7 +19,7 @@ export function Nav() {
             fontFamily: "Arial, sans-serif",
             fontWeight: 700,
             fontSize: "15px",
-            color: "#ffffff",
+            color: "#171717",
             display: "flex",
             alignItems: "center",
             gap: "10px",
@@ -40,13 +40,13 @@ export function Nav() {
                   fontFamily: "Arial, sans-serif",
                   fontSize: "14px",
                   fontWeight: 400,
-                  color: "rgba(255,255,255,0.5)",
+                  color: "rgba(0,0,0,0.45)",
                   textDecoration: "none",
                   whiteSpace: "nowrap",
                   transition: "color 0.2s",
                 }}
-                onMouseEnter={e => (e.currentTarget.style.color = "#ffffff")}
-                onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.5)")}
+                onMouseEnter={e => (e.currentTarget.style.color = "#171717")}
+                onMouseLeave={e => (e.currentTarget.style.color = "rgba(0,0,0,0.45)")}
               >
                 {label}
               </a>
@@ -59,8 +59,8 @@ export function Nav() {
               fontFamily: "Arial, sans-serif",
               fontWeight: 700,
               fontSize: "13px",
-              color: "#000000",
-              background: "#ffffff",
+              color: "#ffffff",
+              background: "#171717",
               borderRadius: "100px",
               padding: "8px 20px",
               textDecoration: "none",

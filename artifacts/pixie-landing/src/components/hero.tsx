@@ -34,7 +34,7 @@ export function Hero() {
             fontFamily: "Arial, sans-serif",
             fontSize: "44px",
             fontWeight: 700,
-            color: "#ffffff",
+            color: "#171717",
             lineHeight: 1,
             letterSpacing: "-0.03em",
             marginBottom: "28px",
@@ -52,7 +52,7 @@ export function Hero() {
             fontFamily: "Arial, sans-serif",
             fontSize: "14px",
             fontWeight: 400,
-            color: "rgba(255,255,255,0.45)",
+            color: "rgba(0,0,0,0.45)",
             lineHeight: 1.65,
             marginBottom: "48px",
             whiteSpace: "nowrap",
@@ -76,8 +76,8 @@ export function Hero() {
               fontFamily: "Arial, sans-serif",
               fontWeight: 700,
               fontSize: "15px",
-              color: "#000000",
-              background: "#ffffff",
+              color: "#ffffff",
+              background: "#171717",
               borderRadius: "12px",
               padding: "16px 32px",
               textDecoration: "none",
@@ -99,9 +99,9 @@ export function Hero() {
               fontFamily: "Arial, sans-serif",
               fontWeight: 700,
               fontSize: "15px",
-              color: "#ffffff",
+              color: "#171717",
               background: "transparent",
-              border: "1px solid rgba(255,255,255,0.15)",
+              border: "1px solid rgba(0,0,0,0.12)",
               borderRadius: "12px",
               padding: "16px 32px",
               textDecoration: "none",
@@ -113,18 +113,6 @@ export function Hero() {
           </a>
         </motion.div>
       </div>
-
-      <div style={{
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: "800px",
-        height: "800px",
-        background: "radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%)",
-        pointerEvents: "none",
-        zIndex: 0,
-      }} />
     </section>
   );
 }

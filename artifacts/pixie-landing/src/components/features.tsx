@@ -23,7 +23,7 @@ export function Features() {
           fontFamily: "Arial, sans-serif",
           fontSize: "42px",
           fontWeight: 700,
-          color: "#ffffff",
+          color: "#171717",
           lineHeight: 1.1,
           letterSpacing: "-0.02em",
           marginBottom: "14px",
@@ -33,7 +33,7 @@ export function Features() {
         <p style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "15px",
-          color: "rgba(255,255,255,0.45)",
+          color: "rgba(0,0,0,0.45)",
           lineHeight: 1.6,
         }}>
           Every action is one shortcut away. No mouse required.
@@ -47,8 +47,8 @@ export function Features() {
         transition={{ duration: 0.6, delay: 0.1 }}
         style={{
           borderRadius: "20px",
-          border: "1px solid rgba(255,255,255,0.1)",
-          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(0,0,0,0.08)",
+          background: "rgba(0,0,0,0.02)",
           width: "100%",
           overflow: "hidden",
         }}
@@ -65,12 +65,12 @@ export function Features() {
               alignItems: "center",
               justifyContent: "space-between",
               padding: "20px 32px",
-              borderBottom: i < shortcuts.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
+              borderBottom: i < shortcuts.length - 1 ? "1px solid rgba(0,0,0,0.05)" : "none",
             }}
           >
             <div>
-              <div style={{ fontFamily: "Arial, sans-serif", fontSize: "15px", fontWeight: 600, color: "#ffffff", marginBottom: "3px" }}>{s.label}</div>
-              <div style={{ fontFamily: "Arial, sans-serif", fontSize: "13px", color: "rgba(255,255,255,0.35)" }}>{s.desc}</div>
+              <div style={{ fontFamily: "Arial, sans-serif", fontSize: "15px", fontWeight: 600, color: "#171717", marginBottom: "3px" }}>{s.label}</div>
+              <div style={{ fontFamily: "Arial, sans-serif", fontSize: "13px", color: "rgba(0,0,0,0.4)" }}>{s.desc}</div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
               {s.keys.map((k, idx) => (
@@ -80,9 +80,9 @@ export function Features() {
                     fontFamily: "Arial, sans-serif",
                     fontSize: "13px",
                     fontWeight: 500,
-                    color: "#ffffff",
-                    background: "rgba(255,255,255,0.07)",
-                    border: "1px solid rgba(255,255,255,0.12)",
+                    color: "#171717",
+                    background: "rgba(0,0,0,0.04)",
+                    border: "1px solid rgba(0,0,0,0.08)",
                     borderRadius: "8px",
                     padding: "6px 12px",
                     minWidth: "36px",

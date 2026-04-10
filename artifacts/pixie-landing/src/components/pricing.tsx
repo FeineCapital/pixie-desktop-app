@@ -23,7 +23,7 @@ const planFeatures = [
 function Check() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-      <path d="M3 8l3.5 3.5L13 4.5" stroke="rgba(255,255,255,0.6)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 8l3.5 3.5L13 4.5" stroke="rgba(0,0,0,0.4)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -40,7 +40,7 @@ export function Pricing() {
           fontFamily: "Arial, sans-serif",
           fontSize: "52px",
           fontWeight: 700,
-          color: "#ffffff",
+          color: "#171717",
           lineHeight: 1.1,
           letterSpacing: "-0.02em",
           marginBottom: "56px",
@@ -58,8 +58,8 @@ export function Pricing() {
         transition={{ duration: 0.6 }}
         style={{
           borderRadius: "16px",
-          border: "1px solid rgba(255,255,255,0.1)",
-          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(0,0,0,0.08)",
+          background: "rgba(0,0,0,0.02)",
           padding: "40px",
           display: "flex",
           flexDirection: "column",
@@ -68,15 +68,15 @@ export function Pricing() {
         }}
       >
         <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", marginBottom: "8px" }}>
-          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "56px", fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>$10</span>
-          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "15px", color: "rgba(255,255,255,0.45)", marginBottom: "8px" }}>/ month</span>
+          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "56px", fontWeight: 700, color: "#171717", lineHeight: 1 }}>$10</span>
+          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "15px", color: "rgba(0,0,0,0.4)", marginBottom: "8px" }}>/ month</span>
         </div>
-        <p style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.35)", marginBottom: "32px" }}>
+        <p style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(0,0,0,0.4)", marginBottom: "32px" }}>
           Everything included. No tiers, no upsells.
         </p>
         <ul style={{ listStyle: "none", padding: 0, margin: "0 0 36px 0", display: "flex", flexDirection: "column", gap: "14px" }}>
           {planFeatures.map((item) => (
-            <li key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>
+            <li key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(0,0,0,0.5)" }}>
               <Check />
               {item}
             </li>
@@ -92,8 +92,8 @@ export function Pricing() {
             fontFamily: "Arial, sans-serif",
             fontWeight: 700,
             fontSize: "15px",
-            color: "#000000",
-            background: "#ffffff",
+            color: "#ffffff",
+            background: "#171717",
             borderRadius: "12px",
             padding: "16px 32px",
             textDecoration: "none",

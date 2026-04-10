@@ -568,7 +568,7 @@ export function Showcase() {
           fontFamily: "Arial, sans-serif",
           fontSize: "15px",
           fontWeight: 600,
-          color: "rgba(255,255,255,0.5)",
+          color: "rgba(0,0,0,0.45)",
           textAlign: "center",
           marginBottom: "28px",
           letterSpacing: "0.01em",

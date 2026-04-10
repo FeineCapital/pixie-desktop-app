@@ -45,35 +45,35 @@
 }
 
 :root {
-  --background: 0 0% 4%;
-  --foreground: 0 0% 100%;
+  --background: 0 0% 100%;
+  --foreground: 0 0% 9%;
   
-  --card: 0 0% 7%;
-  --card-foreground: 0 0% 100%;
-  --card-border: 0 0% 14%;
+  --card: 0 0% 97%;
+  --card-foreground: 0 0% 9%;
+  --card-border: 0 0% 90%;
   
-  --popover: 0 0% 7%;
-  --popover-foreground: 0 0% 100%;
-  --popover-border: 0 0% 14%;
+  --popover: 0 0% 97%;
+  --popover-foreground: 0 0% 9%;
+  --popover-border: 0 0% 90%;
   
-  --primary: 0 0% 100%;
-  --primary-foreground: 0 0% 0%;
+  --primary: 0 0% 9%;
+  --primary-foreground: 0 0% 100%;
   
-  --secondary: 0 0% 10%;
-  --secondary-foreground: 0 0% 100%;
+  --secondary: 0 0% 95%;
+  --secondary-foreground: 0 0% 9%;
   
-  --muted: 0 0% 10%;
-  --muted-foreground: 0 0% 100%;
+  --muted: 0 0% 95%;
+  --muted-foreground: 0 0% 40%;
   
-  --accent: 0 0% 10%;
-  --accent-foreground: 0 0% 100%;
+  --accent: 0 0% 95%;
+  --accent-foreground: 0 0% 9%;
   
   --destructive: 0 62.8% 50%;
   --destructive-foreground: 0 0% 98%;
   
-  --border: 0 0% 14%;
-  --input: 0 0% 14%;
-  --ring: 0 0% 70%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 0 0% 30%;
   
   --radius: 0.75rem;
 }
@@ -82,16 +82,16 @@
   * {
     @apply border-border;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.08) transparent;
+    scrollbar-color: rgba(0,0,0,0.1) transparent;
     font-family: Arial, sans-serif;
   }
   *::-webkit-scrollbar { width: 6px; }
   *::-webkit-scrollbar-track { background: transparent; }
-  *::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
-  *::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
+  *::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 3px; }
+  *::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.18); }
   body {
-    background: #0a0a0a;
-    color: #ffffff;
+    background: #ffffff;
+    color: #171717;
     font-family: Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -106,10 +106,11 @@
 }
 
 .glass-nav {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .text-balance { text-wrap: balance; }
