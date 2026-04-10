@@ -15,7 +15,12 @@
     "mac": {
       "category": "public.app-category.productivity",
       "target": ["dmg", "zip"],
-      "darkModeSupport": true
+      "darkModeSupport": true,
+      "extendInfo": {
+        "NSScreenCaptureUsageDescription": "Pixie needs screen recording access to capture screenshots.",
+        "NSCameraUsageDescription": "Pixie does not use the camera.",
+        "LSUIElement": true
+      }
     },
     "dmg": {
       "title": "Pixie",
