@@ -12,3 +12,9 @@ id = "8AM1pWzJgqpbS4QwB_MOs"
 uri = "file://element-capture-mac.zip"
 type = "unspecified"
 title = "Element Capture — macOS Desktop App"
+
+[[outputs]]
+id = "PJFSbKGk6fuVSNa35o3Dy"
+uri = "file://Pixie Draft.zip"
+type = "unspecified"
+title = "Pixie Draft"
