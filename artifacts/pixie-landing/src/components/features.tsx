@@ -1,35 +1,103 @@
 import { motion } from "framer-motion";
 
+function IconBolt({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+    </svg>
+  );
+}
+
+function IconPen({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+      <path d="m15 5 4 4" />
+    </svg>
+  );
+}
+
+function IconClipboard({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <path d="M9 14l2 2 4-4" />
+    </svg>
+  );
+}
+
+function IconMonitor({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2" />
+      <line x1="8" y1="21" x2="16" y2="21" />
+      <line x1="12" y1="17" x2="12" y2="21" />
+    </svg>
+  );
+}
+
+function IconShield({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  );
+}
+
+function IconFeather({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+      <line x1="16" y1="8" x2="2" y2="22" />
+      <line x1="17.5" y1="15" x2="9" y2="15" />
+    </svg>
+  );
+}
+
 const features = [
   {
-    icon: "⚡",
+    icon: IconBolt,
     title: "Instant Capture",
     description: "Hover over any element and click to capture. No drag, no crop, no setup.",
+    color: "text-amber-400",
+    bg: "bg-amber-400/10",
   },
   {
-    icon: "✏️",
+    icon: IconPen,
     title: "Annotation Tools",
     description: "Draw, highlight, and mark up captures with a built-in pencil and eraser.",
+    color: "text-emerald-400",
+    bg: "bg-emerald-400/10",
   },
   {
-    icon: "📋",
+    icon: IconClipboard,
     title: "Clipboard Ready",
     description: "Every capture is copied automatically. Paste into Figma, Slack, or anywhere.",
+    color: "text-blue-400",
+    bg: "bg-blue-400/10",
   },
   {
-    icon: "🖥️",
+    icon: IconMonitor,
     title: "Retina Quality",
     description: "Crisp, high-resolution output. Built for displays that demand pixel perfection.",
+    color: "text-violet-400",
+    bg: "bg-violet-400/10",
   },
   {
-    icon: "🔒",
+    icon: IconShield,
     title: "Fully Private",
     description: "Nothing leaves your Mac. No cloud, no account, no tracking whatsoever.",
+    color: "text-rose-400",
+    bg: "bg-rose-400/10",
   },
   {
-    icon: "🪶",
+    icon: IconFeather,
     title: "Lightweight",
     description: "Lives in your menu bar. Uses minimal memory and never slows your machine down.",
+    color: "text-cyan-400",
+    bg: "bg-cyan-400/10",
   },
 ];
 
@@ -68,20 +136,25 @@ export function Features() {
       </motion.h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
-        {features.map((f, i) => (
-          <motion.div
-            key={f.title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: i * 0.07 }}
-            className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-7 flex flex-col gap-3 hover:border-white/[0.14] hover:bg-white/[0.05] transition-all duration-300"
-          >
-            <span className="text-2xl">{f.icon}</span>
-            <h3 className="text-lg font-semibold text-foreground">{f.title}</h3>
-            <p className="text-muted-foreground text-sm leading-relaxed">{f.description}</p>
-          </motion.div>
-        ))}
+        {features.map((f, i) => {
+          const Icon = f.icon;
+          return (
+            <motion.div
+              key={f.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.07 }}
+              className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-7 flex flex-col gap-4 hover:border-white/[0.14] hover:bg-white/[0.05] transition-all duration-300"
+            >
+              <div className={`w-10 h-10 rounded-xl ${f.bg} flex items-center justify-center`}>
+                <Icon className={`w-5 h-5 ${f.color}`} />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground">{f.title}</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">{f.description}</p>
+            </motion.div>
+          );
+        })}
       </div>
 
       <motion.div
@@ -92,14 +165,14 @@ export function Features() {
         className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8 md:p-10"
       >
         <p className="text-xs font-semibold tracking-widest uppercase text-emerald-400 mb-6">Keyboard Shortcuts</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {shortcuts.map((s) => (
             <div key={s.label} className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground text-sm">{s.label}</span>
               <div className="flex items-center gap-1">
-                {s.keys.map((k) => (
+                {s.keys.map((k, idx) => (
                   <kbd
-                    key={k}
+                    key={`${s.label}-${idx}`}
                     className="px-2.5 py-1 rounded-md bg-white/[0.06] border border-white/[0.1] text-foreground text-xs font-mono font-medium"
                   >
                     {k}
