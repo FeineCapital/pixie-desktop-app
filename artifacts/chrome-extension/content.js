@@ -13,6 +13,7 @@
   let toolbar   = null;
   let annCanvas = null;
   let annCtx    = null;
+  let ovTop = null, ovBottom = null, ovLeft = null, ovRight = null, dimLabel = null;
 
   /* ═══ Data ═══ */
   let hoveredEl    = null;
@@ -38,7 +39,20 @@
       .__ec-hl {
         outline: 1.5px solid #00e676 !important;
         outline-offset: 2px !important;
-        cursor: crosshair !important;
+      }
+      .ec-ov {
+        position: fixed !important; pointer-events: none !important;
+        z-index: 2147483638 !important;
+        background: rgba(0,0,0,0.52) !important;
+        display: none;
+      }
+      #__ec-dim {
+        position: fixed !important; pointer-events: none !important;
+        z-index: 2147483646 !important;
+        background: rgba(0,0,0,0.68) !important; color: #fff !important;
+        font: 600 11px -apple-system, BlinkMacSystemFont, sans-serif !important;
+        padding: 3px 8px !important; border-radius: 4px !important;
+        letter-spacing: 0.03em !important; display: none;
       }
       #__ec-tip {
         position: fixed !important; z-index: 2147483645 !important;
@@ -153,6 +167,54 @@
     selBox.style.width   = r.width  + 'px';
     selBox.style.height  = r.height + 'px';
     selBox.style.display = 'block';
+  }
+
+  /* ══════════════════════════════════
+     SCREEN OVERLAY (cmd+shift+5 style)
+  ══════════════════════════════════ */
+  function ensureOverlay() {
+    if (ovTop) return;
+    function mkOv() {
+      const d = document.createElement('div');
+      d.className = 'ec-ov';
+      document.documentElement.appendChild(d);
+      return d;
+    }
+    ovTop = mkOv(); ovBottom = mkOv(); ovLeft = mkOv(); ovRight = mkOv();
+    dimLabel = document.createElement('div');
+    dimLabel.id = '__ec-dim';
+    document.documentElement.appendChild(dimLabel);
+  }
+
+  function showOverlay(r) {
+    ensureOverlay();
+    const W = window.innerWidth, H = window.innerHeight;
+    const set = (el, x, y, w, h) => {
+      el.style.left   = x + 'px'; el.style.top    = y + 'px';
+      el.style.width  = w + 'px'; el.style.height = h + 'px';
+      el.style.display = 'block';
+    };
+    set(ovTop,    0,          0,          W,                     r.top);
+    set(ovBottom, 0,          r.top + r.height, W,              Math.max(0, H - r.top - r.height));
+    set(ovLeft,   0,          r.top,      r.left,                r.height);
+    set(ovRight,  r.left + r.width, r.top, Math.max(0, W - r.left - r.width), r.height);
+
+    // Dimension label — below selection, or above if at bottom
+    const w = Math.round(r.width), h = Math.round(r.height);
+    dimLabel.textContent = `${w} × ${h}`;
+    dimLabel.style.display = 'block';
+    const lw = dimLabel.offsetWidth || 60, lh = dimLabel.offsetHeight || 18;
+    let lx = r.left + r.width / 2 - lw / 2;
+    let ly = r.top + r.height + 6;
+    if (ly + lh > H - 4) ly = r.top - lh - 6;
+    lx = Math.max(4, Math.min(lx, W - lw - 4));
+    dimLabel.style.left = lx + 'px';
+    dimLabel.style.top  = ly + 'px';
+  }
+
+  function hideOverlay() {
+    [ovTop, ovBottom, ovLeft, ovRight].forEach(el => { if (el) el.style.display = 'none'; });
+    if (dimLabel) dimLabel.style.display = 'none';
   }
 
   /* ══════════════════════════════════
@@ -358,6 +420,7 @@
     if (annCanvas) { annCanvas.style.display = 'none'; annCanvas.style.pointerEvents = 'none'; }
     if (toolbar)   toolbar.style.display = 'none';
     hideHandles();
+    hideOverlay();
     if (tooltip) tooltip.style.opacity = '1';
   }
 
@@ -529,7 +592,9 @@
         if (raw && !isOurs(raw)) highlight(findBestTarget(raw));
       }
     } else if (state === S.DRAG) {
-      posSelBox(mkRect(dragStart, {x:e.clientX, y:e.clientY}));
+      const r = mkRect(dragStart, {x:e.clientX, y:e.clientY});
+      posSelBox(r);
+      showOverlay(r);
     }
   }
 
@@ -540,6 +605,7 @@
       e.preventDefault(); e.stopPropagation();
       const r = mkRect(dragStart, {x:e.clientX, y:e.clientY});
       potentialDrag = false; dragStart = null;
+      hideOverlay();
       if (r.width < 10 || r.height < 10) {
         if (selBox) selBox.style.display = 'none';
         state = S.HOVER;
@@ -679,7 +745,7 @@
     if (!window.__elementCaptureActive) return;
     window.__elementCaptureActive = false;
     state = S.HOVER;
-    unhighlight(); clearSel();
+    unhighlight(); clearSel(); hideOverlay();
     document.removeEventListener('mousedown', onMouseDown, true);
     document.removeEventListener('mousemove', onMouseMove, true);
     document.removeEventListener('mouseup',   onMouseUp,   true);
