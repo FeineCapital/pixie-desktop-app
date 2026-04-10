@@ -17,7 +17,7 @@ let isActive = false;
 function setActive(active) {
   isActive = active;
   dot.classList.toggle('on', active);
-  statusText.textContent = active ? 'Active on all tabs' : 'Ready';
+  statusText.textContent = active ? 'Active on this tab' : 'Ready';
   statusText.classList.toggle('on', active);
   badge.textContent = active ? 'On' : 'Off';
   badge.classList.toggle('on', active);
@@ -31,8 +31,8 @@ function setActive(active) {
        <path d="M4 14.5H3C2.17 14.5 1.5 13.83 1.5 13V12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
        <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/>`;
   hint.textContent = active
-    ? 'Hover any element on any tab, click to copy as PNG'
-    : 'Click to enable on all tabs — hover an element, click to copy as PNG';
+    ? 'Hover any element on this tab, click to copy as PNG'
+    : 'Click to enable — hover an element, click to copy as PNG';
 }
 
 function showFeedback(msg, color = '#34d399') {
@@ -50,7 +50,7 @@ captureBtn.addEventListener('click', async () => {
     try {
       await chrome.runtime.sendMessage({ type: 'DEACTIVATE_GLOBAL' });
       setActive(false);
-      showFeedback('Capture disabled on all tabs', '#f87171');
+      showFeedback('Capture disabled', '#f87171');
     } catch (e) {
       showFeedback('Error: ' + e.message, '#f87171');
     }
@@ -64,7 +64,7 @@ captureBtn.addEventListener('click', async () => {
     try {
       await chrome.runtime.sendMessage({ type: 'ACTIVATE_GLOBAL' });
       setActive(true);
-      showFeedback('Active on all tabs — go capture!');
+      showFeedback('Active on this tab — go capture!');
       setTimeout(() => window.close(), 900);
     } catch (e) {
       showFeedback('Error: ' + e.message, '#f87171');

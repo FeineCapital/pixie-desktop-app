@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Pixie",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Hover over any element and capture it to your clipboard as PNG.",
   "permissions": [
     "activeTab",
@@ -9,9 +9,6 @@
     "tabs",
     "clipboardWrite",
     "commands"
-  ],
-  "host_permissions": [
-    "<all_urls>"
   ],
   "action": {
     "default_popup": "popup.html",

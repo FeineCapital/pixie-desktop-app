@@ -24,3 +24,9 @@ id = "YhnLOboVvgy_Xkt915BNk"
 uri = "file://pixie-chrome-extension.zip"
 type = "unspecified"
 title = "Pixie Chrome Extension (ZIP for Web Store)"
+
+[[outputs]]
+id = "0YyZ0-_kk6nOBukqx2OFh"
+uri = "file://pixie-extension-v1.2.0.zip"
+type = "unspecified"
+title = "Pixie Chrome Extension v1.2.0"

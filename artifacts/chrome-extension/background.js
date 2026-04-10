@@ -1,6 +1,5 @@
-// Global capture state — persists across tab switches
-let globallyActive = false;
-const injectedTabs = new Set();
+// Per-tab activation state
+const activeTabs = new Set();
 
 /* ─── Helpers ─── */
 function canInjectTab(url) {
@@ -12,58 +11,35 @@ function canInjectTab(url) {
          !url.startsWith('devtools://');
 }
 
-async function injectAndActivate(tabId, url) {
-  if (!canInjectTab(url)) return;
+async function getCurrentTab() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  return tab || null;
+}
+
+async function activateTab(tabId, url) {
+  if (!canInjectTab(url)) return false;
   try {
     await chrome.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
-    injectedTabs.add(tabId);
+    activeTabs.add(tabId);
     chrome.tabs.sendMessage(tabId, { type: 'ACTIVATE' }).catch(() => {});
-  } catch (e) {}
-}
-
-async function activateAllTabs() {
-  globallyActive = true;
-  const tabs = await chrome.tabs.query({});
-  for (const tab of tabs) {
-    if (tab.id && tab.url) await injectAndActivate(tab.id, tab.url);
+    return true;
+  } catch (e) {
+    return false;
   }
 }
 
-async function deactivateAllTabs() {
-  globallyActive = false;
-  const tabs = await chrome.tabs.query({});
-  for (const tab of tabs) {
-    if (!tab.id) continue;
-    chrome.tabs.sendMessage(tab.id, { type: 'DEACTIVATE' }).catch(() => {});
-  }
-  injectedTabs.clear();
+async function deactivateTab(tabId) {
+  activeTabs.delete(tabId);
+  chrome.tabs.sendMessage(tabId, { type: 'DEACTIVATE' }).catch(() => {});
 }
 
-/* ─── Tab lifecycle ─── */
-chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
-  if (info.status === 'loading') injectedTabs.delete(tabId);
-  if (info.status === 'complete' && globallyActive && tab.url) {
-    setTimeout(() => injectAndActivate(tabId, tab.url), 400);
-  }
+/* ─── Clean up state when tab closes or navigates ─── */
+chrome.tabs.onRemoved.addListener((tabId) => activeTabs.delete(tabId));
+chrome.tabs.onUpdated.addListener((tabId, info) => {
+  if (info.status === 'loading') activeTabs.delete(tabId);
 });
 
-chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-  if (!globallyActive) return;
-  if (injectedTabs.has(tabId)) {
-    // Re-ping in case bfcache restored the tab without re-injecting
-    chrome.tabs.sendMessage(tabId, { type: 'ACTIVATE' }).catch(async () => {
-      const tab = await chrome.tabs.get(tabId).catch(() => null);
-      if (tab && tab.url) await injectAndActivate(tabId, tab.url);
-    });
-    return;
-  }
-  const tab = await chrome.tabs.get(tabId).catch(() => null);
-  if (tab && tab.url) await injectAndActivate(tabId, tab.url);
-});
-
-chrome.tabs.onRemoved.addListener((tabId) => injectedTabs.delete(tabId));
-
-/* ─── Safe sendResponse wrapper (channel may already be closed) ─── */
+/* ─── Safe sendResponse wrapper ─── */
 function safeSend(sendResponse, data) {
   try { sendResponse(data); } catch (_) {}
 }
@@ -72,32 +48,45 @@ function safeSend(sendResponse, data) {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   if (msg.type === 'GET_STATE') {
-    safeSend(sendResponse, { active: globallyActive });
-    return false; // sync — no need to keep channel open
+    // Return active state for the current tab
+    getCurrentTab().then(tab => {
+      safeSend(sendResponse, { active: tab ? activeTabs.has(tab.id) : false });
+    });
+    return true;
   }
 
   if (msg.type === 'ACTIVATE_GLOBAL') {
-    activateAllTabs().then(() => safeSend(sendResponse, { ok: true })).catch(() => {});
-    return true; // async response
+    // Activate only the current active tab
+    getCurrentTab().then(async (tab) => {
+      if (!tab) { safeSend(sendResponse, { ok: false }); return; }
+      const ok = await activateTab(tab.id, tab.url);
+      safeSend(sendResponse, { ok });
+    });
+    return true;
   }
 
   if (msg.type === 'DEACTIVATE_GLOBAL') {
-    deactivateAllTabs().then(() => safeSend(sendResponse, { ok: true })).catch(() => {});
-    return true; // async response
+    // Deactivate only the current active tab
+    getCurrentTab().then(async (tab) => {
+      if (tab) await deactivateTab(tab.id);
+      safeSend(sendResponse, { ok: true });
+    });
+    return true;
   }
 
   if (msg.type === 'TAB_ACTIVATED') {
-    if (sender.tab) injectedTabs.add(sender.tab.id);
+    if (sender.tab) activeTabs.add(sender.tab.id);
     safeSend(sendResponse, { ok: true });
-    return false; // sync
+    return false;
   }
 
   if (msg.type === 'TAB_DEACTIVATED') {
+    if (sender.tab) activeTabs.delete(sender.tab.id);
     safeSend(sendResponse, { ok: true });
-    return false; // sync
+    return false;
   }
 
-  // Screenshot: push result back via sendMessage (avoids async sendResponse issues)
+  // Screenshot: capture visible tab and send back
   if (msg.type === 'TAKE_SCREENSHOT') {
     const tabId    = sender.tab ? sender.tab.id      : null;
     const windowId = sender.tab ? sender.tab.windowId : undefined;
@@ -122,7 +111,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         }).catch(() => {});
       }
     })();
-    return false; // fire-and-forget push-back pattern
+    return false;
   }
 
   if (msg.type === 'CAPTURE_ELEMENT') {
@@ -178,19 +167,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         }).catch(() => {});
       }
     })();
-    return false; // fire-and-forget
+    return false;
   }
 });
 
-/* ─── Keyboard shortcut: toggle global mode ─── */
+/* ─── Keyboard shortcut: toggle on current tab only ─── */
 chrome.commands.onCommand.addListener(async (command) => {
   if (command !== 'activate-capture') return;
-  if (globallyActive) {
-    await deactivateAllTabs();
+  const tab = await getCurrentTab();
+  if (!tab || !tab.id) return;
+
+  if (activeTabs.has(tab.id)) {
+    await deactivateTab(tab.id);
+    chrome.runtime.sendMessage({ type: 'MODE_DEACTIVATED' }).catch(() => {});
   } else {
-    await activateAllTabs();
+    await activateTab(tab.id, tab.url);
+    chrome.runtime.sendMessage({ type: 'MODE_ACTIVATED' }).catch(() => {});
   }
-  chrome.runtime.sendMessage({
-    type: globallyActive ? 'MODE_ACTIVATED' : 'MODE_DEACTIVATED'
-  }).catch(() => {});
 });
