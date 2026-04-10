@@ -441,11 +441,11 @@ export function Showcase() {
         transition={{ duration: 0.6 }}
         style={{
           fontFamily: "Arial, sans-serif",
-          fontSize: "42px",
+          fontSize: "28px",
           fontWeight: 700,
           color: "#ffffff",
           textAlign: "center",
-          marginBottom: "24px",
+          marginBottom: "16px",
           lineHeight: 1.1,
           letterSpacing: "-0.02em",
           whiteSpace: "nowrap",
