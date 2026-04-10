@@ -233,12 +233,6 @@
   /* ══════════════════════════════════
      TOOLBAR
   ══════════════════════════════════ */
-  const TOOLS = [
-    { id:'pen',       label:'✏',  title:'Pen' },
-    { id:'arrow',     label:'↗',  title:'Arrow' },
-    { id:'rect',      label:'▭',  title:'Rectangle' },
-    { id:'highlight', label:'▊',  title:'Highlight' },
-  ];
   const COLORS = ['#ef4444','#f97316','#facc15','#00e676','#60a5fa','#e879f9','#ffffff'];
 
   function ensureToolbar() {
@@ -247,14 +241,25 @@
     toolbar = document.createElement('div');
     toolbar.id = '__ec-tb';
 
-    // Tool buttons
-    for (const t of TOOLS) {
-      const btn = mkBtn(t.label, t.title);
-      btn.dataset.tool = t.id;
-      if (t.id === activeTool) btn.classList.add('ec-act');
-      btn.addEventListener('click', e => { e.stopPropagation(); setTool(t.id); });
-      toolbar.appendChild(btn);
+    function sep() { const d = document.createElement('div'); d.className = 'ec-sep'; toolbar.appendChild(d); }
+    function mkBtn(label, title) {
+      const b = document.createElement('button');
+      b.title = title; b.textContent = label;
+      return b;
     }
+
+    // Pencil
+    const penBtn = mkBtn('✏', 'Pencil');
+    penBtn.dataset.tool = 'pen';
+    penBtn.classList.add('ec-act');
+    penBtn.addEventListener('click', e => { e.stopPropagation(); setTool('pen'); });
+    toolbar.appendChild(penBtn);
+
+    // Eraser
+    const erBtn = mkBtn('⌫', 'Eraser');
+    erBtn.dataset.tool = 'eraser';
+    erBtn.addEventListener('click', e => { e.stopPropagation(); setTool('eraser'); });
+    toolbar.appendChild(erBtn);
 
     sep();
 
@@ -268,13 +273,6 @@
       dot.addEventListener('click', e => { e.stopPropagation(); setColor(c); });
       toolbar.appendChild(dot);
     }
-
-    sep();
-
-    // Clear
-    const clr = mkBtn('✕', 'Clear drawings');
-    clr.addEventListener('click', e => { e.stopPropagation(); clearAnnotations(); });
-    toolbar.appendChild(clr);
 
     sep();
 
@@ -293,13 +291,6 @@
     toolbar.appendChild(close);
 
     document.documentElement.appendChild(toolbar);
-
-    function sep() { const d = document.createElement('div'); d.className = 'ec-sep'; toolbar.appendChild(d); }
-    function mkBtn(label, title) {
-      const b = document.createElement('button');
-      b.title = title; b.textContent = label;
-      return b;
-    }
   }
 
   function posToolbar(r) {
@@ -434,10 +425,8 @@
     isDrawing = true;
     drawOrigin = canPos(e);
     savePx();
-    if (activeTool === 'pen' || activeTool === 'highlight') {
-      annCtx.beginPath();
-      annCtx.moveTo(drawOrigin.x, drawOrigin.y);
-    }
+    annCtx.beginPath();
+    annCtx.moveTo(drawOrigin.x, drawOrigin.y);
   }
 
   function onAnnMove(e) {
@@ -445,15 +434,14 @@
     e.preventDefault();
     const p = canPos(e);
     if (activeTool === 'pen') {
+      annCtx.globalCompositeOperation = 'source-over';
       annCtx.strokeStyle = activeColor; annCtx.lineWidth = 2.5;
       annCtx.lineTo(p.x, p.y); annCtx.stroke();
-    } else if (activeTool === 'highlight') {
-      annCtx.strokeStyle = hexAlpha(activeColor, 0.32); annCtx.lineWidth = 20;
+    } else if (activeTool === 'eraser') {
+      annCtx.globalCompositeOperation = 'destination-out';
+      annCtx.lineWidth = 18;
       annCtx.lineTo(p.x, p.y); annCtx.stroke();
-    } else {
-      restorePx();
-      if (activeTool === 'arrow') drawArrow(drawOrigin, p);
-      else                        drawRect(drawOrigin, p);
+      annCtx.globalCompositeOperation = 'source-over';
     }
   }
 
@@ -461,32 +449,9 @@
     if (!isDrawing) return;
     e.preventDefault(); e.stopPropagation();
     isDrawing = false;
-    const p = canPos(e);
-    if (activeTool === 'arrow') { restorePx(); drawArrow(drawOrigin, p); }
-    if (activeTool === 'rect')  { restorePx(); drawRect(drawOrigin, p); }
+    annCtx.globalCompositeOperation = 'source-over';
     savePx();
     drawOrigin = null;
-  }
-
-  function drawArrow(a, b) {
-    const len = 13, angle = Math.atan2(b.y-a.y, b.x-a.x);
-    annCtx.strokeStyle = activeColor; annCtx.fillStyle = activeColor; annCtx.lineWidth = 2.5;
-    annCtx.beginPath(); annCtx.moveTo(a.x,a.y); annCtx.lineTo(b.x,b.y); annCtx.stroke();
-    annCtx.beginPath();
-    annCtx.moveTo(b.x, b.y);
-    annCtx.lineTo(b.x - len*Math.cos(angle-Math.PI/6), b.y - len*Math.sin(angle-Math.PI/6));
-    annCtx.lineTo(b.x - len*Math.cos(angle+Math.PI/6), b.y - len*Math.sin(angle+Math.PI/6));
-    annCtx.closePath(); annCtx.fill();
-  }
-
-  function drawRect(a, b) {
-    annCtx.strokeStyle = activeColor; annCtx.lineWidth = 2.5;
-    annCtx.strokeRect(a.x, a.y, b.x-a.x, b.y-a.y);
-  }
-
-  function hexAlpha(hex, a) {
-    const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
-    return `rgba(${r},${g},${b},${a})`;
   }
 
   /* ══════════════════════════════════
@@ -617,8 +582,22 @@
 
     await sleep(65);
 
+    // Wait for background to push SCREENSHOT_RESULT back
+    const base64 = await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('Screenshot timed out')), 8000);
+      const handler = (msg) => {
+        if (msg.type === 'SCREENSHOT_RESULT') {
+          clearTimeout(timer);
+          chrome.runtime.onMessage.removeListener(handler);
+          if (msg.error) reject(new Error(msg.error));
+          else resolve(msg.base64);
+        }
+      };
+      chrome.runtime.onMessage.addListener(handler);
+      chrome.runtime.sendMessage({ type: 'TAKE_SCREENSHOT' }).catch(reject);
+    });
+
     try {
-      const { base64 } = await chrome.runtime.sendMessage({ type: 'TAKE_SCREENSHOT' });
       await mergeAndCopy(base64);
       toast('Copied to clipboard ✓');
     } catch (err) {

@@ -87,9 +87,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
-  // New: content script requests full-tab screenshot for self-merging
+  // Content script requests a full-tab screenshot; we push SCREENSHOT_RESULT back
+  // (avoids "message channel closed" error from async sendResponse)
   if (msg.type === 'TAKE_SCREENSHOT') {
+    const tabId    = sender.tab ? sender.tab.id     : null;
     const windowId = sender.tab ? sender.tab.windowId : undefined;
+    if (!tabId) return false;
     (async () => {
       try {
         const dataUrl = await chrome.tabs.captureVisibleTab(windowId, { format: 'png' });
@@ -101,12 +104,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         const CHUNK = 8192;
         for (let i = 0; i < bytes.length; i += CHUNK)
           binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
-        sendResponse({ base64: btoa(binary) });
+        chrome.tabs.sendMessage(tabId, { type: 'SCREENSHOT_RESULT', base64: btoa(binary) });
       } catch (err) {
-        sendResponse({ error: err.message });
+        chrome.tabs.sendMessage(tabId, { type: 'SCREENSHOT_RESULT', error: err.message });
       }
     })();
-    return true;
+    return false; // no sendResponse needed
   }
 
   if (msg.type === 'CAPTURE_ELEMENT') {
