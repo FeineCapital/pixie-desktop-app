@@ -104,6 +104,11 @@
       ovCtx.fill();
       ovCtx.globalCompositeOperation = 'source-over';
 
+      ovCtx.fillStyle = 'rgba(0,0,0,0.01)';
+      ovCtx.beginPath();
+      ovCtx.roundRect(rect.left * dpr, rect.top * dpr, rect.width * dpr, rect.height * dpr, 8 * dpr);
+      ovCtx.fill();
+
       ovCtx.strokeStyle = 'rgba(0, 230, 118, 0.9)';
       ovCtx.lineWidth = 2.5 * dpr;
       ovCtx.beginPath();
