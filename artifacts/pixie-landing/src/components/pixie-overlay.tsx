@@ -191,26 +191,19 @@ export function PixieGlobalOverlay() {
       {mouse && box && !inDemo && (
         <div style={{
           position: 'fixed',
-          left: mouse.x + 26,
-          top: mouse.y - 38,
+          left: mouse.x + 34,
+          top: mouse.y - 50,
           background: '#171717',
           borderRadius: '8px',
           padding: '5px 10px',
           display: 'flex',
           alignItems: 'center',
-          gap: '7px',
+          gap: '0',
           pointerEvents: 'none',
           zIndex: 100000,
           whiteSpace: 'nowrap',
           boxShadow: '0 2px 12px rgba(0,0,0,0.22)',
         }}>
-          <div style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '2px',
-            background: '#34D399',
-            flexShrink: 0,
-          }} />
           <span style={{ fontSize: '10px', fontWeight: 600, color: '#fff', fontFamily: 'Arial, sans-serif' }}>
             {labelText}
           </span>
