@@ -131,8 +131,9 @@
     const el   = hoveredEl;
     const rect = el.getBoundingClientRect();
 
-    // Remove highlight before screenshot
+    // Hide highlight and tooltip before screenshot
     el.classList.remove('__ec-hl');
+    if (tooltip) tooltip.style.opacity = '0';
 
     setTimeout(() => {
       chrome.runtime.sendMessage({
@@ -176,8 +177,9 @@
     if (msg.type === 'DEACTIVATE') { deactivate(); sendResponse({ ok: true }); }
 
     if (msg.type === 'DO_CLIPBOARD') {
-      // Re-add highlight after screenshot
+      // Restore highlight and tooltip after screenshot
       if (hoveredEl) hoveredEl.classList.add('__ec-hl');
+      if (tooltip) tooltip.style.opacity = '1';
 
       const byteStr = atob(msg.base64);
       const arr = new Uint8Array(byteStr.length);
@@ -191,6 +193,7 @@
 
     if (msg.type === 'CAPTURE_ERROR') {
       if (hoveredEl) hoveredEl.classList.add('__ec-hl');
+      if (tooltip) tooltip.style.opacity = '1';
       toast('Capture failed: ' + msg.error, true);
     }
 
