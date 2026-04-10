@@ -26,8 +26,7 @@ export function Nav() {
             textDecoration: "none",
           }}
         >
-          <img src={pixieLogo} alt="Pixie" style={{ width: "24px", height: "24px", borderRadius: "5px" }} />
-          Pixie
+          <img src={pixieLogo} alt="Pixie" style={{ width: "32px", height: "32px", borderRadius: "7px" }} />
         </Link>
 
         <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
