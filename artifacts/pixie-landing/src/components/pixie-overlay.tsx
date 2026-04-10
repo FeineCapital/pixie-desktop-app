@@ -217,7 +217,7 @@ export function PixieGlobalOverlay() {
           top: mouse.y - 50,
           background: '#171717',
           borderRadius: '8px',
-          padding: '5px 10px',
+          padding: '3px 10px 4px',
           pointerEvents: 'none',
           zIndex: 100000,
           whiteSpace: 'nowrap',
