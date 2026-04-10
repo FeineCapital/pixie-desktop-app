@@ -72,7 +72,7 @@ export function Nav() {
                 className="rounded-full font-semibold shrink-0 h-10 px-6 text-sm"
                 asChild
               >
-                <a href={`${import.meta.env.BASE_URL}Pixie Draft.zip`} download>
+                <a href={`${import.meta.env.BASE_URL}Pixie Desktop.zip`} download>
                   Download for Mac
                 </a>
               </Button>
