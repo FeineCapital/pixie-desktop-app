@@ -16,7 +16,7 @@ export function Nav() {
   return (
     <div className="fixed top-0 left-0 right-0 z-50 flex justify-center" style={{ padding: "12px 16px 0" }}>
       <div
-        className="flex items-center justify-between"
+        className="relative flex items-center justify-between"
         style={{ maxWidth: "780px", width: "100%" }}
       >
         <div

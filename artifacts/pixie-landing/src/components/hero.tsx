@@ -28,7 +28,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl text-balance mb-8 md:mb-12 leading-relaxed"
         >
-          A lightweight Mac app that lives in your menu bar. Select any area, annotate, and copy to clipboard in one flow.
+          Pixie makes screen capturing effortless. Hover over any element on your screen, click once, and capture it perfectly — without dragging or cropping.
         </motion.p>
 
         <motion.div
