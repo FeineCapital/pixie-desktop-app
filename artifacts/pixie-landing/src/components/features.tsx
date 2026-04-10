@@ -2,64 +2,112 @@ import { motion } from "framer-motion";
 
 const features = [
   {
-    title: "Select & Capture",
-    description: "Drag to select any area on screen. Capture exactly what you need, nothing more.",
-    className: "grad-card-1 text-zinc-900",
+    icon: "⚡",
+    title: "Instant Capture",
+    description: "Hover over any element and click to capture. No drag, no crop, no setup.",
   },
   {
-    title: "Annotate Instantly",
-    description: "Draw, highlight, and mark up your captures with a built-in pencil and eraser.",
-    className: "grad-card-2 text-zinc-900",
+    icon: "✏️",
+    title: "Annotation Tools",
+    description: "Draw, highlight, and mark up captures with a built-in pencil and eraser.",
   },
   {
+    icon: "📋",
     title: "Clipboard Ready",
-    description: "Every capture is copied to your clipboard automatically. Paste into Figma, Slack, or anywhere.",
-    className: "grad-card-3 text-zinc-900",
+    description: "Every capture is copied automatically. Paste into Figma, Slack, or anywhere.",
   },
   {
+    icon: "🖥️",
     title: "Retina Quality",
-    description: "Crisp, high-resolution output every time. Built for displays that demand pixel perfection.",
-    className: "grad-card-4 text-zinc-900",
-  }
+    description: "Crisp, high-resolution output. Built for displays that demand pixel perfection.",
+  },
+  {
+    icon: "🔒",
+    title: "Fully Private",
+    description: "Nothing leaves your Mac. No cloud, no account, no tracking whatsoever.",
+  },
+  {
+    icon: "🪶",
+    title: "Lightweight",
+    description: "Lives in your menu bar. Uses minimal memory and never slows your machine down.",
+  },
+];
+
+const shortcuts = [
+  { keys: ["⌘", "⇧", "6"], label: "Area capture" },
+  { keys: ["⌘", "⇧", "7"], label: "Full screen capture" },
+  { keys: ["⌘", "C"], label: "Copy to clipboard" },
+  { keys: ["↵"], label: "Save to Desktop" },
 ];
 
 export function Features() {
   return (
-    <section id="features" className="w-full max-w-7xl mx-auto px-6 md:px-8 py-20 md:py-32">
-      <div className="mb-10 md:mb-16">
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 md:mb-6 leading-tight"
-        >
-          Capture. Annotate.
-          <br />
-          Share. Done.
-        </motion.h2>
-      </div>
+    <section id="features" className="w-full max-w-7xl mx-auto px-6 md:px-8 py-24 md:py-36">
+      <motion.p
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-xs font-semibold tracking-widest uppercase text-emerald-400 mb-4"
+      >
+        Features
+      </motion.p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        {features.map((feature, index) => (
+      <motion.h2
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.05 }}
+        className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-foreground mb-16 leading-tight"
+      >
+        Everything you need.
+        <br />
+        Nothing you don't.
+      </motion.h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-20">
+        {features.map((f, i) => (
           <motion.div
-            key={feature.title}
+            key={f.title}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-            whileHover={{ y: -8, scale: 0.98 }}
-            className={`p-6 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] min-h-[240px] sm:min-h-[280px] md:min-h-[360px] flex flex-col justify-end transition-all duration-300 ${feature.className}`}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: i * 0.07 }}
+            className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-7 flex flex-col gap-3 hover:border-white/[0.14] hover:bg-white/[0.05] transition-all duration-300"
           >
-            <h3 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl mb-3 md:mb-4 leading-tight">
-              {feature.title}
-            </h3>
-            <p className="text-base sm:text-lg md:text-xl font-medium opacity-90 text-balance leading-relaxed">
-              {feature.description}
-            </p>
+            <span className="text-2xl">{f.icon}</span>
+            <h3 className="text-lg font-semibold text-foreground">{f.title}</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed">{f.description}</p>
           </motion.div>
         ))}
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8 md:p-10"
+      >
+        <p className="text-xs font-semibold tracking-widest uppercase text-emerald-400 mb-6">Keyboard Shortcuts</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {shortcuts.map((s) => (
+            <div key={s.label} className="flex items-center justify-between gap-4">
+              <span className="text-muted-foreground text-sm">{s.label}</span>
+              <div className="flex items-center gap-1">
+                {s.keys.map((k) => (
+                  <kbd
+                    key={k}
+                    className="px-2.5 py-1 rounded-md bg-white/[0.06] border border-white/[0.1] text-foreground text-xs font-mono font-medium"
+                  >
+                    {k}
+                  </kbd>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </section>
   );
 }

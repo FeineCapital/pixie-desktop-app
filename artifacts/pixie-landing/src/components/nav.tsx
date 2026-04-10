@@ -57,14 +57,14 @@ export function Nav() {
               className="flex items-center gap-6 relative z-10 py-1"
             >
               <div className="hidden md:flex items-center gap-6 text-[15px] font-medium text-muted-foreground">
-                <a href="#features" className="hover:text-foreground transition-colors whitespace-nowrap">
-                  Features
-                </a>
                 <a href="#showcase" className="hover:text-foreground transition-colors whitespace-nowrap">
                   How it works
                 </a>
-                <a href="#use-cases" className="hover:text-foreground transition-colors whitespace-nowrap">
-                  Use cases
+                <a href="#features" className="hover:text-foreground transition-colors whitespace-nowrap">
+                  Features
+                </a>
+                <a href="#pricing" className="hover:text-foreground transition-colors whitespace-nowrap">
+                  Pricing
                 </a>
               </div>
 

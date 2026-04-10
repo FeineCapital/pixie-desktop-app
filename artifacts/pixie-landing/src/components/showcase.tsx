@@ -156,7 +156,7 @@ function CaptureDemo() {
 
 export function Showcase() {
   return (
-    <section id="showcase" className="w-full px-6 md:px-8 py-24 md:py-36 flex flex-col items-center" style={{ background: "#111114" }}>
+    <section id="showcase" className="w-full px-6 md:px-8 py-24 md:py-36 flex flex-col items-center">
       <motion.p
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}

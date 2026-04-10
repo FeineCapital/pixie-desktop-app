@@ -5,9 +5,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { Nav } from "@/components/nav";
 import { Hero } from "@/components/hero";
-import { Features } from "@/components/features";
 import { Showcase } from "@/components/showcase";
-import { UseCases } from "@/components/use-cases";
+import { Features } from "@/components/features";
+import { Pricing } from "@/components/pricing";
 import { CtaFooter } from "@/components/cta-footer";
 import { MobileGate } from "@/components/mobile-gate";
 
@@ -21,9 +21,9 @@ function Home() {
         <Nav />
         <main className="flex-1 flex flex-col items-center w-full">
           <Hero />
-          <Features />
           <Showcase />
-          <UseCases />
+          <Features />
+          <Pricing />
         </main>
         <CtaFooter />
       </div>
