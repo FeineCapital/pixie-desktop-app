@@ -11,6 +11,7 @@ import { Pricing } from "@/components/pricing";
 import { CtaFooter } from "@/components/cta-footer";
 import { MobileGate } from "@/components/mobile-gate";
 import DownloadPage from "@/pages/download";
+import PrivacyPage from "@/pages/privacy";
 import { PixieGlobalOverlay } from "@/components/pixie-overlay";
 
 const queryClient = new QueryClient();
@@ -48,11 +49,24 @@ function Download() {
   );
 }
 
+function Privacy() {
+  return (
+    <div className="flex flex-col min-h-screen w-full">
+      <Nav />
+      <main className="flex-1 flex flex-col w-full">
+        <PrivacyPage />
+      </main>
+      <CtaFooter />
+    </div>
+  );
+}
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/download" component={Download} />
+      <Route path="/privacy" component={Privacy} />
       <Route component={NotFound} />
     </Switch>
   );
