@@ -13,7 +13,7 @@
   let toolbar   = null;
   let annCanvas = null;
   let annCtx    = null;
-  let ovTop = null, ovBottom = null, ovLeft = null, ovRight = null, dimLabel = null;
+  let ovCanvas = null, dimLabel = null;
 
   /* ═══ Data ═══ */
   let hoveredEl    = null;
@@ -40,10 +40,10 @@
         outline: 1.5px solid #00e676 !important;
         outline-offset: 2px !important;
       }
-      .ec-ov {
+      #__ec-ov {
         position: fixed !important; pointer-events: none !important;
         z-index: 2147483638 !important;
-        background: rgba(0,0,0,0.52) !important;
+        top: 0 !important; left: 0 !important;
         display: none;
       }
       #__ec-dim {
@@ -65,7 +65,7 @@
       #__ec-sel {
         position: fixed !important; z-index: 2147483641 !important;
         pointer-events: none !important;
-        border: 2px dashed #00e676 !important; border-radius: 4px !important;
+        border: 2px dashed #00e676 !important; border-radius: 10px !important;
         background: rgba(0,230,118,0.04) !important;
         box-sizing: border-box !important; display: none;
       }
@@ -116,6 +116,13 @@
         box-shadow: 0 0 10px rgba(16,185,129,0.3) !important; letter-spacing: 0.01em !important;
       }
       #__ec-tb .ec-cap:hover { box-shadow: 0 0 18px rgba(16,185,129,0.5) !important; color: #fff !important; }
+      #__ec-tb .ec-sav {
+        background: rgba(99,102,241,0.18) !important; color: #a5b4fc !important;
+        font-size: 11px !important; font-weight: 600 !important;
+        padding: 5px 11px !important; border-radius: 6px !important;
+        border: 1px solid rgba(99,102,241,0.3) !important; letter-spacing: 0.01em !important;
+      }
+      #__ec-tb .ec-sav:hover { background: rgba(99,102,241,0.28) !important; color: #c7d2fe !important; }
       #__ec-tb .ec-x { color: rgba(255,255,255,0.25) !important; font-size: 15px !important; }
       #__ec-toast {
         position: fixed !important; z-index: 2147483647 !important;
@@ -173,14 +180,10 @@
      SCREEN OVERLAY (cmd+shift+5 style)
   ══════════════════════════════════ */
   function ensureOverlay() {
-    if (ovTop) return;
-    function mkOv() {
-      const d = document.createElement('div');
-      d.className = 'ec-ov';
-      document.documentElement.appendChild(d);
-      return d;
-    }
-    ovTop = mkOv(); ovBottom = mkOv(); ovLeft = mkOv(); ovRight = mkOv();
+    if (ovCanvas) return;
+    ovCanvas = document.createElement('canvas');
+    ovCanvas.id = '__ec-ov';
+    document.documentElement.appendChild(ovCanvas);
     dimLabel = document.createElement('div');
     dimLabel.id = '__ec-dim';
     document.documentElement.appendChild(dimLabel);
@@ -189,21 +192,33 @@
   function showOverlay(r) {
     ensureOverlay();
     const W = window.innerWidth, H = window.innerHeight;
-    const set = (el, x, y, w, h) => {
-      el.style.left   = x + 'px'; el.style.top    = y + 'px';
-      el.style.width  = w + 'px'; el.style.height = h + 'px';
-      el.style.display = 'block';
-    };
-    set(ovTop,    0,          0,          W,                     r.top);
-    set(ovBottom, 0,          r.top + r.height, W,              Math.max(0, H - r.top - r.height));
-    set(ovLeft,   0,          r.top,      r.left,                r.height);
-    set(ovRight,  r.left + r.width, r.top, Math.max(0, W - r.left - r.width), r.height);
+    const dpr = window.devicePixelRatio || 1;
+    const pw = Math.round(W * dpr), ph = Math.round(H * dpr);
 
-    // Dimension label — below selection, or above if at bottom
+    ovCanvas.width  = pw;
+    ovCanvas.height = ph;
+    ovCanvas.style.width  = W + 'px';
+    ovCanvas.style.height = H + 'px';
+    ovCanvas.style.display = 'block';
+
+    const ctx = ovCanvas.getContext('2d');
+    ctx.clearRect(0, 0, pw, ph);
+    ctx.fillStyle = 'rgba(0,0,0,0.52)';
+    ctx.fillRect(0, 0, pw, ph);
+
+    // Cut out a rounded rectangle so only the selection is bright
+    const radius = 10 * dpr;
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.roundRect(r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr, radius);
+    ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+
+    // Dimension label
     const w = Math.round(r.width), h = Math.round(r.height);
     dimLabel.textContent = `${w} × ${h}`;
     dimLabel.style.display = 'block';
-    const lw = dimLabel.offsetWidth || 60, lh = dimLabel.offsetHeight || 18;
+    const lw = dimLabel.offsetWidth || 64, lh = dimLabel.offsetHeight || 20;
     let lx = r.left + r.width / 2 - lw / 2;
     let ly = r.top + r.height + 6;
     if (ly + lh > H - 4) ly = r.top - lh - 6;
@@ -213,8 +228,8 @@
   }
 
   function hideOverlay() {
-    [ovTop, ovBottom, ovLeft, ovRight].forEach(el => { if (el) el.style.display = 'none'; });
-    if (dimLabel) dimLabel.style.display = 'none';
+    if (ovCanvas)  ovCanvas.style.display  = 'none';
+    if (dimLabel)  dimLabel.style.display  = 'none';
   }
 
   /* ══════════════════════════════════
@@ -342,11 +357,17 @@
 
     sep();
 
-    // Capture
-    const cap = mkBtn('Copy', 'Copy to clipboard');
+    // Copy to clipboard
+    const cap = mkBtn('Copy', 'Copy to clipboard  (⌘C)');
     cap.className += ' ec-cap';
     cap.addEventListener('click', e => { e.stopPropagation(); doCapture(true); });
     toolbar.appendChild(cap);
+
+    // Save to desktop
+    const sav = mkBtn('Save', 'Save to desktop  (↵ Enter)');
+    sav.className += ' ec-sav';
+    sav.addEventListener('click', e => { e.stopPropagation(); doSave(true); });
+    toolbar.appendChild(sav);
 
     sep();
 
@@ -637,10 +658,8 @@
       if (state === S.SELECTED) clearSel();
       else deactivate();
     }
-    if ((e.key === 'Enter' || (e.key==='c' && (e.metaKey||e.ctrlKey))) && state === S.SELECTED) {
-      e.preventDefault();
-      doCapture();
-    }
+    if (e.key === 'Enter' && state === S.SELECTED) { e.preventDefault(); doSave(); }
+    if (e.key === 'c' && (e.metaKey||e.ctrlKey) && state === S.SELECTED) { e.preventDefault(); doCapture(); }
   }
 
   function mkRect(a, b) {
@@ -698,7 +717,62 @@
     }
   }
 
+  async function doSave(fromToolbar = false) {
+    if (!selRect) return;
+    if (selBox)    selBox.style.display   = 'none';
+    if (toolbar)   toolbar.style.display  = 'none';
+    if (annCanvas) annCanvas.style.visibility = 'hidden';
+    hideHandles();
+    await sleep(65);
+
+    const base64 = await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('Screenshot timed out')), 8000);
+      const handler = (msg) => {
+        if (msg.type === 'SCREENSHOT_RESULT') {
+          clearTimeout(timer);
+          chrome.runtime.onMessage.removeListener(handler);
+          if (msg.error) reject(new Error(msg.error));
+          else resolve(msg.base64);
+        }
+      };
+      chrome.runtime.onMessage.addListener(handler);
+      chrome.runtime.sendMessage({ type: 'TAKE_SCREENSHOT' }).catch(reject);
+    });
+
+    let success = false;
+    try {
+      const blob = await mergeToBlob(base64);
+      const ts   = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = `capture-${ts}.png`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);
+      toast('Saved to downloads ✓');
+      success = true;
+    } catch (err) {
+      toast('Save failed: ' + err.message, true);
+      if (fromToolbar && selRect) {
+        posSelBox(selRect); posHandles(selRect);
+        if (toolbar)   toolbar.style.display = 'flex';
+        if (annCanvas) annCanvas.style.visibility = 'visible';
+      }
+    }
+
+    if (success) {
+      chrome.runtime.sendMessage({ type: 'DEACTIVATE_GLOBAL' }).catch(() => {});
+      deactivate();
+    }
+  }
+
   async function mergeAndCopy(base64) {
+    const blob = await mergeToBlob(base64);
+    await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+  }
+
+  async function mergeToBlob(base64) {
     const dpr = window.devicePixelRatio || 1;
     const r   = selRect;
 
@@ -714,8 +788,7 @@
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
     if (annCanvas && annCanvas.width > 0) ctx.drawImage(annCanvas, 0, 0, sw, sh);
 
-    const blob = await new Promise(res => c.toBlob(res, 'image/png'));
-    await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+    return new Promise(res => c.toBlob(res, 'image/png'));
   }
 
   function loadImage(src) {
