@@ -27,6 +27,7 @@
   let isDrawing     = false;
   let drawOrigin    = null;
   let savedPixels   = null;
+  let captureRadius = 0;
 
   /* ══════════════════════════════════
      STYLES
@@ -490,26 +491,40 @@
     if (hoveredEl) { hoveredEl.classList.remove('__ec-hl'); hoveredEl = null; }
   }
 
+  function hasVisualBoundary(el) {
+    const cs = window.getComputedStyle(el);
+    const bg = cs.backgroundColor;
+    if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') return true;
+    if (cs.borderTopWidth && parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== 'none') return true;
+    if (cs.boxShadow && cs.boxShadow !== 'none') return true;
+    if (cs.borderRadius && parseFloat(cs.borderRadius) > 0) return true;
+    if (cs.backgroundImage && cs.backgroundImage !== 'none') return true;
+    return false;
+  }
+
   function findBestTarget(start) {
     if (!start || start === document.body || start === document.documentElement) return null;
     if (isOurs(start)) return null;
+
     let el = start;
+    // Walk up from inline/text nodes to first block-level parent
     while (el && el !== document.body) {
       const d = window.getComputedStyle(el).display;
       if (['block','flex','grid','inline-block','inline-flex','table-cell','list-item'].includes(d)) break;
       el = el.parentElement;
     }
     if (!el || el === document.body) return start;
-    let cur = el, cand = el;
-    for (let i = 0; i < 8 && cur && cur !== document.body; i++) {
-      const kids = Array.from(cur.children).filter(c => {
-        const cs = window.getComputedStyle(c);
-        return cs.display !== 'none' && cs.visibility !== 'hidden';
-      });
-      if (kids.length >= 2) return cand;
-      cand = cur; cur = cur.parentElement;
+
+    // If this element already has a visual boundary, use it
+    if (hasVisualBoundary(el)) return el;
+
+    // Walk up a few levels looking for the nearest visual container
+    let cur = el.parentElement;
+    for (let i = 0; i < 4 && cur && cur !== document.body; i++) {
+      if (hasVisualBoundary(cur)) return cur;
+      cur = cur.parentElement;
     }
-    return cand;
+    return el;
   }
 
   function isOurs(el) {
@@ -680,12 +695,13 @@
       potentialDrag = false;
       if (!isOurs(e.target) && hoveredEl) {
         e.preventDefault(); e.stopPropagation();
-        // Click on element → immediate capture (no toolbar)
         const el = hoveredEl;
         unhighlight();
         if (tooltip) tooltip.style.opacity = '0';
         const br = el.getBoundingClientRect();
         selRect = { left: br.left, top: br.top, width: br.width, height: br.height };
+        const cs = window.getComputedStyle(el);
+        captureRadius = parseFloat(cs.borderRadius) || 0;
         doCapture().then(() => {
           selRect = null;
           if (tooltip) tooltip.style.opacity = '1';
@@ -826,9 +842,18 @@
     const c = document.createElement('canvas');
     c.width = sw; c.height = sh;
     const ctx = c.getContext('2d');
+
+    const rad = Math.round(captureRadius * dpr);
+    if (rad > 0) {
+      ctx.beginPath();
+      ctx.roundRect(0, 0, sw, sh, rad);
+      ctx.clip();
+    }
+
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
     if (annCanvas && annCanvas.width > 0) ctx.drawImage(annCanvas, 0, 0, sw, sh);
 
+    captureRadius = 0;
     return new Promise(res => c.toBlob(res, 'image/png'));
   }
 
