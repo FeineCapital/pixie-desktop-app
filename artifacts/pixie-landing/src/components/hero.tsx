@@ -84,9 +84,8 @@ export function Hero() {
           </a>
 
           <a
-            href="https://github.com/FeineCapital/pixie-chrome-extension"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/pixie-chrome-extension.zip"
+            download
             style={{
               display: "inline-flex",
               alignItems: "center",
