@@ -16,8 +16,12 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npm run dist -- --publish never
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Pixie-Mac
-          path: dist/*.dmg
-          retention-days: 30
+      - name: Rename DMG
+        run: mv dist/*.dmg dist/Pixie.dmg
+      - name: Publish Release
+        run: |
+          gh release delete latest --yes 2>/dev/null || true
+          gh release create latest dist/Pixie.dmg \
+            --title "Pixie for Mac" \
+            --notes "Download Pixie.dmg, open it, and drag Pixie to your Applications folder." \
+            --latest
