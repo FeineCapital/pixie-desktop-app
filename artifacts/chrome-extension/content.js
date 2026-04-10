@@ -484,8 +484,8 @@
     });
   }
 
-  const PEN_CURSOR = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300e676' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z'/%3E%3C/svg%3E") 2 22, crosshair`;
-  const ERASER_CURSOR = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ff6b6b' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21'/%3E%3Cpath d='M22 21H7'/%3E%3C/svg%3E") 4 20, crosshair`;
+  const PEN_CURSOR = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300e676' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z'/%3E%3C/svg%3E") 1 23, crosshair`;
+  const ERASER_CURSOR = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ff6b6b' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21'/%3E%3Cpath d='M22 21H7'/%3E%3C/svg%3E") 3 21, crosshair`;
 
   function setTool(tool) {
     activeTool = tool;
@@ -824,7 +824,9 @@
         const br = el.getBoundingClientRect();
         selRect = { left: br.left, top: br.top, width: br.width, height: br.height };
         const cs = window.getComputedStyle(el);
-        captureRadius = Math.max(parseFloat(cs.borderRadius) || 0, 6);
+        captureRadius = selCornerRadius > 0
+          ? Math.max(parseFloat(cs.borderRadius) || 0, selCornerRadius)
+          : 0;
         doCapture().then(() => {
           selRect = null;
           if (tooltip) tooltip.style.opacity = '1';
@@ -836,7 +838,10 @@
   function onKeyDown(e) {
     if (e.key === 'Escape') {
       if (state === S.SELECTED) clearSel();
-      else deactivate();
+      else {
+        chrome.runtime.sendMessage({ type: 'DEACTIVATE_GLOBAL' }).catch(() => {});
+        deactivate();
+      }
     }
     if (e.key === 'Enter' && state === S.SELECTED) { e.preventDefault(); doSave(); }
     if (e.key === 'c' && (e.metaKey||e.ctrlKey) && state === S.SELECTED) { e.preventDefault(); doCapture(); }
@@ -966,7 +971,7 @@
     c.width = sw; c.height = sh;
     const ctx = c.getContext('2d');
 
-    const rad = Math.round(captureRadius * dpr);
+    const rad = Math.round((captureRadius || selCornerRadius) * dpr);
     if (rad > 0) {
       ctx.beginPath();
       ctx.roundRect(0, 0, sw, sh, rad);
