@@ -1,12 +1,21 @@
 export function CtaFooter() {
   return (
-    <footer className="w-full border-t border-white/[0.06] py-8 px-6 md:px-8">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
+    <footer style={{ width: "100%", borderTop: "1px solid rgba(255,255,255,0.06)", padding: "32px 24px" }}>
+      <div style={{
+        maxWidth: "1280px",
+        margin: "0 auto",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        fontFamily: "Arial, sans-serif",
+        fontSize: "13px",
+        color: "rgba(255,255,255,0.35)",
+      }}>
         <p>&copy; {new Date().getFullYear()} Pixie. All rights reserved.</p>
-        <div className="flex gap-6">
-          <a href="#" className="hover:text-foreground transition-colors">Twitter</a>
-          <a href="https://github.com/FeineCapital/pixie-desktop-app" className="hover:text-foreground transition-colors">GitHub</a>
-          <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
+        <div style={{ display: "flex", gap: "24px" }}>
+          <a href="#" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = "#fff"} onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}>Twitter</a>
+          <a href="https://github.com/FeineCapital/pixie-desktop-app" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = "#fff"} onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}>GitHub</a>
+          <a href="#" style={{ color: "rgba(255,255,255,0.35)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={e => e.currentTarget.style.color = "#fff"} onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}>Privacy</a>
         </div>
       </div>
     </footer>

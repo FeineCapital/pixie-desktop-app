@@ -57,48 +57,12 @@ function IconFeather({ className }: { className?: string }) {
 }
 
 const features = [
-  {
-    icon: IconBolt,
-    title: "Instant Capture",
-    description: "Hover over any element and click to capture. No drag, no crop, no setup.",
-    color: "text-amber-400",
-    bg: "bg-amber-400/10",
-  },
-  {
-    icon: IconPen,
-    title: "Annotation Tools",
-    description: "Draw, highlight, and mark up captures with a built-in pencil and eraser.",
-    color: "text-emerald-400",
-    bg: "bg-emerald-400/10",
-  },
-  {
-    icon: IconClipboard,
-    title: "Clipboard Ready",
-    description: "Every capture is copied automatically. Paste into Figma, Slack, or anywhere.",
-    color: "text-blue-400",
-    bg: "bg-blue-400/10",
-  },
-  {
-    icon: IconMonitor,
-    title: "Retina Quality",
-    description: "Crisp, high-resolution output. Built for displays that demand pixel perfection.",
-    color: "text-violet-400",
-    bg: "bg-violet-400/10",
-  },
-  {
-    icon: IconShield,
-    title: "Fully Private",
-    description: "Nothing leaves your Mac. No cloud, no account, no tracking whatsoever.",
-    color: "text-rose-400",
-    bg: "bg-rose-400/10",
-  },
-  {
-    icon: IconFeather,
-    title: "Lightweight",
-    description: "Lives in your menu bar. Uses minimal memory and never slows your machine down.",
-    color: "text-cyan-400",
-    bg: "bg-cyan-400/10",
-  },
+  { icon: IconBolt, title: "Instant Capture", description: "Hover over any element and click to capture. No drag, no crop, no setup.", color: "text-amber-400", bg: "bg-amber-400/10" },
+  { icon: IconPen, title: "Annotation Tools", description: "Draw, highlight, and mark up captures with a built-in pencil and eraser.", color: "text-emerald-400", bg: "bg-emerald-400/10" },
+  { icon: IconClipboard, title: "Clipboard Ready", description: "Every capture is copied automatically. Paste into Figma, Slack, or anywhere.", color: "text-blue-400", bg: "bg-blue-400/10" },
+  { icon: IconMonitor, title: "Retina Quality", description: "Crisp, high-resolution output. Built for displays that demand pixel perfection.", color: "text-violet-400", bg: "bg-violet-400/10" },
+  { icon: IconShield, title: "Fully Private", description: "Nothing leaves your Mac. No cloud, no account, no tracking whatsoever.", color: "text-rose-400", bg: "bg-rose-400/10" },
+  { icon: IconFeather, title: "Lightweight", description: "Lives in your menu bar. Uses minimal memory and never slows your machine down.", color: "text-cyan-400", bg: "bg-cyan-400/10" },
 ];
 
 const shortcuts = [
@@ -113,22 +77,49 @@ const shortcuts = [
 export function Features() {
   return (
     <section id="features" className="w-full max-w-7xl mx-auto px-6 md:px-8 py-24 md:py-36">
-      <motion.p
-        initial={{ opacity: 0, y: 16 }}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="text-xs font-semibold tracking-widest uppercase text-emerald-400 mb-4"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "8px",
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: "100px",
+          padding: "6px 14px 6px 10px",
+          marginBottom: "20px",
+        }}
       >
-        Features
-      </motion.p>
+        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34D399" }} />
+        <span style={{
+          fontFamily: "Arial, sans-serif",
+          fontSize: "12px",
+          fontWeight: 400,
+          color: "rgba(255,255,255,0.5)",
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
+        }}>
+          Features
+        </span>
+      </motion.div>
 
       <motion.h2
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.05 }}
-        className="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-foreground mb-16 leading-tight"
+        style={{
+          fontFamily: "Arial, sans-serif",
+          fontSize: "52px",
+          fontWeight: 700,
+          color: "#ffffff",
+          lineHeight: 1.1,
+          letterSpacing: "-0.02em",
+          marginBottom: "56px",
+        }}
       >
         Everything you need.
         <br />
@@ -145,13 +136,24 @@ export function Features() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.07 }}
-              className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-7 flex flex-col gap-4 hover:border-white/[0.14] hover:bg-white/[0.05] transition-all duration-300"
+              style={{
+                borderRadius: "16px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.03)",
+                padding: "28px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+                transition: "border-color 0.3s, background 0.3s",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
             >
               <div className={`w-10 h-10 rounded-xl ${f.bg} flex items-center justify-center`}>
                 <Icon className={`w-5 h-5 ${f.color}`} />
               </div>
-              <h3 className="text-lg font-semibold text-foreground">{f.title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{f.description}</p>
+              <h3 style={{ fontFamily: "Arial, sans-serif", fontSize: "17px", fontWeight: 700, color: "#ffffff" }}>{f.title}</h3>
+              <p style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", fontWeight: 400, color: "rgba(255,255,255,0.45)", lineHeight: 1.6 }}>{f.description}</p>
             </motion.div>
           );
         })}
@@ -162,18 +164,53 @@ export function Features() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8 md:p-10"
+        style={{
+          borderRadius: "16px",
+          border: "1px solid rgba(255,255,255,0.1)",
+          background: "rgba(255,255,255,0.03)",
+          padding: "32px 40px",
+        }}
       >
-        <p className="text-xs font-semibold tracking-widest uppercase text-emerald-400 mb-6">Keyboard Shortcuts</p>
+        <div style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "8px",
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: "100px",
+          padding: "6px 14px 6px 10px",
+          marginBottom: "24px",
+        }}>
+          <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34D399" }} />
+          <span style={{
+            fontFamily: "Arial, sans-serif",
+            fontSize: "12px",
+            fontWeight: 400,
+            color: "rgba(255,255,255,0.5)",
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+          }}>
+            Keyboard Shortcuts
+          </span>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {shortcuts.map((s) => (
             <div key={s.label} className="flex items-center justify-between gap-4">
-              <span className="text-muted-foreground text-sm">{s.label}</span>
+              <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>{s.label}</span>
               <div className="flex items-center gap-1">
                 {s.keys.map((k, idx) => (
                   <kbd
                     key={`${s.label}-${idx}`}
-                    className="px-2.5 py-1 rounded-md bg-white/[0.06] border border-white/[0.1] text-foreground text-xs font-mono font-medium"
+                    style={{
+                      fontFamily: "Arial, sans-serif",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      color: "#ffffff",
+                      background: "rgba(255,255,255,0.06)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      borderRadius: "6px",
+                      padding: "4px 10px",
+                    }}
                   >
                     {k}
                   </kbd>
