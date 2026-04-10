@@ -42,7 +42,7 @@ export function Nav() {
         </div>
 
         <Button className="rounded-full font-semibold shrink-0" size="sm">
-          Get for Chrome
+          Visit Pixie.app
         </Button>
       </nav>
     </motion.header>
