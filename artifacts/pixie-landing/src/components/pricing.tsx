@@ -8,22 +8,16 @@ function AppleIcon() {
   );
 }
 
-const freePlan = [
+const planFeatures = [
   "Hover-to-capture",
   "Full screen capture",
+  "Drag-to-select capture",
   "Pencil & eraser annotation",
   "Copy to clipboard",
   "Save to Desktop",
   "Menu bar app",
-];
-
-const proPlan = [
-  "Everything in Free",
-  "AI-powered element detection",
-  "Cloud screenshot history",
-  "Custom keyboard shortcuts",
-  "Team sharing",
-  "Priority support",
+  "Chrome extension",
+  "Automatic updates",
 ];
 
 function Check() {
@@ -51,143 +45,65 @@ export function Pricing() {
           letterSpacing: "-0.02em",
           marginBottom: "56px",
           textAlign: "center",
+          whiteSpace: "nowrap",
         }}
       >
-        Simple pricing.
-        <br />
-        Start for free.
+        Simple pricing. Start for free.
       </motion.h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        style={{
+          borderRadius: "16px",
+          border: "1px solid rgba(255,255,255,0.1)",
+          background: "rgba(255,255,255,0.03)",
+          padding: "40px",
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: "480px",
+          width: "100%",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", marginBottom: "8px" }}>
+          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "56px", fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>$10</span>
+          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "15px", color: "rgba(255,255,255,0.45)", marginBottom: "8px" }}>/ month</span>
+        </div>
+        <p style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.35)", marginBottom: "32px" }}>
+          Everything included. No tiers, no upsells.
+        </p>
+        <ul style={{ listStyle: "none", padding: 0, margin: "0 0 36px 0", display: "flex", flexDirection: "column", gap: "14px" }}>
+          {planFeatures.map((item) => (
+            <li key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>
+              <Check />
+              {item}
+            </li>
+          ))}
+        </ul>
+        <a
+          href="https://github.com/FeineCapital/pixie-desktop-app/releases/latest/download/Pixie.dmg"
           style={{
-            borderRadius: "16px",
-            border: "1px solid rgba(255,255,255,0.1)",
-            background: "rgba(255,255,255,0.03)",
-            padding: "32px",
             display: "flex",
-            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            fontFamily: "Arial, sans-serif",
+            fontWeight: 700,
+            fontSize: "15px",
+            color: "#000000",
+            background: "#ffffff",
+            borderRadius: "12px",
+            padding: "16px 32px",
+            textDecoration: "none",
+            width: "100%",
           }}
         >
-          <p style={{
-            fontFamily: "Arial, sans-serif",
-            fontSize: "12px",
-            fontWeight: 700,
-            color: "rgba(255,255,255,0.5)",
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-            marginBottom: "24px",
-          }}>Free</p>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", marginBottom: "32px" }}>
-            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "48px", fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>$0</span>
-            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", marginBottom: "6px" }}>/ forever</span>
-          </div>
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 40px 0", flex: 1, display: "flex", flexDirection: "column", gap: "14px" }}>
-            {freePlan.map((item) => (
-              <li key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>
-                <Check />
-                {item}
-              </li>
-            ))}
-          </ul>
-          <a
-            href="https://github.com/FeineCapital/pixie-desktop-app/releases/latest/download/Pixie.dmg"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              fontFamily: "Arial, sans-serif",
-              fontWeight: 700,
-              fontSize: "15px",
-              color: "#ffffff",
-              background: "transparent",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: "12px",
-              padding: "16px 32px",
-              textDecoration: "none",
-              width: "100%",
-            }}
-          >
-            <AppleIcon />
-            Download Free
-          </a>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          style={{
-            borderRadius: "16px",
-            border: "1px solid rgba(255,255,255,0.15)",
-            background: "rgba(255,255,255,0.04)",
-            padding: "32px",
-            display: "flex",
-            flexDirection: "column",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <div style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            fontFamily: "Arial, sans-serif",
-            fontSize: "12px",
-            fontWeight: 600,
-            color: "rgba(255,255,255,0.6)",
-            background: "rgba(255,255,255,0.08)",
-            border: "1px solid rgba(255,255,255,0.12)",
-            borderRadius: "100px",
-            padding: "4px 12px",
-          }}>
-            Coming soon
-          </div>
-          <p style={{
-            fontFamily: "Arial, sans-serif",
-            fontSize: "12px",
-            fontWeight: 700,
-            color: "rgba(255,255,255,0.6)",
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-            marginBottom: "24px",
-          }}>Pro</p>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", marginBottom: "32px" }}>
-            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "48px", fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>$9</span>
-            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", marginBottom: "6px" }}>/ month</span>
-          </div>
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 40px 0", flex: 1, display: "flex", flexDirection: "column", gap: "14px" }}>
-            {proPlan.map((item) => (
-              <li key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>
-                <Check />
-                {item}
-              </li>
-            ))}
-          </ul>
-          <button
-            style={{
-              fontFamily: "Arial, sans-serif",
-              fontWeight: 700,
-              fontSize: "15px",
-              color: "#000000",
-              background: "#ffffff",
-              borderRadius: "12px",
-              padding: "16px 32px",
-              border: "none",
-              cursor: "pointer",
-              width: "100%",
-            }}
-          >
-            Join the waitlist
-          </button>
-        </motion.div>
-      </div>
+          <AppleIcon />
+          Download Pixie
+        </a>
+      </motion.div>
     </section>
   );
 }
