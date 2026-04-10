@@ -14,7 +14,11 @@ function AppleIcon({ size = 16 }: { size?: number }) {
 type Box = { x: number; y: number; w: number; h: number };
 
 // steps: 0=wait, 1=on h1, 2=on p, 3=on mac btn, 4=on chrome btn, 5=fade out
-const STEP_TIMINGS = [800, 1400, 1400, 1200, 1200, 900];
+const STEP_TIMINGS = [800, 1500, 1500, 1300, 1300, 1600];
+
+// padding around outline per step (px each side)
+const OUTLINE_PAD: Record<number, number> = { 1: 5, 2: 4, 3: 2, 4: 2 };
+const OUTLINE_RADIUS: Record<number, string> = { 1: "8px", 2: "6px", 3: "14px", 4: "14px" };
 
 function HeroCursorOverlay({ sectionEl }: { sectionEl: HTMLElement | null }) {
   const h1Ref = useRef<HTMLHeadingElement>(null);
@@ -26,29 +30,29 @@ function HeroCursorOverlay({ sectionEl }: { sectionEl: HTMLElement | null }) {
   const [visible, setVisible] = useState(false);
   const [boxes, setBoxes] = useState<Box[]>([]);
 
-  const measure = useCallback(() => {
+  const doMeasure = useCallback(() => {
     if (!sectionEl) return;
     const sr = sectionEl.getBoundingClientRect();
-    const measure = (el: HTMLElement | null): Box => {
+    const m = (el: HTMLElement | null): Box => {
       if (!el) return { x: 0, y: 0, w: 0, h: 0 };
       const r = el.getBoundingClientRect();
       return { x: r.left - sr.left, y: r.top - sr.top, w: r.width, h: r.height };
     };
     setBoxes([
-      measure(h1Ref.current),
-      measure(pRef.current),
-      measure(macRef.current),
-      measure(chromeRef.current),
+      m(h1Ref.current),
+      m(pRef.current),
+      m(macRef.current),
+      m(chromeRef.current),
     ]);
   }, [sectionEl]);
 
   useEffect(() => {
     if (!sectionEl) return;
-    measure();
-    const ro = new ResizeObserver(measure);
+    doMeasure();
+    const ro = new ResizeObserver(doMeasure);
     ro.observe(sectionEl);
     return () => ro.disconnect();
-  }, [sectionEl, measure]);
+  }, [sectionEl, doMeasure]);
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 1200);
@@ -69,11 +73,19 @@ function HeroCursorOverlay({ sectionEl }: { sectionEl: HTMLElement | null }) {
     return () => clearTimeout(t);
   }, [visible]);
 
-  const activeBox = step >= 1 && step <= 4 ? boxes[step - 1] : null;
   const fading = step === 5;
+  const activeBox = step >= 1 && step <= 4 ? boxes[step - 1] : null;
+  const pad = OUTLINE_PAD[step] ?? 5;
 
-  const cursorX = activeBox ? activeBox.x + activeBox.w - 6 : (boxes[0] ? boxes[0].x + boxes[0].w : 0);
-  const cursorY = activeBox ? activeBox.y + activeBox.h / 2 - 4 : (boxes[0] ? boxes[0].y : 0);
+  // cursor sits at the right-center edge of the active element
+  const cursorX = activeBox
+    ? activeBox.x + activeBox.w + 2
+    : boxes[0] ? boxes[0].x + boxes[0].w + 2 : 0;
+  const cursorY = activeBox
+    ? activeBox.y + activeBox.h / 2 - 8
+    : boxes[0] ? boxes[0].y - 8 : 0;
+
+  const showLabel = step >= 1 && step <= 4 && !fading;
 
   return (
     <>
@@ -158,42 +170,100 @@ function HeroCursorOverlay({ sectionEl }: { sectionEl: HTMLElement | null }) {
         </a>
       </div>
 
-      {visible && activeBox && (
-        <motion.div
-          key={step}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: fading ? 0 : 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.22 }}
-          style={{
-            position: "absolute",
-            left: activeBox.x - 6,
-            top: activeBox.y - 6,
-            width: activeBox.w + 12,
-            height: activeBox.h + 12,
-            border: "2px solid #34D399",
-            borderRadius: step === 3 || step === 4 ? "14px" : "8px",
-            background: "rgba(52,211,153,0.04)",
-            pointerEvents: "none",
-            zIndex: 20,
-          }}
-        />
-      )}
-
+      {/* Green outline — tight around the active element */}
       <AnimatePresence>
-        {visible && !fading && (
+        {visible && activeBox && !fading && (
           <motion.div
-            animate={{ left: cursorX, top: cursorY, opacity: fading ? 0 : 1 }}
-            transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+            key={`outline-${step}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 1.2, ease: "easeInOut" } }}
+            transition={{ duration: 0.18 }}
+            style={{
+              position: "absolute",
+              left: activeBox.x - pad,
+              top: activeBox.y - pad,
+              width: activeBox.w + pad * 2,
+              height: activeBox.h + pad * 2,
+              border: "2px solid #34D399",
+              borderRadius: OUTLINE_RADIUS[step] ?? "8px",
+              background: "rgba(52,211,153,0.04)",
+              pointerEvents: "none",
+              zIndex: 20,
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Cursor + label */}
+      <AnimatePresence>
+        {visible && (
+          <motion.div
+            key="cursor"
+            initial={{ opacity: 0 }}
+            animate={{
+              left: cursorX,
+              top: cursorY,
+              opacity: fading ? 0 : 1,
+              y: fading ? -18 : 0,
+            }}
+            exit={{ opacity: 0, y: -18, transition: { duration: 1.4, ease: [0.4, 0, 0.2, 1] } }}
+            transition={{
+              left: { duration: 0.82, ease: [0.22, 1, 0.36, 1] },
+              top: { duration: 0.82, ease: [0.22, 1, 0.36, 1] },
+              opacity: fading
+                ? { duration: 1.4, ease: [0.4, 0, 0.2, 1] }
+                : { duration: 0.3 },
+              y: fading ? { duration: 1.4, ease: [0.4, 0, 0.2, 1] } : { duration: 0.3 },
+            }}
             style={{
               position: "absolute",
               pointerEvents: "none",
               zIndex: 30,
             }}
           >
-            <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
+            <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style={{ display: "block" }}>
               <path d="M4 2L4 17L7.5 13.5L10 19L12 18L9.5 12.5L14 12.5L4 2Z" fill="white" stroke="#444" strokeWidth="0.8" strokeLinejoin="round"/>
             </svg>
+
+            {/* "Click to capture" label — top-right of cursor tip */}
+            <AnimatePresence>
+              {showLabel && (
+                <motion.div
+                  key={`label-${step}`}
+                  initial={{ opacity: 0, scale: 0.9, x: -4 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
+                  transition={{ duration: 0.2, delay: 0.15 }}
+                  style={{
+                    position: "absolute",
+                    left: "20px",
+                    top: "-24px",
+                    background: "#171717",
+                    borderRadius: "6px",
+                    padding: "4px 9px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    whiteSpace: "nowrap",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+                  }}
+                >
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span style={{
+                    fontSize: "10px",
+                    fontWeight: 600,
+                    color: "#ffffff",
+                    fontFamily: "Arial, sans-serif",
+                    letterSpacing: "0.01em",
+                  }}>
+                    Click to capture
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
