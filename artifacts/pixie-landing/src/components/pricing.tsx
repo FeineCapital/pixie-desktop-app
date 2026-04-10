@@ -8,12 +8,27 @@ function AppleIcon() {
   );
 }
 
-const freePlan = ["Hover-to-capture", "Full screen capture", "Annotation tools", "Copy to clipboard", "Save to Desktop", "Menu bar app"];
-const proPlan = ["Everything in Free", "AI element detection", "Cloud history", "Custom shortcuts", "Team sharing", "Priority support"];
+const freePlan = [
+  "Hover-to-capture",
+  "Full screen capture",
+  "Pencil & eraser annotation",
+  "Copy to clipboard",
+  "Save to Desktop",
+  "Menu bar app",
+];
+
+const proPlan = [
+  "Everything in Free",
+  "AI-powered element detection",
+  "Cloud screenshot history",
+  "Custom keyboard shortcuts",
+  "Team sharing",
+  "Priority support",
+];
 
 function Check() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
       <path d="M3 8l3.5 3.5L13 4.5" stroke="#34D399" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -21,66 +36,120 @@ function Check() {
 
 export function Pricing() {
   return (
-    <section id="pricing" style={{ width: "100%", maxWidth: "1080px", margin: "0 auto", padding: "96px 24px" }}>
-      <div style={{ textAlign: "center", marginBottom: "56px" }}>
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          style={{
-            display: "inline-flex", alignItems: "center", gap: "8px",
-            background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
-            borderRadius: "100px", padding: "6px 14px 6px 10px", marginBottom: "20px",
-          }}
-        >
-          <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34D399" }} />
-          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "12px", fontWeight: 400, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Pricing</span>
-        </motion.div>
+    <section id="pricing" className="w-full max-w-7xl mx-auto px-6 md:px-8 py-24 md:py-36">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "8px",
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: "100px",
+          padding: "6px 14px 6px 10px",
+          marginBottom: "20px",
+        }}
+      >
+        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34D399" }} />
+        <span style={{
+          fontFamily: "Arial, sans-serif",
+          fontSize: "12px",
+          fontWeight: 400,
+          color: "rgba(255,255,255,0.5)",
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
+        }}>
+          Pricing
+        </span>
+      </motion.div>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.05 }}
-          style={{ fontFamily: "Arial, sans-serif", fontSize: "48px", fontWeight: 700, color: "#ffffff", lineHeight: 1.1, letterSpacing: "-0.02em" }}
-        >
-          Simple pricing.
-        </motion.h2>
-      </div>
+      <motion.h2
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.05 }}
+        style={{
+          fontFamily: "Arial, sans-serif",
+          fontSize: "52px",
+          fontWeight: 700,
+          color: "#ffffff",
+          lineHeight: 1.1,
+          letterSpacing: "-0.02em",
+          marginBottom: "56px",
+        }}
+      >
+        Simple pricing.
+        <br />
+        Start for free.
+      </motion.h2>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", maxWidth: "720px", margin: "0 auto" }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           style={{
-            borderRadius: "16px", border: "1px solid rgba(255,255,255,0.08)",
-            background: "rgba(255,255,255,0.02)", padding: "32px",
-            display: "flex", flexDirection: "column",
+            borderRadius: "16px",
+            border: "1px solid rgba(255,255,255,0.1)",
+            background: "rgba(255,255,255,0.03)",
+            padding: "32px",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "12px", fontWeight: 600, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "20px" }}>Free</span>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", marginBottom: "28px" }}>
-            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "48px", fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>$0</span>
-            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.35)", marginBottom: "8px" }}>/ forever</span>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "100px",
+            padding: "6px 14px 6px 10px",
+            marginBottom: "24px",
+            alignSelf: "flex-start",
+          }}>
+            <span style={{
+              fontFamily: "Arial, sans-serif",
+              fontSize: "12px",
+              fontWeight: 400,
+              color: "rgba(255,255,255,0.5)",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+            }}>Free</span>
           </div>
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 32px 0", flex: 1, display: "flex", flexDirection: "column", gap: "12px" }}>
-            {freePlan.map(item => (
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", marginBottom: "32px" }}>
+            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "48px", fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>$0</span>
+            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", marginBottom: "6px" }}>/ forever</span>
+          </div>
+          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 40px 0", flex: 1, display: "flex", flexDirection: "column", gap: "14px" }}>
+            {freePlan.map((item) => (
               <li key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>
-                <Check />{item}
+                <Check />
+                {item}
               </li>
             ))}
           </ul>
           <a
             href="https://github.com/FeineCapital/pixie-desktop-app/releases/latest/download/Pixie.dmg"
             style={{
-              display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
-              fontFamily: "Arial, sans-serif", fontWeight: 700, fontSize: "15px",
-              color: "#fff", background: "transparent",
-              border: "1px solid rgba(255,255,255,0.15)", borderRadius: "12px",
-              padding: "14px 28px", textDecoration: "none", width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              fontFamily: "Arial, sans-serif",
+              fontWeight: 700,
+              fontSize: "15px",
+              color: "#ffffff",
+              background: "transparent",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: "12px",
+              padding: "16px 32px",
+              textDecoration: "none",
+              width: "100%",
             }}
           >
             <AppleIcon />
@@ -94,34 +163,79 @@ export function Pricing() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
           style={{
-            borderRadius: "16px", border: "1px solid rgba(52,211,153,0.2)",
-            background: "rgba(52,211,153,0.03)", padding: "32px",
-            display: "flex", flexDirection: "column", position: "relative", overflow: "hidden",
+            borderRadius: "16px",
+            border: "1px solid rgba(52,211,153,0.25)",
+            background: "rgba(52,211,153,0.04)",
+            padding: "32px",
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            overflow: "hidden",
           }}
         >
           <div style={{
-            position: "absolute", top: "20px", right: "20px",
-            fontFamily: "Arial, sans-serif", fontSize: "11px", fontWeight: 600,
-            color: "#34D399", background: "rgba(52,211,153,0.1)",
-            border: "1px solid rgba(52,211,153,0.2)", borderRadius: "100px", padding: "4px 12px",
-          }}>Coming soon</div>
-          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "12px", fontWeight: 600, color: "#34D399", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "20px" }}>Pro</span>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", marginBottom: "28px" }}>
-            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "48px", fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>$9</span>
-            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.35)", marginBottom: "8px" }}>/ month</span>
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            fontFamily: "Arial, sans-serif",
+            fontSize: "12px",
+            fontWeight: 600,
+            color: "#34D399",
+            background: "rgba(52,211,153,0.12)",
+            border: "1px solid rgba(52,211,153,0.25)",
+            borderRadius: "100px",
+            padding: "4px 12px",
+          }}>
+            Coming soon
           </div>
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 32px 0", flex: 1, display: "flex", flexDirection: "column", gap: "12px" }}>
-            {proPlan.map(item => (
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
+            background: "rgba(52,211,153,0.1)",
+            border: "1px solid rgba(52,211,153,0.2)",
+            borderRadius: "100px",
+            padding: "6px 14px 6px 10px",
+            marginBottom: "24px",
+            alignSelf: "flex-start",
+          }}>
+            <span style={{
+              fontFamily: "Arial, sans-serif",
+              fontSize: "12px",
+              fontWeight: 400,
+              color: "#34D399",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+            }}>Pro</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "4px", marginBottom: "32px" }}>
+            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "48px", fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>$9</span>
+            <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", marginBottom: "6px" }}>/ month</span>
+          </div>
+          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 40px 0", flex: 1, display: "flex", flexDirection: "column", gap: "14px" }}>
+            {proPlan.map((item) => (
               <li key={item} style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)" }}>
-                <Check />{item}
+                <Check />
+                {item}
               </li>
             ))}
           </ul>
-          <button style={{
-            fontFamily: "Arial, sans-serif", fontWeight: 700, fontSize: "15px",
-            color: "#000", background: "#fff", borderRadius: "12px",
-            padding: "14px 28px", border: "none", cursor: "pointer", width: "100%",
-          }}>Join the waitlist</button>
+          <button
+            style={{
+              fontFamily: "Arial, sans-serif",
+              fontWeight: 700,
+              fontSize: "15px",
+              color: "#000000",
+              background: "#ffffff",
+              borderRadius: "12px",
+              padding: "16px 32px",
+              border: "none",
+              cursor: "pointer",
+              width: "100%",
+            }}
+          >
+            Join the waitlist
+          </button>
         </motion.div>
       </div>
     </section>
