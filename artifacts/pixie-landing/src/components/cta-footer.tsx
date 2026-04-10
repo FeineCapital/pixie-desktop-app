@@ -37,9 +37,11 @@ export function CtaFooter() {
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          <Button size="lg" className="rounded-full h-14 md:h-16 px-8 md:px-10 text-lg md:text-xl font-bold bg-foreground text-background hover:bg-foreground/90 gap-2.5">
-            <AppleIcon className="w-5 h-5 md:w-6 md:h-6" />
-            Download for Mac
+          <Button size="lg" className="rounded-full h-14 md:h-16 px-8 md:px-10 text-lg md:text-xl font-bold bg-foreground text-background hover:bg-foreground/90 gap-2.5" asChild>
+            <a href={`${import.meta.env.BASE_URL}Pixie Draft.zip`} download>
+              <AppleIcon className="w-5 h-5 md:w-6 md:h-6" />
+              Download for Mac
+            </a>
           </Button>
         </motion.div>
       </div>
