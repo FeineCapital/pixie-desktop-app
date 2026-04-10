@@ -562,4 +562,8 @@
     clearSel();
     document.body.style.cursor = 'default';
   });
+
+  window.pixie.onToast((msg) => {
+    toast(msg);
+  });
 })();

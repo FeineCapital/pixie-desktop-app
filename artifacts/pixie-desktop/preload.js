@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('pixie', {
   onInit:       (cb) => ipcRenderer.on('init', (_e, data) => cb(data)),
   onActivate:   (cb) => ipcRenderer.on('activate', () => cb()),
   onDeactivate: (cb) => ipcRenderer.on('deactivate', () => cb()),
+  onToast:      (cb) => ipcRenderer.on('toast', (_e, msg) => cb(msg)),
   deactivate:   ()   => ipcRenderer.send('deactivate'),
   takeScreenshot:   () => ipcRenderer.invoke('take-screenshot'),
   copyToClipboard:  (b64) => ipcRenderer.invoke('copy-to-clipboard', b64),

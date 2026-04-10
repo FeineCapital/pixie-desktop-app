@@ -50,7 +50,8 @@ function createTray() {
   const menu = Menu.buildFromTemplate([
     { label: 'Pixie', enabled: false },
     { type: 'separator' },
-    { label: 'Capture  (⌘⇧6)', click: activateCapture },
+    { label: 'Capture Area  (⌘⇧6)', click: activateCapture },
+    { label: 'Full Screen   (⌘⇧7)', click: captureFullScreen },
     { type: 'separator' },
     { label: 'Quit', click: () => app.quit() },
   ]);
@@ -112,6 +113,33 @@ ipcMain.handle('save-to-desktop', async (_e, base64) => {
 
 ipcMain.on('deactivate', () => deactivateCapture());
 
+async function captureFullScreen() {
+  const primary = screen.getPrimaryDisplay();
+  const { bounds, scaleFactor } = primary;
+
+  const sources = await desktopCapturer.getSources({
+    types: ['screen'],
+    thumbnailSize: {
+      width: Math.round(bounds.width * scaleFactor),
+      height: Math.round(bounds.height * scaleFactor)
+    }
+  });
+
+  if (!sources.length) return;
+  const img = sources[0].thumbnail;
+  const pngBuf = img.toPNG();
+
+  clipboard.writeImage(nativeImage.createFromBuffer(pngBuf));
+
+  const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const filePath = path.join(os.homedir(), 'Desktop', `pixie-${ts}.png`);
+  fs.writeFileSync(filePath, pngBuf);
+
+  if (overlayWin) {
+    overlayWin.webContents.send('toast', 'Full screen captured ✓');
+  }
+}
+
 app.dock.hide();
 
 app.whenReady().then(() => {
@@ -120,6 +148,10 @@ app.whenReady().then(() => {
 
   globalShortcut.register('CommandOrControl+Shift+6', () => {
     activateCapture();
+  });
+
+  globalShortcut.register('CommandOrControl+Shift+7', () => {
+    captureFullScreen();
   });
 });
 

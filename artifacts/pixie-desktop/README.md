@@ -11,12 +11,14 @@ npm start
 
 The app hides from the Dock and appears as **⊡** in your menu bar.
 
-## Usage
+## Shortcuts
 
-Press **⌘⇧6** from anywhere to activate the capture overlay.
-Drag to select any area of the screen.
+| Shortcut | Action |
+|----------|--------|
+| **⌘⇧6** | Activate capture overlay — drag to select an area |
+| **⌘⇧7** | Instant full-screen capture (copied + saved to Desktop) |
 
-### After selecting
+### After selecting (⌘⇧6)
 
 | Action | How |
 |--------|-----|
