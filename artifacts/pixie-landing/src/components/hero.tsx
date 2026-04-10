@@ -19,7 +19,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="text-[2.2rem] sm:text-5xl md:text-6xl font-display font-bold leading-[1] mb-6 md:mb-8 text-foreground whitespace-nowrap"
         >
-          AI Powered Screen Capturing
+          The easiest way to take screenshots
         </motion.h1>
 
         <motion.p 
