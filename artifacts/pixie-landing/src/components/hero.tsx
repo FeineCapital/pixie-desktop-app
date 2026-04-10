@@ -38,9 +38,10 @@ export function Hero() {
             lineHeight: 1,
             letterSpacing: "-0.03em",
             marginBottom: "28px",
+            whiteSpace: "nowrap",
           }}
         >
-          The easiest way<br />to take screenshots
+          The easiest way to take screenshots.
         </motion.h1>
 
         <motion.p
