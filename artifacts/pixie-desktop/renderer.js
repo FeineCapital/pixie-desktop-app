@@ -72,7 +72,7 @@
 
     hoverTip = document.createElement('div');
     hoverTip.id = 'ec-hover-tip';
-    hoverTip.textContent = 'Click to capture · Esc to cancel';
+    hoverTip.textContent = 'Click to capture';
     document.body.appendChild(hoverTip);
 
     createToolbar();
