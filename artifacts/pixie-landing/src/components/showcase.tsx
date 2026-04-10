@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import slackLogo from "@assets/image_1775815402627.png";
 
 function StepChart({ values, height = 50 }: { values: number[]; height?: number }) {
   const max = Math.max(...values);
@@ -212,133 +213,105 @@ function StripeDashboard({ isHovered, isCaptured }: { isHovered: boolean; isCapt
 
 function SlackChat({ showPasted, showSent }: { showPasted: boolean; showSent: boolean }) {
   return (
-    <div style={{ display: "flex", width: "100%", height: "100%", background: "#1a1d21", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" }}>
-      <div style={{ width: "54px", background: "#3f0e40", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "10px", gap: "8px", flexShrink: 0 }}>
-        <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#611f69", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "6px" }}>
-          <span style={{ fontSize: "14px", fontWeight: 800, color: "#fff" }}>F</span>
+    <div style={{ width: "100%", height: "100%", background: "#1a1d21", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif", display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "10px 16px", borderBottom: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#635bff", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontSize: "14px", fontWeight: 700, color: "#fff" }}>S</span>
         </div>
-        <div style={{ width: "28px", height: "28px", borderRadius: "6px", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-        </div>
-        {[
-          <svg key="a" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
-          <svg key="b" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>,
-        ].map((icon, i) => (
-          <div key={i} style={{ width: "28px", height: "28px", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center" }}>{icon}</div>
-        ))}
-      </div>
-
-      <div style={{ width: "180px", background: "#19171d", borderRight: "1px solid rgba(255,255,255,0.08)", padding: "10px 0", flexShrink: 0 }}>
-        <div style={{ padding: "0 12px", marginBottom: "12px" }}>
-          <div style={{ fontSize: "13px", fontWeight: 700, color: "#fff", marginBottom: "8px" }}>Feine Capital</div>
-          <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: "6px", padding: "5px 8px", display: "flex", alignItems: "center", gap: "5px" }}>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.35)" }}>Search</span>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span style={{ fontSize: "14px", fontWeight: 700, color: "#fff" }}>Sarah Chen</span>
+            <span style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", background: "#2bac76" }} />
           </div>
+          <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)" }}>Active now</span>
         </div>
-        <div style={{ padding: "0 8px" }}>
-          <div style={{ fontSize: "10px", fontWeight: 600, color: "rgba(255,255,255,0.5)", padding: "4px 6px", textTransform: "uppercase", letterSpacing: "0.04em" }}>Channels</div>
-          {["# general", "# engineering", "# design", "# growth"].map(ch => (
-            <div key={ch} style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)", padding: "3px 6px", borderRadius: "4px" }}>{ch}</div>
-          ))}
-          <div style={{ fontSize: "10px", fontWeight: 600, color: "rgba(255,255,255,0.5)", padding: "4px 6px", marginTop: "8px", textTransform: "uppercase", letterSpacing: "0.04em" }}>Direct Messages</div>
-          <div style={{ fontSize: "11px", color: "#fff", padding: "3px 6px", borderRadius: "4px", background: "#1164a3", fontWeight: 500 }}>
-            <span style={{ display: "inline-block", width: "7px", height: "7px", borderRadius: "50%", background: "#2bac76", marginRight: "5px" }} />
-            Sarah Chen
-          </div>
-          <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)", padding: "3px 6px" }}>Mike Johnson</div>
-          <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.6)", padding: "3px 6px" }}>Alex Thompson</div>
+        <div style={{ flex: 1 }} />
+        <div style={{ display: "flex", gap: "12px" }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1.8"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 1.05 3.18 2 2 0 0 1 3 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.8"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
       </div>
 
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        <div style={{ padding: "8px 14px", borderBottom: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ display: "inline-block", width: "8px", height: "8px", borderRadius: "50%", background: "#2bac76" }} />
-          <span style={{ fontSize: "13px", fontWeight: 700, color: "#fff" }}>Sarah Chen</span>
-          <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>Active</span>
-        </div>
-
-        <div style={{ flex: 1, padding: "14px", display: "flex", flexDirection: "column", gap: "10px", overflow: "hidden" }}>
-          <div style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
-            <div style={{ width: "28px", height: "28px", borderRadius: "4px", background: "#635bff", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: "12px", fontWeight: 700, color: "#fff" }}>S</span>
+      <div style={{ flex: 1, padding: "20px 20px", display: "flex", flexDirection: "column", gap: "14px", overflow: "hidden" }}>
+        <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+          <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#635bff", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ fontSize: "14px", fontWeight: 700, color: "#fff" }}>S</span>
+          </div>
+          <div>
+            <div style={{ marginBottom: "4px" }}>
+              <span style={{ fontSize: "13px", fontWeight: 700, color: "#fff" }}>Sarah Chen</span>
+              <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", marginLeft: "8px" }}>10:42 AM</span>
             </div>
-            <div>
-              <div style={{ marginBottom: "3px" }}>
-                <span style={{ fontSize: "12px", fontWeight: 700, color: "#fff" }}>Sarah Chen</span>
-                <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.35)", marginLeft: "6px" }}>10:42 AM</span>
+            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>Hey, can you drop me the MRR screenshot? Need it for the deck</div>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {showSent && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}
+            >
+              <div style={{ width: "32px", height: "32px", borderRadius: "8px", background: "#2bac76", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: "14px", fontWeight: 700, color: "#fff" }}>Y</span>
               </div>
-              <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.85)", lineHeight: 1.5 }}>Hey, can you drop me the MRR screenshot? Need it for the deck 🙏</div>
-            </div>
-          </div>
-
-          <AnimatePresence>
-            {showSent && (
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}
-              >
-                <div style={{ width: "28px", height: "28px", borderRadius: "4px", background: "#2bac76", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: "12px", fontWeight: 700, color: "#fff" }}>Y</span>
+              <div>
+                <div style={{ marginBottom: "4px" }}>
+                  <span style={{ fontSize: "13px", fontWeight: 700, color: "#fff" }}>You</span>
+                  <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.35)", marginLeft: "8px" }}>10:43 AM</span>
                 </div>
-                <div>
-                  <div style={{ marginBottom: "3px" }}>
-                    <span style={{ fontSize: "12px", fontWeight: 700, color: "#fff" }}>You</span>
-                    <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.35)", marginLeft: "6px" }}>10:43 AM</span>
+                <div style={{ borderRadius: "8px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", background: "#fff", width: "220px", marginBottom: "6px" }}>
+                  <div style={{ padding: "10px 12px", background: "#f6f9fc" }}>
+                    <div style={{ fontSize: "8px", color: "#697386", marginBottom: "2px" }}>MRR</div>
+                    <div style={{ fontSize: "16px", fontWeight: 700, color: "#1a1f36", marginBottom: "4px" }}>$5,899.96</div>
+                    <svg width="100%" height="28" viewBox="0 0 200 28" preserveAspectRatio="none">
+                      <path d="M0 26 L20 24 L40 22 L60 19 L80 16 L100 13 L120 10 L140 8 L160 6 L180 4 L200 2" fill="none" stroke="#635bff" strokeWidth="1.5"/>
+                    </svg>
                   </div>
-                  <div style={{ borderRadius: "8px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", background: "#fff", width: "200px", marginBottom: "4px" }}>
-                    <div style={{ padding: "8px 10px", background: "#f6f9fc" }}>
-                      <div style={{ fontSize: "7px", color: "#697386", marginBottom: "1px" }}>MRR ⓘ</div>
-                      <div style={{ fontSize: "14px", fontWeight: 700, color: "#1a1f36", marginBottom: "3px" }}>$5,899.96</div>
-                      <svg width="100%" height="24" viewBox="0 0 200 24" preserveAspectRatio="none">
-                        <path d="M0 22 L20 20 L40 18 L60 16 L80 13 L100 11 L120 9 L140 7 L160 5 L180 3 L200 2" fill="none" stroke="#635bff" strokeWidth="1.5"/>
-                      </svg>
-                    </div>
-                  </div>
-                  <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.85)", lineHeight: 1.5 }}>Here you go, just grabbed it 📸</div>
+                </div>
+                <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>Here you go, just grabbed it</div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div style={{ padding: "10px 14px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: "10px", padding: "10px 12px", display: "flex", alignItems: "center", gap: "10px", border: "1px solid rgba(255,255,255,0.1)", minHeight: "40px" }}>
+          <AnimatePresence>
+            {showPasted && !showSent && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2 }}
+                style={{ width: "50px", height: "32px", borderRadius: "4px", overflow: "hidden", flexShrink: 0, border: "1px solid rgba(255,255,255,0.12)" }}
+              >
+                <div style={{ width: "100%", height: "100%", background: "#f6f9fc", padding: "3px 5px", boxSizing: "border-box" }}>
+                  <div style={{ fontSize: "5px", color: "#697386" }}>MRR</div>
+                  <div style={{ fontSize: "8px", fontWeight: 700, color: "#1a1f36" }}>$5,899</div>
+                  <svg width="100%" height="7" viewBox="0 0 200 10" preserveAspectRatio="none">
+                    <path d="M0 9 L40 7 L80 5 L120 3 L200 2" fill="none" stroke="#635bff" strokeWidth="2"/>
+                  </svg>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
-
-        <div style={{ padding: "8px 12px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-          <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: "8px", padding: "8px 10px", display: "flex", alignItems: "center", gap: "8px", border: "1px solid rgba(255,255,255,0.1)", minHeight: "36px" }}>
-            <AnimatePresence>
-              {showPasted && !showSent && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.85 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.2 }}
-                  style={{ width: "44px", height: "28px", borderRadius: "4px", overflow: "hidden", flexShrink: 0, border: "1px solid rgba(255,255,255,0.12)" }}
-                >
-                  <div style={{ width: "100%", height: "100%", background: "#f6f9fc", padding: "2px 4px", boxSizing: "border-box" }}>
-                    <div style={{ fontSize: "4px", color: "#697386" }}>MRR</div>
-                    <div style={{ fontSize: "7px", fontWeight: 700, color: "#1a1f36" }}>$5,899</div>
-                    <svg width="100%" height="6" viewBox="0 0 200 10" preserveAspectRatio="none">
-                      <path d="M0 9 L40 7 L80 5 L120 3 L200 2" fill="none" stroke="#635bff" strokeWidth="2"/>
-                    </svg>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <span style={{ fontSize: "12px", color: showPasted && !showSent ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.3)", flex: 1 }}>
-              {showPasted && !showSent ? "Here you go, just grabbed it 📸" : "Message Sarah Chen..."}
-            </span>
-            <AnimatePresence>
-              {showPasted && !showSent && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  style={{ width: "24px", height: "24px", borderRadius: "4px", background: "#007a5a", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          <span style={{ fontSize: "13px", color: showPasted && !showSent ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.3)", flex: 1 }}>
+            {showPasted && !showSent ? "Here you go, just grabbed it" : "Message Sarah Chen..."}
+          </span>
+          <AnimatePresence>
+            {showPasted && !showSent && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{ width: "28px", height: "28px", borderRadius: "6px", background: "#007a5a", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
@@ -391,59 +364,73 @@ function CaptureDemo() {
   return (
     <div className="relative w-full max-w-4xl mx-auto select-none">
       <div className="overflow-hidden" style={{ borderRadius: "16px", border: "1px solid rgba(255,255,255,0.1)", background: "#111" }}>
-        {/* Browser tab bar */}
-        <div style={{ display: "flex", alignItems: "flex-end", background: "#2a2a2a", paddingLeft: "8px", paddingTop: "6px" }}>
-          <div className="flex gap-1.5 items-center" style={{ padding: "0 8px", alignSelf: "center", marginBottom: "2px" }}>
-            <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-            <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
-            <div className="w-3 h-3 rounded-full bg-[#28c840]" />
+        {/* Chrome tab bar */}
+        <div style={{ background: "#202124", paddingTop: "8px", paddingLeft: "10px", paddingRight: "10px", display: "flex", alignItems: "flex-end" }}>
+          <div className="flex gap-1.5 items-center" style={{ padding: "0 6px 0 4px", alignSelf: "center", marginBottom: "4px", marginRight: "6px" }}>
+            <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#ff5f57" }} />
+            <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#febc2e" }} />
+            <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#28c840" }} />
           </div>
-          {/* Tabs */}
+
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "5px",
-              padding: "6px 14px 6px 10px",
+              gap: "6px",
+              padding: "7px 16px 7px 12px",
               borderRadius: "8px 8px 0 0",
-              background: activeTab === "stripe" ? "#1a1a1a" : "#333",
-              marginLeft: "8px",
+              background: activeTab === "stripe" ? "#292a2d" : "transparent",
               cursor: "default",
               transition: "background 0.2s",
+              position: "relative",
+              minWidth: "120px",
             }}
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="#635bff"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/></svg>
-            <span style={{ fontSize: "11px", color: activeTab === "stripe" ? "#ddd" : "#999" }}>Stripe Dashboard</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#635bff"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/></svg>
+            <span style={{ fontSize: "11px", color: activeTab === "stripe" ? "#e8eaed" : "#9aa0a6", fontWeight: activeTab === "stripe" ? 500 : 400 }}>Stripe Dashboard</span>
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke={activeTab === "stripe" ? "#9aa0a6" : "#6b6e73"} strokeWidth="2.5" strokeLinecap="round" style={{ marginLeft: "auto" }}><path d="M18 6L6 18M6 6l12 12"/></svg>
           </div>
+
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "5px",
-              padding: "6px 14px 6px 10px",
+              gap: "6px",
+              padding: "7px 16px 7px 12px",
               borderRadius: "8px 8px 0 0",
-              background: activeTab === "slack" ? "#1a1a1a" : "#333",
+              background: activeTab === "slack" ? "#292a2d" : "transparent",
               cursor: "default",
               transition: "background 0.2s",
+              position: "relative",
+              minWidth: "120px",
             }}
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-              <path d="M14.5 2a2.5 2.5 0 0 0 0 5h2.5V4.5A2.5 2.5 0 0 0 14.5 2zM7 7a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 2.5 2.5V7zM2 14.5A2.5 2.5 0 0 0 4.5 17V14.5H2zM9.5 10a2.5 2.5 0 0 1 5 0v2.5h-2.5A2.5 2.5 0 0 1 9.5 10zM17 9.5A2.5 2.5 0 0 0 22 9.5 2.5 2.5 0 0 0 19.5 7H17zM7 14.5A2.5 2.5 0 0 1 4.5 12H7zM17 14.5v2.5h2.5a2.5 2.5 0 0 0 0-5H17zM9.5 17v2.5A2.5 2.5 0 0 0 12 22a2.5 2.5 0 0 0 2.5-2.5V17z" fill="#e01e5a" stroke="none"/>
-            </svg>
-            <span style={{ fontSize: "11px", color: activeTab === "slack" ? "#ddd" : "#999" }}>Slack — Sarah Chen</span>
+            <img src={slackLogo} width="14" height="14" style={{ borderRadius: "2px" }} alt="" />
+            <span style={{ fontSize: "11px", color: activeTab === "slack" ? "#e8eaed" : "#9aa0a6", fontWeight: activeTab === "slack" ? 500 : 400 }}>Slack — Sarah Chen</span>
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke={activeTab === "slack" ? "#9aa0a6" : "#6b6e73"} strokeWidth="2.5" strokeLinecap="round" style={{ marginLeft: "auto" }}><path d="M18 6L6 18M6 6l12 12"/></svg>
           </div>
+
           <div style={{ flex: 1 }} />
+          <div style={{ marginBottom: "4px", display: "flex", gap: "8px", marginRight: "4px" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f6368" strokeWidth="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
         </div>
 
-        {/* URL bar */}
-        <div style={{ padding: "0 14px", height: "30px", display: "flex", alignItems: "center", background: "#1a1a1a", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-            <div style={{ background: "rgba(255,255,255,0.06)", borderRadius: "6px", padding: "3px 12px", display: "flex", alignItems: "center", gap: "5px" }}>
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.35)" }}>
-                {activeTab === "slack" ? "app.slack.com/client/feine-capital" : "dashboard.stripe.com/dashboard"}
-              </span>
-            </div>
+        {/* Chrome URL bar */}
+        <div style={{ padding: "4px 10px 6px", display: "flex", alignItems: "center", gap: "8px", background: "#292a2d" }}>
+          <div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f6368" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3a3c3f" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f6368" strokeWidth="2" strokeLinecap="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          </div>
+          <div style={{ flex: 1, background: "#202124", borderRadius: "20px", padding: "5px 14px", display: "flex", alignItems: "center", gap: "6px" }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span style={{ fontSize: "11px", color: "#9aa0a6" }}>
+              {activeTab === "slack" ? "app.slack.com/client/feine-capital" : "dashboard.stripe.com/dashboard"}
+            </span>
+          </div>
+          <div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5f6368" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           </div>
         </div>
 
