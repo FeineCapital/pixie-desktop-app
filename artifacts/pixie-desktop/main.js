@@ -128,7 +128,7 @@ function createTray() {
   const iconPath = path.join(__dirname, 'trayTemplate.png');
   const icon = fs.existsSync(iconPath) ? nativeImage.createFromPath(iconPath) : nativeImage.createEmpty();
   tray = new Tray(icon);
-  tray.setToolTip('Pixie — ⌘⇧6 click & capture  •  ⌘⇧7 drag to select  •  ⌘⇧8 full screen');
+  tray.setToolTip('Pixie — ⌘⇧6 click to capture  •  ⌘⇧7 drag to select  •  ⌘⇧8 full screenshot');
   updateTrayMenu(false);
 }
 
@@ -136,9 +136,9 @@ function updateTrayMenu(updateReady = false) {
   const items = [
     { label: 'Pixie', enabled: false },
     { type: 'separator' },
-    { label: 'Click & Capture     ⌘⇧6', click: () => activateHoverCapture() },
-    { label: 'Drag to Select       ⌘⇧7', click: () => activateDragCapture() },
-    { label: 'Full Screen            ⌘⇧8', click: () => captureFullScreen() },
+    { label: 'Click to capture     ⌘⇧6', click: () => activateHoverCapture() },
+    { label: 'Drag to select       ⌘⇧7', click: () => activateDragCapture() },
+    { label: 'Full screenshot      ⌘⇧8', click: () => captureFullScreen() },
     { type: 'separator' },
     { label: 'Esc to cancel anytime', enabled: false },
     { type: 'separator' },

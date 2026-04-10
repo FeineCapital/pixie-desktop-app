@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 
 const shortcuts = [
-  { keys: ["⌘", "⇧", "6"], label: "Click & capture", desc: "Hover over any element" },
+  { keys: ["⌘", "⇧", "6"], label: "Click to capture", desc: "Hover over any element" },
   { keys: ["⌘", "⇧", "7"], label: "Drag to select", desc: "Draw a custom area" },
-  { keys: ["⌘", "⇧", "8"], label: "Full screen", desc: "Capture the entire screen" },
+  { keys: ["⌘", "⇧", "8"], label: "Full screenshot", desc: "Capture the entire screen" },
   { keys: ["⌘", "C"], label: "Copy", desc: "Copy capture to clipboard" },
   { keys: ["↵"], label: "Save", desc: "Save to Desktop" },
   { keys: ["Esc"], label: "Cancel", desc: "Dismiss and exit" },

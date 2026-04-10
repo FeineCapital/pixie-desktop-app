@@ -560,7 +560,7 @@ export function Showcase() {
     {
       title: "Full screenshot",
       desc: "Capture your entire screen in one click. No cropping, no extra steps.",
-      keys: ["↵"],
+      keys: ["\u2318", "\u21E7", "8"],
       url: "maison.com/new-collection",
       demo: <ClothingStore />,
     },
