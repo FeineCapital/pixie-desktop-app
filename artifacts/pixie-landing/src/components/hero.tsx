@@ -50,7 +50,7 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           style={{
             fontFamily: "Arial, sans-serif",
-            fontSize: "17px",
+            fontSize: "14px",
             fontWeight: 400,
             color: "rgba(255,255,255,0.45)",
             lineHeight: 1.65,
