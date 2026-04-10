@@ -126,22 +126,17 @@ function StripeDashboard() {
 
   const positions: Record<number, { x: string; y: string }> = {
     0: { x: "78%", y: "78%" },
-    1: { x: "11%", y: "61%" },
-    2: { x: "11%", y: "61%" },
-    3: { x: "11%", y: "61%" },
-    4: { x: "11%", y: "61%" },
+    1: { x: "11%", y: "50%" },
+    2: { x: "11%", y: "50%" },
+    3: { x: "11%", y: "50%" },
+    4: { x: "11%", y: "50%" },
     5: { x: "78%", y: "78%" },
   };
   const pos = positions[step] ?? positions[0];
 
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
-      <div style={{ display: "flex", height: "100%" }}>
-        <div style={{ width: "52px", background: "#f7f8fa", borderRight: "1px solid #e3e8ee", padding: "14px 0", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-          <div style={{ width: "22px", height: "22px", borderRadius: "5px", background: "#635bff" }} />
-          {[1,2,3,4].map(i => <div key={i} style={{ width: "16px", height: "2px", borderRadius: "1px", background: "#d0d5dd" }} />)}
-        </div>
-        <div style={{ flex: 1, padding: "16px 20px", overflow: "hidden" }}>
+        <div style={{ width: "100%", height: "100%", padding: "16px 20px", overflow: "hidden", boxSizing: "border-box" as const }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "14px" }}>
             <div>
               <div style={{ fontSize: "9px", color: "#697386", textTransform: "uppercase" as const, letterSpacing: "0.05em", marginBottom: "2px" }}>Total Revenue</div>
@@ -165,7 +160,7 @@ function StripeDashboard() {
           </svg>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }}>
             <motion.div
-              animate={{ boxShadow: hovering ? "0 0 0 2px #34D399, 0 2px 8px rgba(52,211,153,0.15)" : "0 0 0 1px #e3e8ee", background: hovering ? "rgba(52,211,153,0.04)" : "#fff" }}
+              animate={{ boxShadow: hovering ? "0 0 0 2px #34D399" : "0 0 0 1px #e3e8ee", background: hovering ? "rgba(52,211,153,0.04)" : "#fff" }}
               transition={{ duration: 0.3 }}
               style={{ borderRadius: "8px", padding: "10px 12px" }}
             >
@@ -193,7 +188,6 @@ function StripeDashboard() {
             ))}
           </div>
         </div>
-      </div>
       <motion.div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.28)", zIndex: 3, pointerEvents: "none" }} animate={{ opacity: captured ? 1 : 0 }} transition={{ duration: 0.2 }} />
       <CopiedNotif show={showNotif} />
       <CursorWithLabel x={pos.x} y={pos.y} />
