@@ -40,7 +40,6 @@
       .__ec-hl {
         outline: none !important;
         box-shadow: 0 0 0 2px #00e676, 0 0 8px rgba(0,230,118,0.25) !important;
-        border-radius: inherit !important;
       }
       #__ec-ov {
         position: fixed !important; pointer-events: none !important;
@@ -484,11 +483,22 @@
     unhighlight();
     if (!el || isOurs(el)) return;
     hoveredEl = el;
+    const existingRadius = parseFloat(window.getComputedStyle(el).borderRadius) || 0;
+    const radius = Math.max(existingRadius, 6);
+    el.dataset.__ecPrevRadius = el.style.borderRadius || '';
+    el.style.setProperty('border-radius', radius + 'px', 'important');
     el.classList.add('__ec-hl');
   }
 
   function unhighlight() {
-    if (hoveredEl) { hoveredEl.classList.remove('__ec-hl'); hoveredEl = null; }
+    if (!hoveredEl) return;
+    hoveredEl.classList.remove('__ec-hl');
+    const prev = hoveredEl.dataset.__ecPrevRadius;
+    if (prev !== undefined) {
+      hoveredEl.style.borderRadius = prev;
+      delete hoveredEl.dataset.__ecPrevRadius;
+    }
+    hoveredEl = null;
   }
 
   function hasVisualBoundary(el) {
@@ -701,7 +711,7 @@
         const br = el.getBoundingClientRect();
         selRect = { left: br.left, top: br.top, width: br.width, height: br.height };
         const cs = window.getComputedStyle(el);
-        captureRadius = parseFloat(cs.borderRadius) || 0;
+        captureRadius = Math.max(parseFloat(cs.borderRadius) || 0, 6);
         doCapture().then(() => {
           selRect = null;
           if (tooltip) tooltip.style.opacity = '1';
