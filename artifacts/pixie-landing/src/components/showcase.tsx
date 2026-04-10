@@ -188,9 +188,9 @@ function StripeDashboard() {
             ))}
           </div>
         </div>
-      <motion.div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.28)", zIndex: 3, pointerEvents: "none" }} animate={{ opacity: captured ? 1 : 0 }} transition={{ duration: 0.2 }} />
-      <CopiedNotif show={showNotif} />
-      <CursorWithLabel x={pos.x} y={pos.y} />
+        <motion.div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.28)", zIndex: 3, pointerEvents: "none" }} animate={{ opacity: captured ? 1 : 0 }} transition={{ duration: 0.2 }} />
+        <CopiedNotif show={showNotif} />
+        <CursorWithLabel x={pos.x} y={pos.y} />
     </div>
   );
 }
