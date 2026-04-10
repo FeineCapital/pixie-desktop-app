@@ -124,32 +124,79 @@ function showOnboarding() {
 
 // ─── Tray ─────────────────────────────────────────────────────────────────────
 
+let trayPopup = null;
+
 function createTray() {
   const iconPath = path.join(__dirname, 'trayTemplate.png');
   const icon = fs.existsSync(iconPath) ? nativeImage.createFromPath(iconPath) : nativeImage.createEmpty();
   tray = new Tray(icon);
   tray.setToolTip('Pixie — ⌘⇧6 click to capture  •  ⌘⇧7 drag to select  •  ⌘⇧8 full screenshot');
-  updateTrayMenu(false);
+  tray.on('click', () => toggleTrayPopup());
+  tray.on('right-click', () => toggleTrayPopup());
 }
 
-function updateTrayMenu(updateReady = false) {
-  const items = [
-    { label: 'Pixie', enabled: false },
-    { type: 'separator' },
-    { label: 'Click to capture     ⌘⇧6', click: () => activateHoverCapture() },
-    { label: 'Drag to select       ⌘⇧7', click: () => activateDragCapture() },
-    { label: 'Full screenshot      ⌘⇧8', click: () => captureFullScreen() },
-    { type: 'separator' },
-    { label: 'Esc to cancel anytime', enabled: false },
-    { type: 'separator' },
-  ];
-  if (updateReady) {
-    items.push({ label: 'Install Update & Quit', click: () => autoUpdater.quitAndInstall() });
-    items.push({ type: 'separator' });
+function toggleTrayPopup() {
+  if (trayPopup && !trayPopup.isDestroyed()) {
+    trayPopup.hide();
+    trayPopup.destroy();
+    trayPopup = null;
+    return;
   }
-  items.push({ label: 'Quit Pixie', click: () => app.quit() });
-  tray.setContextMenu(Menu.buildFromTemplate(items));
+
+  const trayBounds = tray.getBounds();
+  const popupWidth = 320;
+  const popupHeight = 310;
+
+  trayPopup = new BrowserWindow({
+    width: popupWidth,
+    height: popupHeight,
+    x: Math.round(trayBounds.x + trayBounds.width / 2 - popupWidth / 2),
+    y: trayBounds.y + trayBounds.height + 4,
+    frame: false,
+    resizable: false,
+    movable: false,
+    minimizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    skipTaskbar: true,
+    alwaysOnTop: true,
+    transparent: false,
+    backgroundColor: '#171717',
+    hasShadow: true,
+    roundedCorners: true,
+    vibrancy: undefined,
+    webPreferences: {
+      preload: path.join(__dirname, 'tray-preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
+
+  trayPopup.loadFile('tray-popup.html');
+  trayPopup.on('blur', () => {
+    if (trayPopup && !trayPopup.isDestroyed()) {
+      trayPopup.hide();
+      trayPopup.destroy();
+      trayPopup = null;
+    }
+  });
 }
+
+function hideTrayPopup() {
+  if (trayPopup && !trayPopup.isDestroyed()) {
+    trayPopup.hide();
+    trayPopup.destroy();
+    trayPopup = null;
+  }
+}
+
+ipcMain.on('tray-action', (_e, type) => {
+  hideTrayPopup();
+  if (type === 'click') activateHoverCapture();
+  else if (type === 'drag') activateDragCapture();
+  else if (type === 'full') captureFullScreen();
+  else if (type === 'quit') app.quit();
+});
 
 // ─── Capture modes ────────────────────────────────────────────────────────────
 
