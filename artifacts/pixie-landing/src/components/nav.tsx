@@ -20,7 +20,7 @@ export function Nav() {
         style={{ maxWidth: "780px", width: "100%" }}
       >
         <div
-          className="flex items-center"
+          className="relative z-10 flex items-center"
           style={{ paddingLeft: "28px" }}
         >
           <Link
