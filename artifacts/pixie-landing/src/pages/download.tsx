@@ -147,16 +147,6 @@ function ChromeExtensionSection() {
           alignItems: "center",
         }}
       >
-        <div style={{
-          width: "56px",
-          height: "56px",
-          marginBottom: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-          <img src={chromeLogo} alt="Chrome" style={{ width: "48px", height: "48px" }} />
-        </div>
         <h2 style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "36px",
@@ -246,18 +236,6 @@ function DesktopAppSection() {
           alignItems: "center",
         }}
       >
-        <div style={{
-          width: "56px",
-          height: "56px",
-          borderRadius: "12px",
-          background: "rgba(255,255,255,0.08)",
-          marginBottom: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
-          <AppleIcon size={28} />
-        </div>
         <h2 style={{
           fontFamily: "Arial, sans-serif",
           fontSize: "36px",
@@ -309,27 +287,12 @@ function DesktopAppSection() {
 }
 
 function BetterTogetherSection() {
-  const reasons = [
-    {
-      title: "Desktop app captures everything",
-      desc: "Windows, menus, dialogs, desktop elements — anything on your screen that a browser extension can't reach.",
-    },
-    {
-      title: "Extension captures with precision",
-      desc: "DOM-level detection means pixel-perfect element capture on web pages, without background noise.",
-    },
-    {
-      title: "Same workflow, everywhere",
-      desc: "Both tools share the same hover-and-click capture flow. Learn once, use everywhere.",
-    },
-  ];
-
   return (
     <section style={{
       width: "100%",
       maxWidth: "860px",
       margin: "0 auto",
-      padding: "0 24px 120px",
+      padding: "0 24px 140px",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -350,7 +313,7 @@ function BetterTogetherSection() {
           lineHeight: 1.1,
         }}
       >
-        Better together
+        Download both. Cover everything.
       </motion.h2>
       <motion.p
         initial={{ opacity: 0, y: 16 }}
@@ -362,17 +325,34 @@ function BetterTogetherSection() {
           fontSize: "17px",
           color: "rgba(255,255,255,0.45)",
           marginBottom: "48px",
-          maxWidth: "460px",
+          maxWidth: "500px",
           lineHeight: 1.6,
         }}
       >
-        The desktop app and Chrome extension complement each other. Download both for full coverage.
+        Pixie comes in two parts — and you'll want both. Together they cover every screen, app, and web page you'll ever need to capture.
       </motion.p>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%" }}>
-        {reasons.map((r, i) => (
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", width: "100%", marginBottom: "40px" }}>
+        {[
+          {
+            label: "Desktop App for Mac",
+            desc: "Captures anything on your screen — windows, menus, dialogs, and native apps. Trigger with ⌘⇧6, ⌘⇧7, or ⌘⇧8. Lives in your menu bar, always one shortcut away. Nothing leaves your Mac.",
+            cta: "Download for Mac",
+            href: "https://github.com/FeineCapital/pixie-desktop-app/releases/latest/download/Pixie.dmg",
+            icon: <AppleIcon size={15} />,
+            dark: true,
+          },
+          {
+            label: "Chrome Extension",
+            desc: "Captures individual elements on any web page with DOM-level precision. Hover over a button, card, or image and click once — no dragging, no cropping, no noise.",
+            cta: "Get the Extension",
+            href: "https://github.com/FeineCapital/pixie-chrome-extension",
+            icon: <img src={chromeLogo} alt="Chrome" style={{ width: "15px", height: "15px" }} />,
+            dark: false,
+          },
+        ].map((item, i) => (
           <motion.div
-            key={r.title}
+            key={item.label}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -381,64 +361,42 @@ function BetterTogetherSection() {
               borderRadius: "16px",
               border: "1px solid rgba(255,255,255,0.1)",
               background: "rgba(255,255,255,0.03)",
-              padding: "28px 32px",
+              padding: "32px",
               textAlign: "left",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
             }}
           >
-            <h3 style={{ fontFamily: "Arial, sans-serif", fontSize: "17px", fontWeight: 700, color: "#ffffff", marginBottom: "8px" }}>{r.title}</h3>
-            <p style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", lineHeight: 1.6 }}>{r.desc}</p>
+            <h3 style={{ fontFamily: "Arial, sans-serif", fontSize: "18px", fontWeight: 700, color: "#ffffff", margin: 0 }}>{item.label}</h3>
+            <p style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", lineHeight: 1.65, margin: 0, flexGrow: 1 }}>{item.desc}</p>
+            <a
+              href={item.href}
+              target={item.dark ? undefined : "_blank"}
+              rel={item.dark ? undefined : "noopener noreferrer"}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                fontFamily: "Arial, sans-serif",
+                fontWeight: 700,
+                fontSize: "14px",
+                color: item.dark ? "#000" : "#fff",
+                background: item.dark ? "#ffffff" : "transparent",
+                border: item.dark ? "none" : "1px solid rgba(255,255,255,0.15)",
+                borderRadius: "10px",
+                padding: "12px 20px",
+                textDecoration: "none",
+                alignSelf: "flex-start",
+                marginTop: "4px",
+              }}
+            >
+              {item.icon}
+              {item.cta}
+            </a>
           </motion.div>
         ))}
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        style={{ display: "flex", gap: "12px", marginTop: "48px" }}
-      >
-        <a
-          href="https://github.com/FeineCapital/pixie-desktop-app/releases/latest/download/Pixie.dmg"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            fontFamily: "Arial, sans-serif",
-            fontWeight: 700,
-            fontSize: "15px",
-            color: "#000",
-            background: "#ffffff",
-            borderRadius: "12px",
-            padding: "14px 28px",
-            textDecoration: "none",
-          }}
-        >
-          <AppleIcon size={16} />
-          Download for Mac
-        </a>
-        <a
-          href="https://github.com/FeineCapital/pixie-chrome-extension"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            fontFamily: "Arial, sans-serif",
-            fontWeight: 700,
-            fontSize: "15px",
-            color: "#ffffff",
-            border: "1px solid rgba(255,255,255,0.15)",
-            borderRadius: "12px",
-            padding: "14px 28px",
-            textDecoration: "none",
-          }}
-        >
-          <img src={chromeLogo} alt="Chrome" style={{ width: "16px", height: "16px" }} />
-          Chrome Extension
-        </a>
-      </motion.div>
     </section>
   );
 }
