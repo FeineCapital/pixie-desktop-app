@@ -72,7 +72,7 @@ export function Nav() {
                 className="rounded-full font-semibold shrink-0 h-10 px-6 text-sm"
                 asChild
               >
-                <a href={`${import.meta.env.BASE_URL}Pixie Desktop.zip`} download>
+                <a href="https://github.com/FeineCapital/pixie-desktop-app/releases/latest/download/Pixie.dmg">
                   Download for Mac
                 </a>
               </Button>

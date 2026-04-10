@@ -38,7 +38,7 @@ export function CtaFooter() {
           transition={{ delay: 0.2 }}
         >
           <Button size="lg" className="rounded-full h-14 md:h-16 px-8 md:px-10 text-lg md:text-xl font-bold bg-foreground text-background hover:bg-foreground/90 gap-2.5" asChild>
-            <a href={`${import.meta.env.BASE_URL}Pixie Desktop.zip`} download>
+            <a href="https://github.com/FeineCapital/pixie-desktop-app/releases/latest/download/Pixie.dmg">
               <AppleIcon className="w-5 h-5 md:w-6 md:h-6" />
               Download for Mac
             </a>
