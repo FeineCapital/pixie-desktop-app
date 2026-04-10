@@ -1,15 +1,146 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+
+function FakeWebsite({ step }: { step: number }) {
+  const isHovered = step >= 1;
+  const isCaptured = step >= 2;
+
+  return (
+    <div style={{ width: "100%", height: "100%", background: "#ffffff", position: "relative", overflow: "hidden" }}>
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "12px 24px",
+        borderBottom: "1px solid #eee",
+        background: "#fff",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ width: "24px", height: "24px", borderRadius: "6px", background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }} />
+          <span style={{ fontFamily: "Arial, sans-serif", fontSize: "14px", fontWeight: 700, color: "#111" }}>Acme Store</span>
+        </div>
+        <div style={{ display: "flex", gap: "20px" }}>
+          {["Products", "Pricing", "About"].map(t => (
+            <span key={t} style={{ fontFamily: "Arial, sans-serif", fontSize: "12px", color: "#666" }}>{t}</span>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ padding: "20px 24px" }}>
+        <div style={{ marginBottom: "16px" }}>
+          <div style={{ fontFamily: "Arial, sans-serif", fontSize: "18px", fontWeight: 700, color: "#111", marginBottom: "4px" }}>Featured Products</div>
+          <div style={{ fontFamily: "Arial, sans-serif", fontSize: "12px", color: "#999" }}>Top picks this week</div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
+          <div style={{ borderRadius: "10px", overflow: "hidden", border: "1px solid #eee" }}>
+            <div style={{ height: "80px", background: "linear-gradient(135deg, #fef3c7, #fde68a)" }} />
+            <div style={{ padding: "10px" }}>
+              <div style={{ fontFamily: "Arial, sans-serif", fontSize: "12px", fontWeight: 600, color: "#111", marginBottom: "2px" }}>Wireless Speaker</div>
+              <div style={{ fontFamily: "Arial, sans-serif", fontSize: "11px", color: "#999" }}>$49.99</div>
+            </div>
+          </div>
+
+          <motion.div
+            style={{
+              borderRadius: "10px",
+              overflow: "hidden",
+              position: "relative",
+              zIndex: 5,
+            }}
+            animate={{
+              boxShadow: isCaptured
+                ? "0 0 0 2.5px #34D399, 0 0 20px rgba(52,211,153,0.3)"
+                : isHovered
+                ? "0 0 0 2.5px #34D399, 0 0 16px rgba(52,211,153,0.2)"
+                : "0 0 0 1px #eee",
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            <div style={{ height: "80px", background: "linear-gradient(135deg, #dbeafe, #93c5fd)", position: "relative" }}>
+              <div style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "36px",
+                height: "36px",
+                borderRadius: "8px",
+                background: "rgba(255,255,255,0.6)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
+                  <path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </div>
+            </div>
+            <div style={{ padding: "10px", background: "#fff" }}>
+              <div style={{ fontFamily: "Arial, sans-serif", fontSize: "12px", fontWeight: 600, color: "#111", marginBottom: "2px" }}>Smart Watch Pro</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ fontFamily: "Arial, sans-serif", fontSize: "11px", color: "#999" }}>$199.99</div>
+                <div style={{ fontFamily: "Arial, sans-serif", fontSize: "9px", fontWeight: 600, color: "#fff", background: "#3b82f6", borderRadius: "4px", padding: "2px 6px" }}>NEW</div>
+              </div>
+            </div>
+          </motion.div>
+
+          <div style={{ borderRadius: "10px", overflow: "hidden", border: "1px solid #eee" }}>
+            <div style={{ height: "80px", background: "linear-gradient(135deg, #d1fae5, #6ee7b7)" }} />
+            <div style={{ padding: "10px" }}>
+              <div style={{ fontFamily: "Arial, sans-serif", fontSize: "12px", fontWeight: 600, color: "#111", marginBottom: "2px" }}>Desk Lamp</div>
+              <div style={{ fontFamily: "Arial, sans-serif", fontSize: "11px", color: "#999" }}>$34.99</div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: "16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+          <div style={{ borderRadius: "8px", padding: "12px", background: "#f9fafb", border: "1px solid #f3f4f6" }}>
+            <div style={{ fontFamily: "Arial, sans-serif", fontSize: "11px", fontWeight: 600, color: "#111", marginBottom: "4px" }}>Recent Orders</div>
+            {["Order #1234 — Shipped", "Order #1233 — Delivered"].map(o => (
+              <div key={o} style={{ fontFamily: "Arial, sans-serif", fontSize: "10px", color: "#888", marginBottom: "2px" }}>{o}</div>
+            ))}
+          </div>
+          <div style={{ borderRadius: "8px", padding: "12px", background: "#f9fafb", border: "1px solid #f3f4f6" }}>
+            <div style={{ fontFamily: "Arial, sans-serif", fontSize: "11px", fontWeight: 600, color: "#111", marginBottom: "4px" }}>Quick Stats</div>
+            <div style={{ display: "flex", gap: "16px" }}>
+              <div>
+                <div style={{ fontFamily: "Arial, sans-serif", fontSize: "16px", fontWeight: 700, color: "#111" }}>247</div>
+                <div style={{ fontFamily: "Arial, sans-serif", fontSize: "9px", color: "#888" }}>Products</div>
+              </div>
+              <div>
+                <div style={{ fontFamily: "Arial, sans-serif", fontSize: "16px", fontWeight: 700, color: "#111" }}>1.2k</div>
+                <div style={{ fontFamily: "Arial, sans-serif", fontSize: "9px", color: "#888" }}>Sales</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <motion.div
+        animate={{ opacity: isCaptured ? 1 : 0 }}
+        transition={{ duration: 0.25 }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(0,0,0,0.35)",
+          zIndex: 3,
+          pointerEvents: "none",
+        }}
+      />
+    </div>
+  );
+}
 
 function CaptureDemo() {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    const timings = [1800, 1200, 1000, 1400, 1800];
+    const timings = [2000, 1400, 800, 1200, 1600, 2000];
     let t: ReturnType<typeof setTimeout>;
     function advance(s: number) {
       t = setTimeout(() => {
-        const next = (s + 1) % 5;
+        const next = (s + 1) % 6;
         setStep(next);
         advance(next);
       }, timings[s]);
@@ -21,115 +152,68 @@ function CaptureDemo() {
   const isHovered = step >= 1;
   const isCaptured = step >= 2;
   const showToolbar = step >= 3;
-  const isDone = step === 4;
+  const isCopied = step >= 4;
+  const showNotif = step === 5;
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto select-none">
+    <div className="relative w-full max-w-3xl mx-auto select-none">
       <div className="overflow-hidden" style={{ borderRadius: "16px", border: "1px solid rgba(255,255,255,0.1)", background: "#111111" }}>
-        <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", background: "#0e0e0e" }}>
+        <div className="flex items-center gap-2 px-4 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", background: "#1a1a1a" }}>
           <div className="flex gap-1.5">
             <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
             <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
             <div className="w-3 h-3 rounded-full bg-[#28c840]" />
           </div>
-          <div className="flex-1 mx-8 h-5 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }} />
+          <div className="flex-1 mx-6 flex items-center justify-center h-6 rounded-md" style={{ background: "rgba(255,255,255,0.06)" }}>
+            <div className="flex items-center gap-1.5">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span style={{ fontFamily: "Arial, sans-serif", fontSize: "11px", color: "rgba(255,255,255,0.35)" }}>acmestore.com/products</span>
+            </div>
+          </div>
+          <div style={{ width: "48px" }} />
         </div>
 
-        <div className="relative p-8 min-h-[340px]" style={{ background: "#141414" }}>
-          <motion.div
-            className="absolute inset-0 pointer-events-none z-10"
-            animate={{ opacity: isCaptured ? 1 : 0 }}
-            transition={{ duration: 0.3 }}
-            style={{ background: "rgba(0,0,0,0.45)" }}
-          />
-
-          <div className="space-y-3 mb-7">
-            <div className="h-4 w-2/5 rounded" style={{ background: "rgba(255,255,255,0.1)" }} />
-            <div className="h-3 w-full rounded" style={{ background: "rgba(255,255,255,0.04)" }} />
-            <div className="h-3 w-5/6 rounded" style={{ background: "rgba(255,255,255,0.04)" }} />
-          </div>
-
-          <motion.div
-            className="relative rounded-xl p-6 z-20"
-            animate={{
-              boxShadow: isCaptured
-                ? "0 0 0 2px rgba(52,211,153,0.8), 0 0 16px rgba(52,211,153,0.2)"
-                : isHovered
-                ? "0 0 0 2px rgba(52,211,153,0.6), 0 0 12px rgba(52,211,153,0.15)"
-                : "0 0 0 1px rgba(255,255,255,0.06)",
-              backgroundColor: isCaptured
-                ? "rgba(52,211,153,0.06)"
-                : isHovered
-                ? "rgba(52,211,153,0.03)"
-                : "rgba(255,255,255,0.02)",
-            }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.div
-              className="absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap z-30"
-              style={{
-                fontFamily: "Arial, sans-serif",
-                fontSize: "12px",
-                fontWeight: 600,
-                color: "#ffffff",
-                padding: "6px 14px",
-                borderRadius: "10px",
-                background: "rgba(10,10,10,0.9)",
-                backdropFilter: "blur(12px)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
-              }}
-              animate={{ opacity: isHovered && !isCaptured ? 1 : 0, y: isHovered && !isCaptured ? 0 : 6 }}
-              transition={{ duration: 0.2 }}
-            >
-              Click to capture
-            </motion.div>
-
-            <div className="h-3 w-1/2 rounded mb-3" style={{ background: "rgba(255,255,255,0.12)" }} />
-            <div className="h-3 w-full rounded mb-2" style={{ background: "rgba(255,255,255,0.06)" }} />
-            <div className="h-3 w-4/5 rounded mb-5" style={{ background: "rgba(255,255,255,0.06)" }} />
-            <div className="h-9 w-28 rounded-lg" style={{ background: "rgba(255,255,255,0.08)" }} />
-          </motion.div>
-
-          <div className="space-y-2 mt-6">
-            <div className="h-3 w-3/4 rounded" style={{ background: "rgba(255,255,255,0.04)" }} />
-            <div className="h-3 w-1/2 rounded" style={{ background: "rgba(255,255,255,0.04)" }} />
-          </div>
+        <div className="relative" style={{ height: "380px", overflow: "hidden" }}>
+          <FakeWebsite step={step} />
 
           <motion.div
             className="absolute z-30 pointer-events-none"
             animate={{
-              left: isCaptured ? "58%" : isHovered ? "52%" : "25%",
-              top: isCaptured ? "58%" : isHovered ? "54%" : "18%",
-              opacity: isDone ? 0 : 1,
+              left: isCaptured ? "52%" : isHovered ? "50%" : "20%",
+              top: isCaptured ? "52%" : isHovered ? "42%" : "15%",
+              opacity: showNotif ? 0 : 1,
             }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="#111" strokeWidth="1.5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="#333" strokeWidth="1">
               <path d="M5 3l14 9-7 1-4 7L5 3z" />
             </svg>
           </motion.div>
 
-          {isCaptured && (
-            <motion.div
-              key={`ripple-${step}`}
-              className="absolute z-30 pointer-events-none rounded-full"
-              style={{ left: "calc(58% - 14px)", top: "calc(58% - 14px)", width: 28, height: 28, border: "2px solid rgba(52,211,153,0.6)" }}
-              initial={{ scale: 0.5, opacity: 1 }}
-              animate={{ scale: 3, opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            />
-          )}
+          <AnimatePresence>
+            {isCaptured && !showNotif && (
+              <motion.div
+                key={`ripple-${step}`}
+                className="absolute z-30 pointer-events-none rounded-full"
+                style={{ left: "calc(52% - 12px)", top: "calc(52% - 12px)", width: 24, height: 24, border: "2px solid rgba(52,211,153,0.7)" }}
+                initial={{ scale: 0.5, opacity: 1 }}
+                animate={{ scale: 3, opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6 }}
+              />
+            )}
+          </AnimatePresence>
 
           <motion.div
-            className="absolute z-40 left-1/2 -translate-x-1/2 bottom-5 flex items-center gap-2 px-4 py-2.5 shadow-2xl"
+            className="absolute z-40 left-1/2 -translate-x-1/2 bottom-4 flex items-center gap-2 px-4 py-2.5"
             style={{
               borderRadius: "12px",
               background: "rgba(10,10,10,0.96)",
               border: "1px solid rgba(255,255,255,0.1)",
               backdropFilter: "blur(14px)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
             }}
-            animate={{ opacity: showToolbar ? 1 : 0, y: showToolbar ? 0 : 10 }}
+            animate={{ opacity: showToolbar ? 1 : 0, y: showToolbar ? 0 : 12 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="p-1.5 rounded-md" style={{ color: "rgba(255,255,255,0.5)" }}>
@@ -150,15 +234,24 @@ function CaptureDemo() {
                 fontFamily: "Arial, sans-serif",
                 fontSize: "12px",
                 fontWeight: 700,
-                color: "#000",
-                background: "#ffffff",
+                color: isCopied ? "#fff" : "#000",
+                background: isCopied ? "#34D399" : "#ffffff",
                 borderRadius: "8px",
                 padding: "4px 12px",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                transition: "background 0.2s, color 0.2s",
               }}
-              animate={{ scale: isDone ? [1, 1.08, 1] : 1 }}
+              animate={{ scale: isCopied ? [1, 1.1, 1] : 1 }}
               transition={{ duration: 0.3 }}
             >
-              Copy
+              {isCopied && (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+              {isCopied ? "Copied!" : "Copy"}
             </motion.span>
             <span
               style={{
@@ -175,21 +268,110 @@ function CaptureDemo() {
               Save
             </span>
           </motion.div>
+
+          <AnimatePresence>
+            {showNotif && (
+              <motion.div
+                initial={{ opacity: 0, y: -10, x: 10 }}
+                animate={{ opacity: 1, y: 0, x: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="absolute z-50"
+                style={{
+                  top: "16px",
+                  right: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "10px 16px",
+                  borderRadius: "10px",
+                  background: "rgba(10,10,10,0.95)",
+                  border: "1px solid rgba(52,211,153,0.3)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+                  backdropFilter: "blur(12px)",
+                }}
+              >
+                <div style={{
+                  width: "28px",
+                  height: "28px",
+                  borderRadius: "6px",
+                  background: "rgba(52,211,153,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34D399" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontFamily: "Arial, sans-serif", fontSize: "12px", fontWeight: 700, color: "#fff" }}>Copied to clipboard</div>
+                  <div style={{ fontFamily: "Arial, sans-serif", fontSize: "10px", color: "rgba(255,255,255,0.45)" }}>Paste anywhere — ⌘V</div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {isHovered && !isCaptured && (
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.2 }}
+                className="absolute z-30"
+                style={{
+                  left: "50%",
+                  top: "18%",
+                  transform: "translateX(-50%)",
+                  fontFamily: "Arial, sans-serif",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  color: "#ffffff",
+                  padding: "5px 12px",
+                  borderRadius: "8px",
+                  background: "rgba(10,10,10,0.9)",
+                  backdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Click to capture
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
       <div className="flex justify-center items-center gap-2 mt-5">
-        {[1,2,3,4].map(i => (
-          <motion.div
-            key={i}
-            className="rounded-full"
-            animate={{
-              width: step === i ? 20 : 6,
-              height: 6,
-              backgroundColor: step >= i ? "#34D399" : "rgba(255,255,255,0.1)",
-            }}
-            transition={{ duration: 0.3 }}
-          />
+        {["Hover", "Capture", "Annotate", "Copy"].map((label, i) => (
+          <div key={label} className="flex items-center gap-2">
+            <motion.div
+              className="flex items-center gap-1.5"
+              animate={{ opacity: step >= i + 1 ? 1 : 0.3 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="rounded-full"
+                animate={{
+                  width: step === i + 1 ? 18 : 6,
+                  height: 6,
+                  backgroundColor: step >= i + 1 ? "#34D399" : "rgba(255,255,255,0.15)",
+                }}
+                transition={{ duration: 0.3 }}
+              />
+              <span style={{
+                fontFamily: "Arial, sans-serif",
+                fontSize: "11px",
+                color: step >= i + 1 ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.2)",
+                transition: "color 0.3s",
+              }}>
+                {label}
+              </span>
+            </motion.div>
+            {i < 3 && <div style={{ width: "20px", height: "1px", background: "rgba(255,255,255,0.08)" }} />}
+          </div>
         ))}
       </div>
     </div>
