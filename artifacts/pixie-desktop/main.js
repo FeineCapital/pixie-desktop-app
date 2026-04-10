@@ -128,7 +128,6 @@ function createTray() {
   const iconPath = path.join(__dirname, 'trayTemplate.png');
   const icon = fs.existsSync(iconPath) ? nativeImage.createFromPath(iconPath) : nativeImage.createEmpty();
   tray = new Tray(icon);
-  tray.setTitle('Pixie');
   tray.setToolTip('Pixie — ⌘⇧6 click & capture  •  ⌘⇧7 drag to select  •  ⌘⇧8 full screen');
   updateTrayMenu(false);
 }
