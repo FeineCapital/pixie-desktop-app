@@ -1,7 +1,7 @@
 {
   "name": "pixie",
   "productName": "Pixie",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Screenshot and annotation tool for macOS",
   "main": "main.js",
   "scripts": {
@@ -9,16 +9,23 @@
     "build": "electron-builder --mac --dir",
     "dist": "electron-builder --mac"
   },
+  "dependencies": {
+    "electron-updater": "^6.1.0"
+  },
   "build": {
     "appId": "app.pixie.capture",
     "productName": "Pixie",
+    "publish": {
+      "provider": "github",
+      "owner": "FeineCapital",
+      "repo": "pixie-desktop-app"
+    },
     "mac": {
       "category": "public.app-category.productivity",
       "target": ["dmg", "zip"],
       "darkModeSupport": true,
       "extendInfo": {
         "NSScreenCaptureUsageDescription": "Pixie needs screen recording access to capture screenshots.",
-        "NSCameraUsageDescription": "Pixie does not use the camera.",
         "LSUIElement": true
       }
     },
