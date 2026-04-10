@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import cityPhoto from "@assets/image_1775821327906.png";
 
 function BrowserChrome({ url, children }: { url: string; children: React.ReactNode }) {
@@ -207,11 +207,36 @@ function StripeDashboard() {
 // ─── 2. Drag to select — News article ─────────────────────────────────────────
 
 function NewsArticle() {
-  // 0=idle(cursor top-right), 1=moving to img top-left, 2=dragging, 3=selection done, 4=copied, 5=reset
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLDivElement>(null);
+
+  // 0=idle, 1=move to img TL, 2=drag to img BR, 3=done, 4=captured, 5=reset
   const [step, setStep] = useState(0);
+  const [imgMeas, setImgMeas] = useState({ top: 31, left: 3.5, right: 96.5, bottom: 65, w: 93, h: 34 });
+
+  // Measure actual image position relative to container
+  useEffect(() => {
+    function measure() {
+      const c = containerRef.current;
+      const img = imgRef.current;
+      if (!c || !img) return;
+      const cr = c.getBoundingClientRect();
+      const ir = img.getBoundingClientRect();
+      if (cr.width === 0 || cr.height === 0) return;
+      const top = (ir.top - cr.top) / cr.height * 100;
+      const left = (ir.left - cr.left) / cr.width * 100;
+      const right = (ir.right - cr.left) / cr.width * 100;
+      const bottom = (ir.bottom - cr.top) / cr.height * 100;
+      setImgMeas({ top, left, right, bottom, w: right - left, h: bottom - top });
+    }
+    const t = setTimeout(measure, 100);
+    const ro = new ResizeObserver(measure);
+    if (containerRef.current) ro.observe(containerRef.current);
+    return () => { clearTimeout(t); ro.disconnect(); };
+  }, []);
 
   useEffect(() => {
-    const timings = [1400, 900, 2200, 500, 1600, 1000];
+    const timings = [1400, 900, 2800, 500, 1600, 1000];
     let t: ReturnType<typeof setTimeout>;
     function advance(s: number) {
       t = setTimeout(() => {
@@ -228,25 +253,24 @@ function NewsArticle() {
   const selectionDone = step === 3 || step === 4;
   const showNotif = step === 4;
 
-  // Image occupies roughly x:16px–end, y:80px–200px inside the 380px container
-  // Expressed as % of container (container ~680px wide, 380px tall)
-  const imgTop = "31%";
-  const imgLeft = "3.5%";
-  const imgRight = "96.5%";
-  const imgBottom = "65%";
+  const pct = (n: number) => n.toFixed(1) + "%";
+  const imgTop = pct(imgMeas.top);
+  const imgLeft = pct(imgMeas.left);
+  const imgRight = pct(imgMeas.right);
+  const imgBottom = pct(imgMeas.bottom);
 
   const cursorPositions: Record<number, { x: string; y: string }> = {
-    0: { x: "82%", y: "8%" },
+    0: { x: "82%", y: "6%" },
     1: { x: imgLeft, y: imgTop },
     2: { x: imgRight, y: imgBottom },
     3: { x: imgRight, y: imgBottom },
     4: { x: imgRight, y: imgBottom },
-    5: { x: "82%", y: "8%" },
+    5: { x: "82%", y: "6%" },
   };
   const pos = cursorPositions[step] ?? cursorPositions[0];
 
   return (
-    <div style={{ width: "100%", height: "100%", position: "relative", fontFamily: "Arial, sans-serif" }}>
+    <div ref={containerRef} style={{ width: "100%", height: "100%", position: "relative", fontFamily: "Arial, sans-serif" }}>
       <div style={{ padding: "16px 24px", height: "100%", overflow: "hidden" }}>
         {/* Nav */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
@@ -266,7 +290,7 @@ function NewsArticle() {
         <div style={{ fontSize: "8px", color: "#697386", marginBottom: "10px" }}>By James Whitfield  ·  April 10, 2025  ·  6 min read</div>
 
         {/* City photo */}
-        <div style={{ width: "100%", height: "130px", borderRadius: "6px", overflow: "hidden", marginBottom: "10px" }}>
+        <div ref={imgRef} style={{ width: "100%", height: "130px", borderRadius: "6px", overflow: "hidden", marginBottom: "10px" }}>
           <img src={cityPhoto} alt="Chongqing city skyline at night" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         </div>
 
@@ -277,11 +301,11 @@ function NewsArticle() {
 
         {/* Body text */}
         <div style={{ fontSize: "8.5px", color: "#4a4a4a", lineHeight: 1.65 }}>
-          Urban planners across the country are reimagining what a modern city can look like. New mixed-use developments, improved transit corridors, and riverside parks are drawing residents back downtown. The transformation has been years in the making but is now accelerating rapidly across every major metropolitan area.
+          Urban planners across the country are reimagining what a modern city can look like. New mixed-use developments, improved transit corridors, and riverside parks are drawing residents back downtown.
         </div>
       </div>
 
-      {/* Drag selection rectangle — grows from top-left of image to bottom-right */}
+      {/* Drag selection rectangle — measured to match the actual photo */}
       <AnimatePresence>
         {(step === 1 || dragging || selectionDone) && (
           <motion.div
@@ -297,13 +321,13 @@ function NewsArticle() {
             animate={{
               left: imgLeft,
               top: imgTop,
-              width: dragging || selectionDone ? "93%" : "0%",
-              height: dragging || selectionDone ? "34%" : "0%",
+              width: dragging || selectionDone ? pct(imgMeas.w) : "0%",
+              height: dragging || selectionDone ? pct(imgMeas.h) : "0%",
             }}
             exit={{ opacity: 0, transition: { duration: 0.4 } }}
             transition={{
-              width: { duration: dragging ? 2.2 : 0.1, ease: [0.22, 1, 0.36, 1] },
-              height: { duration: dragging ? 2.2 : 0.1, ease: [0.22, 1, 0.36, 1] },
+              width: { duration: dragging ? 2.8 : 0.1, ease: [0.22, 1, 0.36, 1] },
+              height: { duration: dragging ? 2.8 : 0.1, ease: [0.22, 1, 0.36, 1] },
             }}
           />
         )}

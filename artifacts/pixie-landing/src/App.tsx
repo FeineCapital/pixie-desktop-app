@@ -11,6 +11,7 @@ import { Pricing } from "@/components/pricing";
 import { CtaFooter } from "@/components/cta-footer";
 import { MobileGate } from "@/components/mobile-gate";
 import DownloadPage from "@/pages/download";
+import { PixieGlobalOverlay } from "@/components/pixie-overlay";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,7 @@ function App() {
           <Router />
         </WouterRouter>
         <Toaster />
+        <PixieGlobalOverlay />
       </TooltipProvider>
     </QueryClientProvider>
   );

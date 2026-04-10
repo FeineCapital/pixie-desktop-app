@@ -1,5 +1,3 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef, useState, useCallback } from "react";
 import chromeLogo from "@assets/image_1775809932785.png";
 
 function AppleIcon({ size = 16 }: { size?: number }) {
@@ -10,76 +8,7 @@ function AppleIcon({ size = 16 }: { size?: number }) {
   );
 }
 
-type Target = "h1" | "p" | "mac" | "chrome" | null;
-
-const PAD: Record<string, number> = { h1: 5, p: 4, mac: 3, chrome: 3 };
-const RADIUS: Record<string, string> = { h1: "8px", p: "6px", mac: "14px", chrome: "14px" };
-
-function PixieOutline({ target, sectionEl, refs }: {
-  target: Target;
-  sectionEl: HTMLElement | null;
-  refs: Record<string, React.RefObject<HTMLElement | null>>;
-}) {
-  const [box, setBox] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-
-  useEffect(() => {
-    if (!target || !sectionEl) { setBox(null); return; }
-    const el = refs[target]?.current;
-    if (!el) { setBox(null); return; }
-    const sr = sectionEl.getBoundingClientRect();
-    const r = el.getBoundingClientRect();
-    setBox({ x: r.left - sr.left, y: r.top - sr.top, w: r.width, h: r.height });
-  }, [target, sectionEl, refs]);
-
-  const pad = target ? PAD[target] ?? 4 : 4;
-  const radius = target ? RADIUS[target] ?? "8px" : "8px";
-
-  return (
-    <AnimatePresence>
-      {target && box && (
-        <motion.div
-          key={target}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.08 } }}
-          transition={{ duration: 0.12 }}
-          style={{
-            position: "absolute",
-            left: box.x - pad,
-            top: box.y - pad,
-            width: box.w + pad * 2,
-            height: box.h + pad * 2,
-            border: "2px solid #34D399",
-            borderRadius: radius,
-            background: "rgba(52,211,153,0.04)",
-            pointerEvents: "none",
-            zIndex: 20,
-          }}
-        />
-      )}
-    </AnimatePresence>
-  );
-}
-
 export function Hero() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [sectionEl, setSectionEl] = useState<HTMLElement | null>(null);
-  const [hovered, setHovered] = useState<Target>(null);
-
-  const h1Ref = useRef<HTMLHeadingElement>(null);
-  const pRef = useRef<HTMLParagraphElement>(null);
-  const macRef = useRef<HTMLAnchorElement>(null);
-  const chromeRef = useRef<HTMLAnchorElement>(null);
-
-  const refs = { h1: h1Ref, p: pRef, mac: macRef, chrome: chromeRef } as Record<string, React.RefObject<HTMLElement | null>>;
-
-  useEffect(() => {
-    setSectionEl(sectionRef.current);
-  }, []);
-
-  const enter = useCallback((t: Target) => () => setHovered(t), []);
-  const leave = useCallback(() => setHovered(null), []);
-
   return (
     <section
       style={{
@@ -91,11 +20,9 @@ export function Hero() {
         justifyContent: "center",
         padding: "120px 24px 80px",
         position: "relative",
-        overflow: "visible",
       }}
     >
       <div
-        ref={sectionRef}
         style={{
           maxWidth: "860px",
           width: "100%",
@@ -103,15 +30,9 @@ export function Hero() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          position: "relative",
         }}
       >
-        <PixieOutline target={hovered} sectionEl={sectionEl} refs={refs} />
-
         <h1
-          ref={h1Ref}
-          onMouseEnter={enter("h1")}
-          onMouseLeave={leave}
           style={{
             fontFamily: "Arial, sans-serif",
             fontSize: "44px",
@@ -121,17 +42,12 @@ export function Hero() {
             letterSpacing: "-0.03em",
             marginBottom: "28px",
             whiteSpace: "nowrap",
-            position: "relative",
-            cursor: "default",
           }}
         >
           The easiest way to take screenshots.
         </h1>
 
         <p
-          ref={pRef}
-          onMouseEnter={enter("p")}
-          onMouseLeave={leave}
           style={{
             fontFamily: "Arial, sans-serif",
             fontSize: "14px",
@@ -140,7 +56,6 @@ export function Hero() {
             lineHeight: 1.65,
             marginBottom: "48px",
             whiteSpace: "nowrap",
-            cursor: "default",
           }}
         >
           Pixie makes screen capturing effortless. Hover over any element, click once, and capture it perfectly without dragging or cropping.
@@ -148,9 +63,6 @@ export function Hero() {
 
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
           <a
-            ref={macRef}
-            onMouseEnter={enter("mac")}
-            onMouseLeave={leave}
             href="https://github.com/FeineCapital/pixie-desktop-app/releases/latest/download/Pixie.dmg"
             style={{
               display: "inline-flex",
@@ -172,9 +84,6 @@ export function Hero() {
           </a>
 
           <a
-            ref={chromeRef}
-            onMouseEnter={enter("chrome")}
-            onMouseLeave={leave}
             href="https://github.com/FeineCapital/pixie-chrome-extension"
             target="_blank"
             rel="noopener noreferrer"
