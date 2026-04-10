@@ -545,7 +545,7 @@ export function Showcase() {
     {
       title: "Full screenshot",
       desc: "Capture your entire screen in one click. No cropping, no extra steps.",
-      keys: ["\u2318", "\u21E7", "8"],
+      keys: ["↵"],
       url: "maison.com/new-collection",
       demo: <ClothingStore />,
     },
@@ -584,9 +584,20 @@ export function Showcase() {
                 <h3 style={{ fontFamily: "Arial, sans-serif", fontSize: "18px", fontWeight: 700, color: "#171717", margin: 0 }}>
                   {mode.title}
                 </h3>
-                <div style={{ display: "flex", gap: "4px" }}>
+                <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
                   {mode.keys.map((k, idx) => (
-                    <kbd key={idx} style={{ fontFamily: "Arial, sans-serif", fontSize: "11px", fontWeight: 500, color: "#171717", background: "rgba(0,0,0,0.04)", border: "1px solid rgba(0,0,0,0.08)", borderRadius: "4px", padding: "3px 8px", display: "inline-block" }}>
+                    <kbd key={idx} style={{
+                      fontFamily: "Arial, sans-serif",
+                      fontSize: mode.keys.length === 1 ? "14px" : "11px",
+                      fontWeight: 600,
+                      color: "#171717",
+                      background: mode.keys.length === 1 ? "rgba(0,0,0,0.06)" : "rgba(0,0,0,0.04)",
+                      border: "1px solid rgba(0,0,0,0.12)",
+                      borderBottom: "2px solid rgba(0,0,0,0.18)",
+                      borderRadius: "6px",
+                      padding: mode.keys.length === 1 ? "5px 14px" : "3px 8px",
+                      display: "inline-block",
+                    }}>
                       {k}
                     </kbd>
                   ))}
