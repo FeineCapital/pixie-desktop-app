@@ -9,20 +9,24 @@ import { Features } from "@/components/features";
 import { Showcase } from "@/components/showcase";
 import { UseCases } from "@/components/use-cases";
 import { CtaFooter } from "@/components/cta-footer";
+import { MobileGate } from "@/components/mobile-gate";
 
 const queryClient = new QueryClient();
 
 function Home() {
   return (
     <div className="flex flex-col min-h-screen w-full relative">
-      <Nav />
-      <main className="flex-1 flex flex-col items-center w-full">
-        <Hero />
-        <Features />
-        <Showcase />
-        <UseCases />
-      </main>
-      <CtaFooter />
+      <MobileGate />
+      <div className="hidden md:flex flex-col min-h-screen w-full">
+        <Nav />
+        <main className="flex-1 flex flex-col items-center w-full">
+          <Hero />
+          <Features />
+          <Showcase />
+          <UseCases />
+        </main>
+        <CtaFooter />
+      </div>
     </div>
   );
 }
