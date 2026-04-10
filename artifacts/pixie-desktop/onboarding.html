@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+      background: #111318;
+      color: #e8e8ec;
+      -webkit-app-region: drag;
+      user-select: none;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 56px 40px 36px;
+      height: 100vh;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #7a7d88;
+      margin-bottom: 36px;
+    }
+    .steps {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: auto;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+    .step-icon {
+      font-size: 24px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .step:nth-child(1) .step-icon { background: rgba(96,165,250,0.12); }
+    .step:nth-child(2) .step-icon { background: rgba(0,230,118,0.12); }
+    .step:nth-child(3) .step-icon { background: rgba(250,204,21,0.12); }
+    .step-content { flex: 1; }
+    .step-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .step-desc {
+      font-size: 12px;
+      color: #7a7d88;
+      line-height: 1.4;
+    }
+    .kbd {
+      display: inline-block;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-size: 11px;
+      font-family: 'SF Mono', 'Menlo', monospace;
+      font-weight: 500;
+      color: #c8cad0;
+      margin-left: 4px;
+    }
+    .step-hint {
+      font-size: 11px;
+      color: #555;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .btn {
+      -webkit-app-region: no-drag;
+      cursor: pointer;
+      background: #fff;
+      color: #111;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 36px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      transition: opacity 0.15s;
+      margin-top: 24px;
+    }
+    .btn:hover { opacity: 0.85; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to Pixie</h1>
+    <p class="subtitle">Three ways to capture your screen</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">🎯</div>
+        <div class="step-content">
+          <div class="step-title">Click & Capture <span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">6</span></div>
+          <div class="step-desc">Hover over any window and click to capture it instantly.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">✂️</div>
+        <div class="step-content">
+          <div class="step-title">Drag to Select <span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">7</span></div>
+          <div class="step-desc">Draw a rectangle over any area to capture it precisely.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">🖥️</div>
+        <div class="step-content">
+          <div class="step-title">Full Screen <span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">8</span></div>
+          <div class="step-desc">Capture your entire screen instantly. Saved + copied.</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="step-hint">Press <span class="kbd">Esc</span> anytime to cancel. Pixie lives in your menu bar.</p>
+
+    <button class="btn" onclick="window.close()">Got it</button>
+  </div>
+</body>
+</html>

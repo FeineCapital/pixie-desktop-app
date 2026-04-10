@@ -34,10 +34,12 @@ const features = [
 ];
 
 const shortcuts = [
-  { keys: ["⌘", "⇧", "7"], label: "Click & capture" },
+  { keys: ["⌘", "⇧", "6"], label: "Click & capture (hover)" },
+  { keys: ["⌘", "⇧", "7"], label: "Drag to select area" },
   { keys: ["⌘", "⇧", "8"], label: "Full screen capture" },
   { keys: ["⌘", "C"], label: "Copy to clipboard" },
   { keys: ["↵"], label: "Save to Desktop" },
+  { keys: ["Esc"], label: "Cancel" },
 ];
 
 export function Features() {

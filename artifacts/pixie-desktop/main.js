@@ -3,15 +3,34 @@ const {
   clipboard, nativeImage, ipcMain, screen, Tray, Menu,
   dialog, systemPreferences, Notification
 } = require('electron');
+const { autoUpdater } = require('electron-updater');
+const { execSync } = require('child_process');
 const path = require('path');
 const fs   = require('fs');
 const os   = require('os');
 
-let overlayWin  = null;
-let tray        = null;
-let capturing   = false;
+let overlayWin   = null;
+let onboardingWin = null;
+let tray          = null;
+let capturing     = false;
 
-// ─── Permission check ───────────────────────────────────────────────────────
+// ─── Auto updater ─────────────────────────────────────────────────────────────
+
+function setupAutoUpdater() {
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.on('update-available', (info) => {
+    if (overlayWin) overlayWin.webContents.send('toast', `Update v${info.version} downloading...`);
+  });
+  autoUpdater.on('update-downloaded', () => {
+    if (overlayWin) overlayWin.webContents.send('toast', 'Update ready — installs on next quit ✓');
+    updateTrayMenu(true);
+  });
+  autoUpdater.on('error', () => {});
+  autoUpdater.checkForUpdates().catch(() => {});
+}
+
+// ─── Permission check ─────────────────────────────────────────────────────────
 
 async function ensureScreenPermission() {
   const status = systemPreferences.getMediaAccessStatus('screen');
@@ -33,31 +52,44 @@ async function ensureScreenPermission() {
   return false;
 }
 
-// ─── Overlay window ──────────────────────────────────────────────────────────
+// ─── Window detection (for click & capture) ───────────────────────────────────
+
+function getWindowBounds() {
+  try {
+    const code = [
+      'ObjC.import("CoreGraphics");',
+      'var wins = ObjC.deepUnwrap($.CGWindowListCopyWindowInfo(',
+      '  $.kCGWindowListOptionOnScreenOnly | $.kCGWindowListExcludeDesktopElements,',
+      '  $.kCGNullWindowID));',
+      'JSON.stringify(wins.filter(function(w) {',
+      '  return w.kCGWindowLayer === 0 && w.kCGWindowBounds.Width > 40 && w.kCGWindowBounds.Height > 40',
+      '    && w.kCGWindowOwnerName !== "Pixie";',
+      '}).map(function(w) {',
+      '  return { owner: w.kCGWindowOwnerName, name: w.kCGWindowName || "",',
+      '    x: w.kCGWindowBounds.X, y: w.kCGWindowBounds.Y,',
+      '    w: w.kCGWindowBounds.Width, h: w.kCGWindowBounds.Height };',
+      '}))'
+    ].join('\n');
+    const tmpFile = path.join(os.tmpdir(), 'pixie-windows.js');
+    fs.writeFileSync(tmpFile, code);
+    const result = execSync(`osascript -l JavaScript "${tmpFile}"`, { encoding: 'utf8', timeout: 3000 });
+    return JSON.parse(result.trim());
+  } catch { return []; }
+}
+
+// ─── Overlay window ───────────────────────────────────────────────────────────
 
 function createOverlay() {
   const primary = screen.getPrimaryDisplay();
   const { bounds, scaleFactor } = primary;
 
   overlayWin = new BrowserWindow({
-    x:      bounds.x,
-    y:      bounds.y,
-    width:  bounds.width,
-    height: bounds.height,
-    transparent:   true,
-    frame:         false,
-    // Use 'floating' NOT 'screen-saver' — screen-saver level covers the menu bar
-    // and locks the user out of the OS. 'floating' stays above apps but not system UI.
-    alwaysOnTop:   true,
-    focusable:     false,
-    skipTaskbar:   true,
-    hasShadow:     false,
-    resizable:     false,
-    movable:       false,
+    x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height,
+    transparent: true, frame: false, alwaysOnTop: true, focusable: false,
+    skipTaskbar: true, hasShadow: false, resizable: false, movable: false,
     webPreferences: {
-      preload:          path.join(__dirname, 'preload.js'),
-      contextIsolation: true,
-      nodeIntegration:  false,
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true, nodeIntegration: false,
     },
   });
 
@@ -71,51 +103,81 @@ function createOverlay() {
   });
 }
 
-// ─── Tray ────────────────────────────────────────────────────────────────────
+// ─── Onboarding ───────────────────────────────────────────────────────────────
+
+function showOnboarding() {
+  const flagPath = path.join(os.homedir(), '.pixie-onboarded');
+  if (fs.existsSync(flagPath)) return;
+  fs.writeFileSync(flagPath, '1');
+
+  onboardingWin = new BrowserWindow({
+    width: 520, height: 460, center: true, resizable: false,
+    maximizable: false, minimizable: false,
+    titleBarStyle: 'hidden', trafficLightPosition: { x: 14, y: 14 },
+    backgroundColor: '#111318',
+    webPreferences: { contextIsolation: true, nodeIntegration: false },
+  });
+
+  onboardingWin.loadFile('onboarding.html');
+  onboardingWin.on('closed', () => { onboardingWin = null; });
+}
+
+// ─── Tray ─────────────────────────────────────────────────────────────────────
 
 function createTray() {
-  // Use empty image + text title — reliable cross-macOS approach for menu bar text
   const icon = nativeImage.createEmpty();
   tray = new Tray(icon);
   tray.setTitle('Pixie');
-  tray.setToolTip('Pixie — ⌘⇧7 click & capture  •  ⌘⇧8 full screen');
-
-  updateTrayMenu();
+  tray.setToolTip('Pixie — ⌘⇧6 click & capture  •  ⌘⇧7 drag to select  •  ⌘⇧8 full screen');
+  updateTrayMenu(false);
 }
 
-function updateTrayMenu() {
-  const menu = Menu.buildFromTemplate([
+function updateTrayMenu(updateReady = false) {
+  const items = [
     { label: 'Pixie', enabled: false },
     { type: 'separator' },
-    { label: 'Click & Capture    ⌘⇧7', click: () => activateCapture() },
-    { label: 'Full Screen         ⌘⇧8', click: () => captureFullScreen() },
+    { label: 'Click & Capture     ⌘⇧6', click: () => activateHoverCapture() },
+    { label: 'Drag to Select       ⌘⇧7', click: () => activateDragCapture() },
+    { label: 'Full Screen            ⌘⇧8', click: () => captureFullScreen() },
     { type: 'separator' },
-    { label: 'How to use:', enabled: false },
-    { label: '  1. Press ⌘⇧7 to start click & capture', enabled: false },
-    { label: '  2. Drag to select any region', enabled: false },
-    { label: '  3. Press ⌘C to copy, Enter to save', enabled: false },
-    { label: '  4. Press Esc to cancel', enabled: false },
+    { label: 'Esc to cancel anytime', enabled: false },
     { type: 'separator' },
-    { label: 'Quit Pixie', click: () => app.quit() },
-  ]);
-  tray.setContextMenu(menu);
+  ];
+  if (updateReady) {
+    items.push({ label: '⬆ Install Update & Quit', click: () => autoUpdater.quitAndInstall() });
+    items.push({ type: 'separator' });
+  }
+  items.push({ label: 'Quit Pixie', click: () => app.quit() });
+  tray.setContextMenu(Menu.buildFromTemplate(items));
 }
 
-// ─── Capture ─────────────────────────────────────────────────────────────────
+// ─── Capture modes ────────────────────────────────────────────────────────────
 
-async function activateCapture() {
+async function activateHoverCapture() {
   if (capturing) return;
-
   const ok = await ensureScreenPermission();
   if (!ok) return;
+  capturing = true;
+  if (!overlayWin) return;
 
+  const windows = getWindowBounds();
+  overlayWin.setFocusable(true);
+  overlayWin.setIgnoreMouseEvents(false);
+  overlayWin.focus();
+  overlayWin.webContents.send('activate-hover', { windows });
+}
+
+async function activateDragCapture() {
+  if (capturing) return;
+  const ok = await ensureScreenPermission();
+  if (!ok) return;
   capturing = true;
   if (!overlayWin) return;
 
   overlayWin.setFocusable(true);
   overlayWin.setIgnoreMouseEvents(false);
   overlayWin.focus();
-  overlayWin.webContents.send('activate');
+  overlayWin.webContents.send('activate-drag');
 }
 
 function deactivateCapture() {
@@ -126,27 +188,21 @@ function deactivateCapture() {
   overlayWin.webContents.send('deactivate');
 }
 
-// ─── IPC ─────────────────────────────────────────────────────────────────────
+// ─── IPC ──────────────────────────────────────────────────────────────────────
 
 ipcMain.handle('take-screenshot', async () => {
   const primary = screen.getPrimaryDisplay();
   const { bounds, scaleFactor } = primary;
-
   const sources = await desktopCapturer.getSources({
     types: ['screen'],
-    thumbnailSize: {
-      width:  Math.round(bounds.width  * scaleFactor),
-      height: Math.round(bounds.height * scaleFactor),
-    },
+    thumbnailSize: { width: Math.round(bounds.width * scaleFactor), height: Math.round(bounds.height * scaleFactor) },
   });
-
   if (!sources.length) return null;
   return sources[0].thumbnail.toPNG().toString('base64');
 });
 
 ipcMain.handle('copy-to-clipboard', async (_e, base64) => {
-  const img = nativeImage.createFromBuffer(Buffer.from(base64, 'base64'));
-  clipboard.writeImage(img);
+  clipboard.writeImage(nativeImage.createFromBuffer(Buffer.from(base64, 'base64')));
   return true;
 });
 
@@ -159,48 +215,23 @@ ipcMain.handle('save-to-desktop', async (_e, base64) => {
 
 ipcMain.on('deactivate', () => deactivateCapture());
 
-// ─── Full screen capture ─────────────────────────────────────────────────────
+// ─── Full screen capture ──────────────────────────────────────────────────────
 
 async function captureFullScreen() {
   const ok = await ensureScreenPermission();
   if (!ok) return;
-
   const primary = screen.getPrimaryDisplay();
   const { bounds, scaleFactor } = primary;
-
   const sources = await desktopCapturer.getSources({
     types: ['screen'],
-    thumbnailSize: {
-      width:  Math.round(bounds.width  * scaleFactor),
-      height: Math.round(bounds.height * scaleFactor),
-    },
+    thumbnailSize: { width: Math.round(bounds.width * scaleFactor), height: Math.round(bounds.height * scaleFactor) },
   });
-
   if (!sources.length) return;
-
   const pngBuf = sources[0].thumbnail.toPNG();
   clipboard.writeImage(nativeImage.createFromBuffer(pngBuf));
-
   const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-  const filePath = path.join(os.homedir(), 'Desktop', `pixie-${ts}.png`);
-  fs.writeFileSync(filePath, pngBuf);
-
+  fs.writeFileSync(path.join(os.homedir(), 'Desktop', `pixie-${ts}.png`), pngBuf);
   if (overlayWin) overlayWin.webContents.send('toast', 'Full screen captured + saved ✓');
-}
-
-// ─── First launch notification ────────────────────────────────────────────────
-
-function showWelcomeNotification() {
-  const flagPath = path.join(os.homedir(), '.pixie-launched');
-  if (fs.existsSync(flagPath)) return;
-  fs.writeFileSync(flagPath, '1');
-
-  if (Notification.isSupported()) {
-    new Notification({
-      title: 'Pixie is running',
-      body: '⌘⇧7 = click & capture  •  ⌘⇧8 = full screen\nClick the Pixie icon in your menu bar anytime.',
-    }).show();
-  }
 }
 
 // ─── App lifecycle ────────────────────────────────────────────────────────────
@@ -211,15 +242,13 @@ app.whenReady().then(() => {
   createOverlay();
   createTray();
 
-  // Global Escape always cancels a capture — safety valve so user is never locked out
-  globalShortcut.register('Escape', () => {
-    if (capturing) deactivateCapture();
-  });
-
-  globalShortcut.register('CommandOrControl+Shift+7', () => activateCapture());
+  globalShortcut.register('Escape', () => { if (capturing) deactivateCapture(); });
+  globalShortcut.register('CommandOrControl+Shift+6', () => activateHoverCapture());
+  globalShortcut.register('CommandOrControl+Shift+7', () => activateDragCapture());
   globalShortcut.register('CommandOrControl+Shift+8', () => captureFullScreen());
 
-  showWelcomeNotification();
+  showOnboarding();
+  setTimeout(() => setupAutoUpdater(), 5000);
 });
 
 app.on('will-quit', () => globalShortcut.unregisterAll());

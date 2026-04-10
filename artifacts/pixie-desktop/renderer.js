@@ -2,14 +2,16 @@
   let scaleFactor = 2;
   let active = false;
 
-  const S = { IDLE: 'idle', DRAG: 'drag', SELECTED: 'selected' };
+  const S = { IDLE: 'idle', HOVER: 'hover', DRAG: 'drag', SELECTED: 'selected' };
   let state = S.IDLE;
+  let captureMode = null;
 
   let ovCanvas, ovCtx;
   let selBox, dimLabel;
   let annCanvas, annCtx;
   let toolbar;
   let handles = {};
+  let hoverTip = null;
 
   let selRect = null;
   let dragStart = null;
@@ -24,6 +26,9 @@
   let isMovingSel = false;
   let moveStart = null;
   let lastMid = null;
+
+  let windowRects = [];
+  let hoveredWinRect = null;
 
   const W = () => window.innerWidth;
   const H = () => window.innerHeight;
@@ -65,6 +70,11 @@
       handles[id] = h;
     }
 
+    hoverTip = document.createElement('div');
+    hoverTip.id = 'ec-hover-tip';
+    hoverTip.textContent = 'Click to capture · Esc to cancel';
+    document.body.appendChild(hoverTip);
+
     createToolbar();
 
     document.addEventListener('mousedown', onMouseDown, true);
@@ -72,6 +82,66 @@
     document.addEventListener('mouseup', onMouseUp, true);
     document.addEventListener('keydown', onKeyDown, true);
   }
+
+  // ─── Hover mode ─────────────────────────────────────────────────────────────
+
+  function drawHoverHighlight(rect) {
+    const dpr = scaleFactor;
+    const pw = Math.round(W() * dpr), ph = Math.round(H() * dpr);
+    ovCanvas.width = pw; ovCanvas.height = ph;
+    ovCanvas.style.width = W() + 'px';
+    ovCanvas.style.height = H() + 'px';
+    ovCanvas.style.display = 'block';
+
+    ovCtx.clearRect(0, 0, pw, ph);
+    ovCtx.fillStyle = 'rgba(0,0,0,0.35)';
+    ovCtx.fillRect(0, 0, pw, ph);
+
+    if (rect) {
+      ovCtx.globalCompositeOperation = 'destination-out';
+      ovCtx.beginPath();
+      ovCtx.roundRect(rect.left * dpr, rect.top * dpr, rect.width * dpr, rect.height * dpr, 8 * dpr);
+      ovCtx.fill();
+      ovCtx.globalCompositeOperation = 'source-over';
+
+      ovCtx.strokeStyle = 'rgba(0, 230, 118, 0.9)';
+      ovCtx.lineWidth = 2.5 * dpr;
+      ovCtx.beginPath();
+      ovCtx.roundRect(rect.left * dpr, rect.top * dpr, rect.width * dpr, rect.height * dpr, 8 * dpr);
+      ovCtx.stroke();
+
+      ovCtx.shadowColor = 'rgba(0, 230, 118, 0.35)';
+      ovCtx.shadowBlur = 18 * dpr;
+      ovCtx.strokeStyle = 'rgba(0, 230, 118, 0.25)';
+      ovCtx.lineWidth = 1.5 * dpr;
+      ovCtx.stroke();
+      ovCtx.shadowBlur = 0;
+    }
+
+    dimLabel.style.display = 'none';
+  }
+
+  function findWindowUnderCursor(mx, my) {
+    for (const w of windowRects) {
+      if (mx >= w.x && mx < w.x + w.w && my >= w.y && my < w.y + w.h) {
+        return { left: w.x, top: w.y, width: w.w, height: w.h, owner: w.owner };
+      }
+    }
+    return null;
+  }
+
+  function moveHoverTip(x, y) {
+    if (!hoverTip) return;
+    hoverTip.style.display = 'block';
+    hoverTip.style.left = Math.min(x + 14, W() - 240) + 'px';
+    hoverTip.style.top = Math.max(y - 36, 4) + 'px';
+  }
+
+  function hideHoverTip() {
+    if (hoverTip) hoverTip.style.display = 'none';
+  }
+
+  // ─── Toolbar ────────────────────────────────────────────────────────────────
 
   function createToolbar() {
     toolbar = document.createElement('div');
@@ -183,6 +253,8 @@
     else annCanvas.style.cursor = 'move';
   }
 
+  // ─── Overlay ────────────────────────────────────────────────────────────────
+
   function showOverlay(r) {
     const dpr = scaleFactor;
     const pw = Math.round(W() * dpr), ph = Math.round(H() * dpr);
@@ -219,6 +291,8 @@
     ovCanvas.style.display = 'none';
     dimLabel.style.display = 'none';
   }
+
+  // ─── Selection ──────────────────────────────────────────────────────────────
 
   function posSelBox(r) {
     selBox.style.left = r.left + 'px';
@@ -300,7 +374,10 @@
     selBox.style.display = 'none';
     annCanvas.style.display = 'none'; annCanvas.style.pointerEvents = 'none';
     toolbar.style.display = 'none';
-    hideHandles(); hideOverlay();
+    hideHandles(); hideOverlay(); hideHoverTip();
+    hoveredWinRect = null;
+    windowRects = [];
+    if (active) { window.pixie.deactivate(); active = false; }
   }
 
   function savePx() { if (annCtx) savedPixels = annCtx.getImageData(0, 0, annCanvas.width, annCanvas.height); }
@@ -310,6 +387,8 @@
     const r = annCanvas.getBoundingClientRect();
     return { x: e.clientX - r.left, y: e.clientY - r.top };
   }
+
+  // ─── Annotation events ─────────────────────────────────────────────────────
 
   function onAnnDown(e) {
     if (e.button !== 0) return;
@@ -398,9 +477,22 @@
     return { left: Math.min(a.x, b.x), top: Math.min(a.y, b.y), width: Math.abs(b.x - a.x), height: Math.abs(b.y - a.y) };
   }
 
+  // ─── Mouse events ──────────────────────────────────────────────────────────
+
   function onMouseDown(e) {
     if (!active || e.button !== 0) return;
     if (e.target.closest('#ec-tb') || e.target.classList.contains('ec-hnd')) return;
+
+    if (state === S.HOVER) {
+      e.preventDefault();
+      if (hoveredWinRect) {
+        hideHoverTip();
+        showSel(hoveredWinRect);
+        showOverlay(selRect);
+      }
+      return;
+    }
+
     if (state === S.IDLE) {
       dragStart = { x: e.clientX, y: e.clientY };
       state = S.DRAG;
@@ -412,6 +504,20 @@
 
   function onMouseMove(e) {
     if (!active) return;
+
+    if (state === S.HOVER) {
+      const win = findWindowUnderCursor(e.clientX, e.clientY);
+      hoveredWinRect = win;
+      drawHoverHighlight(win);
+      if (win) {
+        hoverTip.textContent = `${win.owner} — click to capture`;
+        moveHoverTip(e.clientX, e.clientY);
+      } else {
+        hideHoverTip();
+      }
+      return;
+    }
+
     if (state === S.DRAG && dragStart) {
       const r = mkRect(dragStart, { x: e.clientX, y: e.clientY });
       posSelBox(r);
@@ -445,6 +551,8 @@
     if (e.key === 'c' && (e.metaKey || e.ctrlKey) && state === S.SELECTED) { e.preventDefault(); doCapture(); }
   }
 
+  // ─── Capture ────────────────────────────────────────────────────────────────
+
   async function doCapture() {
     if (!selRect) return;
     selBox.style.display = 'none';
@@ -461,8 +569,6 @@
       await window.pixie.copyToClipboard(merged);
       toast('Copied to clipboard ✓');
       clearSel();
-      window.pixie.deactivate();
-      active = false;
     } catch (err) {
       toast('Failed: ' + err.message, true);
       restoreUI();
@@ -482,11 +588,9 @@
 
     try {
       const merged = await mergeToBase64(base64);
-      const filePath = await window.pixie.saveToDesktop(merged);
+      await window.pixie.saveToDesktop(merged);
       toast('Saved to Desktop ✓');
       clearSel();
-      window.pixie.deactivate();
-      active = false;
     } catch (err) {
       toast('Save failed: ' + err.message, true);
       restoreUI();
@@ -505,23 +609,16 @@
   async function mergeToBase64(screenshotB64) {
     const dpr = scaleFactor;
     const r = selRect;
-
     const img = await loadImage('data:image/png;base64,' + screenshotB64);
     const sx = Math.round(r.left * dpr), sy = Math.round(r.top * dpr);
     const sw = Math.round(r.width * dpr), sh = Math.round(r.height * dpr);
-
     const c = document.createElement('canvas');
     c.width = sw; c.height = sh;
     const ctx = c.getContext('2d');
-
     const rad = Math.round(selCornerRadius * dpr);
-    if (rad > 0) {
-      ctx.beginPath(); ctx.roundRect(0, 0, sw, sh, rad); ctx.clip();
-    }
-
+    if (rad > 0) { ctx.beginPath(); ctx.roundRect(0, 0, sw, sh, rad); ctx.clip(); }
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
     if (annCanvas && annCanvas.width > 0) ctx.drawImage(annCanvas, 0, 0, sw, sh);
-
     const dataUrl = c.toDataURL('image/png');
     return dataUrl.replace(/^data:image\/png;base64,/, '');
   }
@@ -546,14 +643,27 @@
     setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(8px)'; setTimeout(() => t.remove(), 280); }, 2600);
   }
 
+  // ─── IPC listeners ──────────────────────────────────────────────────────────
+
   window.pixie.onInit((data) => {
     scaleFactor = data.scaleFactor || 2;
     init();
   });
 
-  window.pixie.onActivate(() => {
+  window.pixie.onActivateHover((data) => {
+    active = true;
+    windowRects = data.windows || [];
+    state = S.HOVER;
+    captureMode = 'hover';
+    hoveredWinRect = null;
+    document.body.style.cursor = 'crosshair';
+    drawHoverHighlight(null);
+  });
+
+  window.pixie.onActivateDrag(() => {
     active = true;
     state = S.IDLE;
+    captureMode = 'drag';
     document.body.style.cursor = 'crosshair';
   });
 
@@ -561,9 +671,11 @@
     active = false;
     clearSel();
     document.body.style.cursor = 'default';
+    hoveredWinRect = null;
+    windowRects = [];
+    hideHoverTip();
+    hideOverlay();
   });
 
-  window.pixie.onToast((msg) => {
-    toast(msg);
-  });
+  window.pixie.onToast((msg) => { toast(msg); });
 })();
