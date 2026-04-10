@@ -1,5 +1,5 @@
 kind = "web"
-previewPath = "/pixie-landing/"
+previewPath = "/"
 title = "Pixie Landing Page"
 version = "1.0.0"
 id = "artifacts/pixie-landing"
@@ -11,7 +11,7 @@ version = "1.0.0"
 
 [[services]]
 name = "web"
-paths = [ "/pixie-landing/" ]
+paths = [ "/" ]
 localPort = 21596
 
 [services.development]
@@ -28,4 +28,4 @@ to = "/index.html"
 
 [services.env]
 PORT = "21596"
-BASE_PATH = "/pixie-landing/"
+BASE_PATH = "/"
