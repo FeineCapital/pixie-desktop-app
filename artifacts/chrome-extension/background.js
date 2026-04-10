@@ -87,6 +87,28 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
+  // New: content script requests full-tab screenshot for self-merging
+  if (msg.type === 'TAKE_SCREENSHOT') {
+    const windowId = sender.tab ? sender.tab.windowId : undefined;
+    (async () => {
+      try {
+        const dataUrl = await chrome.tabs.captureVisibleTab(windowId, { format: 'png' });
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        const arrayBuffer = await blob.arrayBuffer();
+        const bytes = new Uint8Array(arrayBuffer);
+        let binary = '';
+        const CHUNK = 8192;
+        for (let i = 0; i < bytes.length; i += CHUNK)
+          binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+        sendResponse({ base64: btoa(binary) });
+      } catch (err) {
+        sendResponse({ error: err.message });
+      }
+    })();
+    return true;
+  }
+
   if (msg.type === 'CAPTURE_ELEMENT') {
     const { rect, devicePixelRatio } = msg;
     const tabId    = sender.tab.id;
