@@ -25,14 +25,14 @@ const features = [
 
 export function Features() {
   return (
-    <section id="features" className="w-full max-w-7xl mx-auto px-4 py-32">
-      <div className="mb-16">
+    <section id="features" className="w-full max-w-7xl mx-auto px-6 md:px-8 py-20 md:py-32">
+      <div className="mb-10 md:mb-16">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-4xl md:text-6xl font-display font-bold mb-6"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 md:mb-6 leading-tight"
         >
           Built for speed.
           <br />
@@ -40,7 +40,7 @@ export function Features() {
         </motion.h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {features.map((feature, index) => (
           <motion.div
             key={feature.title}
@@ -49,12 +49,12 @@ export function Features() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
             whileHover={{ y: -8, scale: 0.98 }}
-            className={`p-8 md:p-12 rounded-[2rem] aspect-square md:aspect-auto md:h-[400px] flex flex-col justify-end transition-all duration-300 ${feature.className}`}
+            className={`p-6 sm:p-8 md:p-12 rounded-2xl md:rounded-[2rem] min-h-[240px] sm:min-h-[280px] md:min-h-[360px] flex flex-col justify-end transition-all duration-300 ${feature.className}`}
           >
-            <h3 className="font-display font-bold text-3xl md:text-4xl mb-4 leading-tight">
+            <h3 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl mb-3 md:mb-4 leading-tight">
               {feature.title}
             </h3>
-            <p className="text-lg md:text-xl font-medium opacity-90 text-balance">
+            <p className="text-base sm:text-lg md:text-xl font-medium opacity-90 text-balance leading-relaxed">
               {feature.description}
             </p>
           </motion.div>
