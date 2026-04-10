@@ -14,6 +14,7 @@
   let annCanvas = null;
   let annCtx    = null;
   let ovCanvas = null, dimLabel = null;
+  let shield   = null;
 
   /* ═══ Data ═══ */
   let hoveredEl    = null;
@@ -43,6 +44,12 @@
       .__ec-hl {
         outline: none !important;
         box-shadow: 0 0 0 2px #00e676, 0 0 8px rgba(0,230,118,0.25) !important;
+      }
+      #__ec-shield {
+        position: fixed !important; inset: 0 !important;
+        z-index: 2147483637 !important;
+        background: transparent !important;
+        cursor: default !important;
       }
       #__ec-ov {
         position: fixed !important; pointer-events: none !important;
@@ -157,6 +164,31 @@
       }
     `;
     document.documentElement.appendChild(s);
+  }
+
+  /* ══════════════════════════════════
+     INTERACTION SHIELD
+     Transparent full-viewport div that sits above all page content
+     but below our UI. Blocks CSS :hover effects, clicks, and all
+     page interactions while capture mode is active.
+  ══════════════════════════════════ */
+  function createShield() {
+    if (shield) return;
+    shield = document.createElement('div');
+    shield.id = '__ec-shield';
+    document.documentElement.appendChild(shield);
+  }
+
+  function removeShield() {
+    if (shield) { shield.remove(); shield = null; }
+  }
+
+  function elementUnderCursor(x, y) {
+    if (!shield) return document.elementFromPoint(x, y);
+    shield.style.pointerEvents = 'none';
+    const el = document.elementFromPoint(x, y);
+    shield.style.pointerEvents = '';
+    return el;
   }
 
   /* ══════════════════════════════════
@@ -593,7 +625,7 @@
     if (!el) return false;
     if (el.id && el.id.startsWith('__ec')) return true;
     if (el.classList && el.classList.contains('ec-hnd')) return true;
-    if (el.closest && el.closest('#__ec-tb,#__ec-sel,#__ec-ann,#__ec-tip')) return true;
+    if (el.closest && el.closest('#__ec-tb,#__ec-sel,#__ec-ann,#__ec-tip,#__ec-shield')) return true;
     return false;
   }
 
@@ -756,7 +788,7 @@
           ensureSelBox();
         }
       } else {
-        const raw = document.elementFromPoint(e.clientX, e.clientY);
+        const raw = elementUnderCursor(e.clientX, e.clientY);
         if (raw && !isOurs(raw)) highlight(findBestTarget(raw));
       }
     } else if (state === S.DRAG) {
@@ -957,17 +989,34 @@
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
   /* ══════════════════════════════════
+     CLICK / NAVIGATION BLOCKER
+     Prevents links, buttons, forms from firing while capture is active.
+  ══════════════════════════════════ */
+  function blockClick(e) {
+    if (!window.__elementCaptureActive) return;
+    if (isOurs(e.target)) return;
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  /* ══════════════════════════════════
      ACTIVATE / DEACTIVATE
   ══════════════════════════════════ */
   function activate() {
     if (window.__elementCaptureActive) return;
     window.__elementCaptureActive = true;
     injectStyles();
+    createShield();
     createTooltip();
     document.addEventListener('mousedown', onMouseDown, true);
     document.addEventListener('mousemove', onMouseMove, true);
     document.addEventListener('mouseup',   onMouseUp,   true);
     document.addEventListener('keydown',   onKeyDown,   true);
+    document.addEventListener('click',       blockClick, true);
+    document.addEventListener('auxclick',    blockClick, true);
+    document.addEventListener('dblclick',    blockClick, true);
+    document.addEventListener('contextmenu', blockClick, true);
+    document.addEventListener('submit',      blockClick, true);
     chrome.runtime.sendMessage({ type: 'TAB_ACTIVATED' });
   }
 
@@ -976,10 +1025,16 @@
     window.__elementCaptureActive = false;
     state = S.HOVER;
     unhighlight(); clearSel(); hideOverlay();
+    removeShield();
     document.removeEventListener('mousedown', onMouseDown, true);
     document.removeEventListener('mousemove', onMouseMove, true);
     document.removeEventListener('mouseup',   onMouseUp,   true);
     document.removeEventListener('keydown',   onKeyDown,   true);
+    document.removeEventListener('click',       blockClick, true);
+    document.removeEventListener('auxclick',    blockClick, true);
+    document.removeEventListener('dblclick',    blockClick, true);
+    document.removeEventListener('contextmenu', blockClick, true);
+    document.removeEventListener('submit',      blockClick, true);
     if (tooltip) { tooltip.remove(); tooltip = null; }
     chrome.runtime.sendMessage({ type: 'TAB_DEACTIVATED' });
   }
@@ -1001,15 +1056,19 @@
   ══════════════════════════════════ */
   window.addEventListener('pagehide', (e) => {
     if (e.persisted) {
-      // Page is going into bfcache — tear down gracefully without
-      // sending any messages (port is about to close).
       window.__elementCaptureActive = false;
       state = S.HOVER;
       unhighlight(); clearSel(); hideOverlay();
+      removeShield();
       document.removeEventListener('mousedown', onMouseDown, true);
       document.removeEventListener('mousemove', onMouseMove, true);
       document.removeEventListener('mouseup',   onMouseUp,   true);
       document.removeEventListener('keydown',   onKeyDown,   true);
+      document.removeEventListener('click',       blockClick, true);
+      document.removeEventListener('auxclick',    blockClick, true);
+      document.removeEventListener('dblclick',    blockClick, true);
+      document.removeEventListener('contextmenu', blockClick, true);
+      document.removeEventListener('submit',      blockClick, true);
       if (tooltip) { tooltip.remove(); tooltip = null; }
     }
   });
