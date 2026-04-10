@@ -22,12 +22,15 @@
   let potentialDrag = false;
   let activeHandle  = null;
   let resizeOrigin  = null;
-  let activeTool    = 'pen';
+  let activeTool    = null;
   let activeColor   = '#ef4444';
   let isDrawing     = false;
   let drawOrigin    = null;
   let savedPixels   = null;
   let captureRadius = 0;
+  let selCornerRadius = 10;
+  let isMovingSel   = false;
+  let moveStart     = null;
 
   /* ══════════════════════════════════
      STYLES
@@ -91,7 +94,7 @@
       #__ec-ann {
         position: fixed !important; z-index: 2147483642 !important;
         border-radius: 3px !important; display: none;
-        cursor: crosshair !important;
+        cursor: move !important;
       }
       .ec-hnd {
         position: fixed !important; z-index: 2147483643 !important;
@@ -193,6 +196,7 @@
     selBox.style.top     = r.top    + 'px';
     selBox.style.width   = r.width  + 'px';
     selBox.style.height  = r.height + 'px';
+    selBox.style.borderRadius = selCornerRadius + 'px';
     selBox.style.display = 'block';
   }
 
@@ -226,8 +230,7 @@
     ctx.fillStyle = 'rgba(0,0,0,0.52)';
     ctx.fillRect(0, 0, pw, ph);
 
-    // Cut out a rounded rectangle so only the selection is bright
-    const radius = 10 * dpr;
+    const radius = selCornerRadius * dpr;
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
     ctx.roundRect(r.left * dpr, r.top * dpr, r.width * dpr, r.height * dpr, radius);
@@ -329,6 +332,7 @@
     }
     annCtx.lineCap  = 'round';
     annCtx.lineJoin = 'round';
+    updateAnnCursor();
   }
 
   /* ══════════════════════════════════
@@ -349,13 +353,21 @@
       return b;
     }
 
+    // Move button (default active)
+    const moveBtn = document.createElement('button');
+    moveBtn.title = 'Move selection';
+    moveBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-3 3 3 3"/><path d="M9 5l3-3 3 3"/><path d="M15 19l-3 3-3-3"/><path d="M19 9l3 3-3 3"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>';
+    moveBtn.dataset.tool = 'move';
+    moveBtn.classList.add('ec-act');
+    moveBtn.addEventListener('click', e => { e.stopPropagation(); setTool(null); });
+    toolbar.appendChild(moveBtn);
+
     // Pencil (SVG — tip points bottom-left)
     const penBtn = document.createElement('button');
     penBtn.title = 'Pencil';
     penBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>';
     penBtn.dataset.tool = 'pen';
-    penBtn.classList.add('ec-act');
-    penBtn.addEventListener('click', e => { e.stopPropagation(); setTool('pen'); });
+    penBtn.addEventListener('click', e => { e.stopPropagation(); setTool(activeTool === 'pen' ? null : 'pen'); });
     toolbar.appendChild(penBtn);
 
     // Eraser (SVG icon)
@@ -363,8 +375,28 @@
     erBtn.title = 'Eraser';
     erBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>';
     erBtn.dataset.tool = 'eraser';
-    erBtn.addEventListener('click', e => { e.stopPropagation(); setTool('eraser'); });
+    erBtn.addEventListener('click', e => { e.stopPropagation(); setTool(activeTool === 'eraser' ? null : 'eraser'); });
     toolbar.appendChild(erBtn);
+
+    sep();
+
+    // Corner radius toggle (round ↔ sharp)
+    const cornerBtn = document.createElement('button');
+    cornerBtn.title = 'Toggle round/sharp corners';
+    cornerBtn.dataset.action = 'corners';
+    cornerBtn.innerHTML = selCornerRadius > 0
+      ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="6"/></svg>'
+      : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="0"/></svg>';
+    cornerBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      selCornerRadius = selCornerRadius > 0 ? 0 : 10;
+      cornerBtn.innerHTML = selCornerRadius > 0
+        ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="6"/></svg>'
+        : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="0"/></svg>';
+      cornerBtn.classList.toggle('ec-act', selCornerRadius === 0);
+      if (selRect) { posSelBox(selRect); showOverlay(selRect); }
+    });
+    toolbar.appendChild(cornerBtn);
 
     sep();
 
@@ -375,7 +407,7 @@
       dot.style.background = c;
       dot.dataset.color = c;
       dot.title = c;
-      dot.addEventListener('click', e => { e.stopPropagation(); setColor(c); setTool('pen'); });
+      dot.addEventListener('click', e => { e.stopPropagation(); setColor(c); if (activeTool !== 'pen') setTool('pen'); });
       toolbar.appendChild(dot);
     }
 
@@ -420,12 +452,28 @@
     });
   }
 
+  const PEN_CURSOR = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300e676' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z'/%3E%3C/svg%3E") 2 22, crosshair`;
+  const ERASER_CURSOR = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ff6b6b' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21'/%3E%3Cpath d='M22 21H7'/%3E%3C/svg%3E") 4 20, crosshair`;
+
   function setTool(tool) {
     activeTool = tool;
     if (!toolbar) return;
     toolbar.querySelectorAll('[data-tool]').forEach(b => b.classList.remove('ec-act'));
-    const btn = toolbar.querySelector(`[data-tool="${tool}"]`);
-    if (btn) btn.classList.add('ec-act');
+    if (tool === null) {
+      const moveBtn = toolbar.querySelector('[data-tool="move"]');
+      if (moveBtn) moveBtn.classList.add('ec-act');
+    } else {
+      const btn = toolbar.querySelector(`[data-tool="${tool}"]`);
+      if (btn) btn.classList.add('ec-act');
+    }
+    updateAnnCursor();
+  }
+
+  function updateAnnCursor() {
+    if (!annCanvas) return;
+    if (activeTool === 'pen')    annCanvas.style.setProperty('cursor', PEN_CURSOR, 'important');
+    else if (activeTool === 'eraser') annCanvas.style.setProperty('cursor', ERASER_CURSOR, 'important');
+    else                          annCanvas.style.setProperty('cursor', 'move', 'important');
   }
 
   function setColor(color) {
@@ -441,10 +489,12 @@
   ══════════════════════════════════ */
   function showSel(r) {
     selRect = { ...r };
+    activeTool = null;
     posSelBox(r);
     ensureHandles(); posHandles(r);
     posAnnCanvas(r);
     posToolbar(r);
+    setTool(null);
     state = S.SELECTED;
     unhighlight();
     if (tooltip) tooltip.style.opacity = '0';
@@ -461,6 +511,8 @@
   function clearSel() {
     state = S.HOVER;
     selRect = null; savedPixels = null;
+    isMovingSel = false; moveStart = null;
+    activeTool = null;
     if (selBox)    selBox.style.display = 'none';
     if (annCanvas) { annCanvas.style.display = 'none'; annCanvas.style.pointerEvents = 'none'; }
     if (toolbar)   toolbar.style.display = 'none';
@@ -561,6 +613,13 @@
   function onAnnDown(e) {
     if (e.button !== 0) return;
     e.preventDefault(); e.stopPropagation();
+
+    if (activeTool === null) {
+      isMovingSel = true;
+      moveStart = { x: e.clientX, y: e.clientY };
+      return;
+    }
+
     isDrawing = true;
     drawOrigin = canPos(e);
     lastMid = null;
@@ -568,6 +627,21 @@
   }
 
   function onAnnMove(e) {
+    if (isMovingSel && selRect) {
+      e.preventDefault();
+      const dx = e.clientX - moveStart.x;
+      const dy = e.clientY - moveStart.y;
+      moveStart = { x: e.clientX, y: e.clientY };
+      updateSel({
+        left:   selRect.left + dx,
+        top:    selRect.top  + dy,
+        width:  selRect.width,
+        height: selRect.height
+      });
+      showOverlay(selRect);
+      return;
+    }
+
     if (!isDrawing) return;
     e.preventDefault();
     const p = canPos(e);
@@ -599,6 +673,13 @@
   }
 
   function onAnnUp(e) {
+    if (isMovingSel) {
+      e.preventDefault(); e.stopPropagation();
+      isMovingSel = false;
+      moveStart = null;
+      return;
+    }
+
     if (!isDrawing) return;
     e.preventDefault(); e.stopPropagation();
     isDrawing = false;
